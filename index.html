@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Desert Tracker" />
-<title>Desert Landscape Tracker</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Plant Tracker"/>
+<title>Plant Care Tracker</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <style>
-:root {
-  --bg:#ffffff; --bg2:#f5f5f3; --bg3:#eeece8;
-  --text:#1a1a1a; --text2:#6b6b68; --text3:#999994;
-  --border:rgba(0,0,0,0.12); --border2:rgba(0,0,0,0.22);
-  --blue-bg:#e6f1fb; --blue:#185FA5; --blue-text:#185FA5;
-  --green-bg:#eaf3de; --green:#3B6D11;
-  --amber-bg:#faeeda; --amber:#854F0B;
-  --red-bg:#fcebeb; --red:#A32D2D;
+:root{
+  --bg:#fff;--bg2:#f5f5f3;--bg3:#eeece8;
+  --text:#1a1a1a;--text2:#6b6b68;--text3:#999994;
+  --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+  --blue-bg:#e6f1fb;--blue:#185FA5;--blue-text:#185FA5;
+  --green-bg:#eaf3de;--green:#3B6D11;
+  --amber-bg:#faeeda;--amber:#854F0B;
+  --red-bg:#fcebeb;--red:#A32D2D;
   --coral:#D85A30;
-  --radius:12px; --radius-sm:8px;
+  --radius:12px;--radius-sm:8px;
 }
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#1c1c1a; --bg2:#242422; --bg3:#2c2c2a;
-    --text:#f0ede8; --text2:#a0a09a; --text3:#666660;
-    --border:rgba(255,255,255,0.1); --border2:rgba(255,255,255,0.2);
-    --blue-bg:#0c2a45; --blue:#5ba3e0; --blue-text:#7bb8e8;
-    --green-bg:#1a2e0a; --green:#7cbd3a;
-    --amber-bg:#2e1f05; --amber:#e0a040;
-    --red-bg:#2e0a0a; --red:#e06060;
-    --coral:#e07050;
-  }
-}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--bg2:#242422;--bg3:#2c2c2a;
+  --text:#f0ede8;--text2:#a0a09a;--text3:#666660;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+  --blue-bg:#0c2a45;--blue:#5ba3e0;--blue-text:#7bb8e8;
+  --green-bg:#1a2e0a;--green:#7cbd3a;
+  --amber-bg:#2e1f05;--amber:#e0a040;
+  --red-bg:#2e0a0a;--red:#e06060;--coral:#e07050;
+}}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:var(--text);background:var(--bg3);min-height:100vh;}
 .app{max-width:600px;margin:0 auto;background:var(--bg3);min-height:100vh;padding-bottom:80px;}
@@ -40,43 +37,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .header h1{font-size:18px;font-weight:600;}
 .header-sub{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;margin-top:2px;}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;}
-.sync-dot.ok{background:#4caf50;}
-.sync-dot.syncing{background:#ff9800;animation:pulse 1s infinite;}
-.sync-dot.err{background:var(--red);}
+.sync-dot.ok{background:#4caf50;}.sync-dot.syncing{background:#ff9800;animation:pulse 1s infinite;}.sync-dot.err{background:var(--red);}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .nav{display:flex;background:var(--bg);border-top:0.5px solid var(--border);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;z-index:50;}
 .nav-btn{flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--text2);font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.nav-btn i{font-size:22px;}
-.nav-btn.active{color:var(--blue);}
-.section{display:none;padding:12px;}
-.section.active{display:block;}
+.nav-btn i{font-size:22px;}.nav-btn.active{color:var(--blue);}
+.section{display:none;padding:12px;}.section.active{display:block;}
 .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
-.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.plant-name{font-weight:600;font-size:15px;}
-.plant-latin{font-style:italic;font-size:11px;color:var(--text3);margin-top:1px;}
-.plant-meta{font-size:12px;color:var(--text2);margin-top:2px;}
 .badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-left:8px;}
-.badge-ok{background:var(--green-bg);color:var(--green);}
-.badge-soon{background:var(--amber-bg);color:var(--amber);}
-.badge-due{background:var(--red-bg);color:var(--red);}
+.badge-ok{background:var(--green-bg);color:var(--green);}.badge-soon{background:var(--amber-bg);color:var(--amber);}.badge-due{background:var(--red-bg);color:var(--red);}
 .pred-box{background:var(--blue-bg);border-radius:var(--radius-sm);padding:9px 12px;margin-top:8px;}
-.pred-date{font-weight:600;font-size:14px;color:var(--blue-text);}
-.pred-basis{font-size:11px;color:var(--text2);margin-top:2px;}
-.fert-line{font-size:12px;color:var(--text2);margin-top:6px;}
+.pred-date{font-weight:600;font-size:14px;color:var(--blue-text);}.pred-basis{font-size:11px;color:var(--text2);margin-top:2px;}
 .action-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .btn{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:5px;}
-.btn:active{opacity:0.7;}
-.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:500;}
-.btn-danger{color:var(--red);border-color:var(--red);}
+.btn:active{opacity:0.7;}.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:500;}.btn-danger{color:var(--red);border-color:var(--red);}
 .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
 .metric{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
-.metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;}
-.metric-value{font-size:24px;font-weight:600;}
+.metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;}.metric-value{font-size:24px;font-weight:600;}
 .temp-bar{background:var(--bg);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
 .temp-big{font-size:28px;font-weight:700;color:var(--coral);}
-.temp-info{flex:1;}
-.temp-info .label{font-size:11px;color:var(--text2);}
-.temp-info .desc{font-size:13px;color:var(--text);margin-top:2px;}
+.temp-info{flex:1;}.temp-info .tlabel{font-size:11px;color:var(--text2);}.temp-info .tdesc{font-size:13px;color:var(--text);margin-top:2px;}
 .season-banner{background:var(--amber-bg);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--amber);}
 input,select,textarea{width:100%;font-size:15px;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);margin-bottom:12px;appearance:none;-webkit-appearance:none;}
 input:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px;}
@@ -89,9 +69,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 .empty{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:14px;}
 .log-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:0.5px solid var(--border);}
 .log-item:last-child{border-bottom:none;}
-.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-.dot-water{background:var(--blue);}
-.dot-fert{background:var(--green);}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.dot-water{background:var(--blue);}.dot-fert{background:var(--green);}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px 32px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;}
@@ -100,34 +79,43 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 .hint{font-size:11px;color:var(--text3);background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:12px;}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;z-index:300;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;}
-/* Plant detail page */
-.detail-hero{background:var(--bg);border-radius:var(--radius);padding:16px;margin-bottom:10px;}
-.detail-hero-name{font-size:20px;font-weight:700;}
-.detail-hero-latin{font-style:italic;font-size:13px;color:var(--text3);margin-top:2px;}
-.detail-hero-meta{font-size:13px;color:var(--text2);margin-top:6px;}
-.detail-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-.detail-stat{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
-.detail-stat-label{font-size:11px;color:var(--text2);margin-bottom:3px;}
-.detail-stat-value{font-size:18px;font-weight:600;}
-.back-btn{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--blue);cursor:pointer;margin-bottom:12px;background:none;border:none;padding:0;}
-.history-section-title{font-size:14px;font-weight:600;margin:14px 0 8px;}
-.clickable-card{cursor:pointer;}
-.clickable-card:active{opacity:0.8;}
-/* Confirm dialog */
 .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center;padding:20px;}
 .confirm-overlay.open{display:flex;}
 .confirm-box{background:var(--bg);border-radius:var(--radius);padding:20px;width:100%;max-width:320px;}
 .confirm-title{font-size:15px;font-weight:600;margin-bottom:8px;}
 .confirm-msg{font-size:13px;color:var(--text2);margin-bottom:16px;}
 .confirm-actions{display:flex;gap:8px;justify-content:flex-end;}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--blue);cursor:pointer;margin-bottom:12px;background:none;border:none;padding:0;}
+.detail-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.detail-stat{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
+.detail-stat-label{font-size:11px;color:var(--text2);margin-bottom:3px;}.detail-stat-value{font-size:15px;font-weight:600;}
+/* Collapsible dashboard cards */
+.dash-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;}
+.dash-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px;user-select:none;cursor:pointer;}
+.dash-card-header:active{background:var(--bg2);}
+.dash-chevron{color:var(--text3);font-size:16px;margin-left:auto;flex-shrink:0;transition:transform 0.2s;}
+.dash-chevron.open{transform:rotate(180deg);}
+.dash-collapsed-info{flex:1;min-width:0;}
+.dash-collapsed-name{font-weight:600;font-size:14px;}
+.dash-collapsed-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.dash-collapsed-basis{font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dash-expanded{padding:0 14px 14px;}
+.dash-divider{border:none;border-top:0.5px solid var(--border);margin:0 0 12px;}
+/* Plant type icon */
+.plant-icon{font-size:22px;flex-shrink:0;}
+/* Sort bar */
+.sort-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.sort-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;}
+.sort-btn.active{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue);}
+/* AI lookup spinner */
+.ai-badge{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--green-bg);color:var(--green);margin-left:6px;vertical-align:middle;}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>🌵 Desert Landscape Tracker</h1>
+    <h1>🌿 Plant Care Tracker</h1>
     <div class="header-sub">
-      Gilbert, AZ &nbsp;·&nbsp;
       <span class="sync-dot" id="sync-dot"></span>
       <span id="sync-label">Loading...</span>
     </div>
@@ -138,8 +126,8 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <div class="temp-bar card" style="margin-bottom:10px;">
       <div class="temp-big" id="temp-display">--°</div>
       <div class="temp-info">
-        <div class="label">Today's high · Gilbert, AZ</div>
-        <div class="desc" id="temp-desc">Fetching weather...</div>
+        <div class="tlabel">Today's high · Gilbert, AZ</div>
+        <div class="tdesc" id="temp-desc">Fetching weather...</div>
       </div>
       <button class="btn" onclick="refreshTemp()" style="padding:6px 10px;"><i class="ti ti-refresh"></i></button>
     </div>
@@ -150,14 +138,20 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <div class="metric"><div class="metric-label">This week</div><div class="metric-value" id="m-week" style="color:var(--blue)">0</div></div>
       <div class="metric"><div class="metric-label">Need fert</div><div class="metric-value" id="m-fert" style="color:var(--green)">0</div></div>
     </div>
-    <div class="section-title">Watering schedule — tap a plant for details</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div class="section-title" style="margin-bottom:0;">Watering schedule</div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn" onclick="collapseAll()" style="font-size:11px;padding:5px 9px;">−</button>
+        <button class="btn" onclick="expandAll()" style="font-size:11px;padding:5px 9px;">+</button>
+      </div>
+    </div>
+    <div class="sort-bar">
+      <button class="sort-btn active" onclick="setSort('water',this)">Next water</button>
+      <button class="sort-btn" onclick="setSort('name',this)">Name</button>
+      <button class="sort-btn" onclick="setSort('age',this)">Age</button>
+      <button class="sort-btn" onclick="setSort('type',this)">Type</button>
+    </div>
     <div id="dash-list"></div>
-  </div>
-
-  <!-- PLANTS -->
-  <div id="s-plants" class="section">
-    <div class="section-title">My plants</div>
-    <div id="plant-list"></div>
   </div>
 
   <!-- PLANT DETAIL -->
@@ -177,21 +171,15 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
         <button class="tab" onclick="setLogType('fertilizer',this)"><i class="ti ti-leaf"></i> Fertilizer</button>
       </div>
       <div id="water-fields">
-        <label>Gallons</label>
-        <input type="number" id="log-gallons" placeholder="e.g. 2" step="0.5" min="0" inputmode="decimal"/>
-        <label>Duration (minutes)</label>
-        <input type="number" id="log-duration" placeholder="e.g. 15" min="0" inputmode="numeric"/>
+        <label>Gallons</label><input type="number" id="log-gallons" placeholder="e.g. 2" step="0.5" min="0" inputmode="decimal"/>
+        <label>Duration (minutes)</label><input type="number" id="log-duration" placeholder="e.g. 15" min="0" inputmode="numeric"/>
       </div>
       <div id="fert-fields" style="display:none">
-        <label>Fertilizer type</label>
-        <input type="text" id="log-fert-type" placeholder="e.g. Desert Gold 16-8-4"/>
-        <label>Amount applied</label>
-        <input type="text" id="log-fert-amount" placeholder="e.g. 1 cup, 2 oz"/>
+        <label>Fertilizer type</label><input type="text" id="log-fert-type" placeholder="e.g. 10-10-10"/>
+        <label>Amount applied</label><input type="text" id="log-fert-amount" placeholder="e.g. 1 cup"/>
       </div>
-      <label>Date</label>
-      <input type="date" id="log-date"/>
-      <label>Notes (optional)</label>
-      <input type="text" id="log-notes" placeholder="Soil looked dry, no rain in 10 days..."/>
+      <label>Date</label><input type="date" id="log-date"/>
+      <label>Notes (optional)</label><input type="text" id="log-notes" placeholder="Soil looked dry..."/>
       <button class="btn btn-primary" onclick="saveLog()" style="width:100%;justify-content:center;padding:12px;">Save log entry</button>
     </div>
   </div>
@@ -207,16 +195,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     </div>
     <div class="card" style="margin-bottom:10px;">
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <div style="flex:1;min-width:140px;">
-          <label>Filter by plant</label>
-          <select id="history-filter" onchange="renderHistory()"><option value="">All plants</option></select>
-        </div>
-        <div style="flex:1;min-width:120px;">
-          <label>Filter by type</label>
+        <div style="flex:1;min-width:140px;"><label>Filter by plant</label><select id="history-filter" onchange="renderHistory()"><option value="">All plants</option></select></div>
+        <div style="flex:1;min-width:120px;"><label>Filter by type</label>
           <select id="history-type-filter" onchange="renderHistory()">
-            <option value="">All types</option>
-            <option value="water">Watering</option>
-            <option value="fertilizer">Fertilizer</option>
+            <option value="">All types</option><option value="water">Watering</option><option value="fertilizer">Fertilizer</option>
           </select>
         </div>
       </div>
@@ -229,56 +211,47 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
   <div id="s-addplant" class="section">
     <div class="section-title">Add a plant</div>
     <div class="card">
-      <label>Name / nickname</label>
-      <input type="text" id="ap-name" placeholder="e.g. Front yard saguaro"/>
+      <label>Name / nickname</label><input type="text" id="ap-name" placeholder="e.g. Back patio olive"/>
       <label>Plant type</label>
       <select id="ap-type">
         <option value="">Select type...</option>
-        <option value="Cactus">Cactus</option>
-        <option value="Succulent">Succulent</option>
-        <option value="Desert shrub">Desert shrub</option>
-        <option value="Tree">Tree</option>
-        <option value="Flowering / annual">Flowering / annual</option>
+        <option value="Cactus">🌵 Cactus</option>
+        <option value="Succulent">🪴 Succulent</option>
+        <option value="Desert shrub">🌿 Desert shrub</option>
+        <option value="Tree">🌳 Tree</option>
+        <option value="Flowering">🌸 Flowering plant</option>
+        <option value="Tropical">🌴 Tropical</option>
+        <option value="Herb">🌱 Herb</option>
+        <option value="Vegetable">🥦 Vegetable</option>
+        <option value="Grass">🌾 Grass / lawn</option>
+        <option value="Vine">🍃 Vine / climber</option>
+        <option value="Bulb">🧅 Bulb plant</option>
+        <option value="Fern">🌿 Fern</option>
+        <option value="Other">🪹 Other</option>
       </select>
-      <label>Species / common name</label>
-      <input type="text" id="ap-species" placeholder="e.g. Saguaro"/>
-      <label>Latin name (optional)</label>
-      <input type="text" id="ap-latin" placeholder="e.g. Carnegiea gigantea"/>
-      <label>Location</label>
-      <input type="text" id="ap-location" placeholder="e.g. Front yard east bed"/>
+      <label>Species / common name</label><input type="text" id="ap-species" placeholder="e.g. Olive Tree"/>
+      <label>Latin / scientific name <span style="font-size:11px;color:var(--text3);">(used for smart watering intervals)</span></label>
+      <input type="text" id="ap-latin" placeholder="e.g. Olea europaea"/>
+      <label>Location</label><input type="text" id="ap-location" placeholder="e.g. Back patio, east bed"/>
+      <label>Date planted</label><input type="date" id="ap-planted"/>
       <div class="form-row">
-        <div>
-          <label>Water every (days)</label>
-          <input type="number" id="ap-water-freq" placeholder="auto" min="1" inputmode="numeric"/>
-        </div>
-        <div>
-          <label>Fertilize every (days)</label>
-          <input type="number" id="ap-fert-freq" placeholder="auto" min="1" inputmode="numeric"/>
-        </div>
+        <div><label>Water every (days)</label><input type="number" id="ap-water-freq" placeholder="auto" min="1" inputmode="numeric"/></div>
+        <div><label>Fertilize every (days)</label><input type="number" id="ap-fert-freq" placeholder="auto" min="1" inputmode="numeric"/></div>
       </div>
-      <div class="hint">Leave watering/fertilizing blank to use smart temperature-based defaults for Gilbert, AZ.</div>
+      <div class="hint">Enter the scientific name for AI-powered watering interval recommendations based on peer-reviewed horticultural data. Leave water/fert blank to auto-calculate.</div>
       <button class="btn btn-primary" onclick="addPlant()" style="width:100%;justify-content:center;padding:12px;">Add plant</button>
-    </div>
-    <div class="hint" style="margin-top:0;">
-      <strong>Gilbert defaults by type:</strong><br>
-      Cactus: 14–21d water (summer), 1–2x/yr fert<br>
-      Succulent: 10–14d water, 2x/yr fert<br>
-      Desert shrub: 14–21d water, 1x/yr fert<br>
-      Tree: 14–21d water, 1–2x/yr fert<br>
-      Flowering: 4–7d water, every 4–6wk fert
     </div>
   </div>
 
   <nav class="nav">
     <button class="nav-btn active" onclick="showSection('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
-    <button class="nav-btn" onclick="showSection('plants')"><i class="ti ti-plant"></i>Plants</button>
     <button class="nav-btn" onclick="showSection('log')"><i class="ti ti-droplet"></i>Log</button>
     <button class="nav-btn" onclick="showSection('history')"><i class="ti ti-history"></i>History</button>
-    <button class="nav-btn" onclick="showSection('addplant')"><i class="ti ti-plus"></i>Add</button>
+    <button class="nav-btn" onclick="showSection('addplant')"><i class="ti ti-plus"></i>Add Plant</button>
   </nav>
 </div>
 
-<!-- CUSTOM CONFIRM DIALOG -->
+<!-- CONFIRM -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
     <div class="confirm-title" id="confirm-title">Are you sure?</div>
@@ -294,35 +267,26 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
     <div class="modal-title">Edit plant</div>
-    <label>Name / nickname</label>
-    <input type="text" id="edit-name" placeholder="e.g. Front yard saguaro"/>
+    <label>Name / nickname</label><input type="text" id="edit-name"/>
     <label>Plant type</label>
     <select id="edit-type">
-      <option value="">Select type...</option>
-      <option value="Cactus">Cactus</option>
-      <option value="Succulent">Succulent</option>
-      <option value="Desert shrub">Desert shrub</option>
-      <option value="Tree">Tree</option>
-      <option value="Flowering / annual">Flowering / annual</option>
+      <option value="Cactus">🌵 Cactus</option><option value="Succulent">🪴 Succulent</option>
+      <option value="Desert shrub">🌿 Desert shrub</option><option value="Tree">🌳 Tree</option>
+      <option value="Flowering">🌸 Flowering plant</option><option value="Tropical">🌴 Tropical</option>
+      <option value="Herb">🌱 Herb</option><option value="Vegetable">🥦 Vegetable</option>
+      <option value="Grass">🌾 Grass / lawn</option><option value="Vine">🍃 Vine / climber</option>
+      <option value="Bulb">🧅 Bulb plant</option><option value="Fern">🌿 Fern</option>
+      <option value="Other">🪹 Other</option>
     </select>
-    <label>Species / common name</label>
-    <input type="text" id="edit-species" placeholder="e.g. Saguaro"/>
-    <label>Latin name</label>
-    <input type="text" id="edit-latin" placeholder="e.g. Carnegiea gigantea"/>
-    <label>Location</label>
-    <input type="text" id="edit-location" placeholder="e.g. Front yard east bed"/>
+    <label>Species / common name</label><input type="text" id="edit-species"/>
+    <label>Latin / scientific name</label><input type="text" id="edit-latin"/>
+    <label>Location</label><input type="text" id="edit-location"/>
+    <label>Date planted</label><input type="date" id="edit-planted"/>
     <div class="form-row">
-      <div>
-        <label>Water every (days)</label>
-        <input type="number" id="edit-water-freq" min="1" inputmode="numeric"/>
-      </div>
-      <div>
-        <label>Fertilize every (days)</label>
-        <input type="number" id="edit-fert-freq" min="1" inputmode="numeric"/>
-      </div>
+      <div><label>Water every (days)</label><input type="number" id="edit-water-freq" min="1" inputmode="numeric"/></div>
+      <div><label>Fertilize every (days)</label><input type="number" id="edit-fert-freq" min="1" inputmode="numeric"/></div>
     </div>
-    <label>Care notes</label>
-    <input type="text" id="edit-fact" placeholder="Optional care notes"/>
+    <label>Care notes</label><input type="text" id="edit-fact" placeholder="Optional notes"/>
     <div class="modal-actions">
       <button class="btn" onclick="closeEditModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveEditPlant()">Save changes</button>
@@ -334,31 +298,22 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 <div class="modal-overlay" id="edit-log-modal">
   <div class="modal">
     <div class="modal-title">Edit event</div>
-    <label>Plant</label>
-    <select id="el-plant"></select>
+    <label>Plant</label><select id="el-plant"></select>
     <label>Event type</label>
     <select id="el-type" onchange="document.getElementById('el-water').style.display=this.value==='water'?'block':'none';document.getElementById('el-fert').style.display=this.value==='fertilizer'?'block':'none';">
-      <option value="water">Watering</option>
-      <option value="fertilizer">Fertilizer</option>
+      <option value="water">Watering</option><option value="fertilizer">Fertilizer</option>
     </select>
     <div id="el-water">
-      <label>Gallons</label>
-      <input type="number" id="el-gallons" placeholder="e.g. 2" step="0.5" inputmode="decimal"/>
-      <label>Duration (minutes)</label>
-      <input type="number" id="el-duration" placeholder="e.g. 15" inputmode="numeric"/>
+      <label>Gallons</label><input type="number" id="el-gallons" step="0.5" inputmode="decimal"/>
+      <label>Duration (min)</label><input type="number" id="el-duration" inputmode="numeric"/>
     </div>
     <div id="el-fert" style="display:none">
-      <label>Fertilizer type</label>
-      <input type="text" id="el-fert-type" placeholder="e.g. Desert Gold 16-8-4"/>
-      <label>Amount applied</label>
-      <input type="text" id="el-fert-amount" placeholder="e.g. 1 cup"/>
+      <label>Fertilizer type</label><input type="text" id="el-fert-type"/>
+      <label>Amount</label><input type="text" id="el-fert-amount"/>
     </div>
-    <label>Date</label>
-    <input type="date" id="el-date"/>
-    <label>Temp high at time of logging (°F)</label>
-    <input type="number" id="el-temp" placeholder="e.g. 100" inputmode="numeric"/>
-    <label>Notes</label>
-    <input type="text" id="el-notes" placeholder="Optional"/>
+    <label>Date</label><input type="date" id="el-date"/>
+    <label>Temp high (°F)</label><input type="number" id="el-temp" inputmode="numeric"/>
+    <label>Notes</label><input type="text" id="el-notes"/>
     <div class="modal-actions">
       <button class="btn" onclick="closeEditLogModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveEditLog()">Save changes</button>
@@ -372,17 +327,13 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <div class="modal-title" id="modal-title">Log event</div>
     <label>Event type</label>
     <select id="modal-type" onchange="document.getElementById('modal-water').style.display=this.value==='water'?'block':'none'">
-      <option value="water">Watering</option>
-      <option value="fertilizer">Fertilizer</option>
+      <option value="water">Watering</option><option value="fertilizer">Fertilizer</option>
     </select>
     <div id="modal-water">
-      <label>Gallons</label>
-      <input type="number" id="modal-gallons" placeholder="e.g. 2" step="0.5" inputmode="decimal"/>
-      <label>Minutes</label>
-      <input type="number" id="modal-duration" placeholder="e.g. 15" inputmode="numeric"/>
+      <label>Gallons</label><input type="number" id="modal-gallons" step="0.5" inputmode="decimal"/>
+      <label>Minutes</label><input type="number" id="modal-duration" inputmode="numeric"/>
     </div>
-    <label>Notes (optional)</label>
-    <input type="text" id="modal-notes" placeholder="Optional"/>
+    <label>Notes (optional)</label><input type="text" id="modal-notes"/>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveModalLog()">Save</button>
@@ -393,203 +344,276 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────
+// ── CONFIG ─────────────────────────────────────────────────
 const BIN_ID  = '69fe65e1c0954111d8f7fa20';
 const API_KEY = '$2a$10$F0gnOGLSbF4YiaLWlBBYSuxwRjjp4OdUWSqdZMF0mD/bL4O0IyJ3a';
 const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 
-// ── STATE ─────────────────────────────────────────────────
-let plants = [];
-let logs   = [];
-let currentLogType  = 'water';
-let modalPlantId    = null;
-let currentTempHigh = null;
-let syncTimeout     = null;
-let saving          = false;
-let historyViewMode = 'list';
-let editingPlantId  = null;
-let editingLogId    = null;
-let prevSection     = 'dashboard';
-let detailPlantId   = null;
+// ── STATE ──────────────────────────────────────────────────
+let plants=[],logs=[],currentLogType='water',modalPlantId=null;
+let currentTempHigh=null,syncTimeout=null,saving=false;
+let historyViewMode='list',editingPlantId=null,editingLogId=null;
+let prevSection='dashboard',detailPlantId=null;
+let expandedCards={},currentSort='water';
 
-// ── CUSTOM CONFIRM (replaces browser confirm()) ───────────
-let confirmCallback = null;
-function showConfirm(title, msg, okLabel='Delete') {
-  return new Promise(resolve => {
-    confirmCallback = resolve;
-    document.getElementById('confirm-title').textContent = title;
-    document.getElementById('confirm-msg').textContent   = msg;
-    document.getElementById('confirm-ok-btn').textContent = okLabel;
+// ── PLANT TYPE ICONS ───────────────────────────────────────
+const TYPE_ICONS={
+  'Cactus':'🌵','Succulent':'🪴','Desert shrub':'🌿','Tree':'🌳',
+  'Flowering':'🌸','Tropical':'🌴','Herb':'🌱','Vegetable':'🥦',
+  'Grass':'🌾','Vine':'🍃','Bulb':'🧅','Fern':'🌿','Other':'🪹'
+};
+function plantIcon(type){return TYPE_ICONS[type]||'🪴';}
+
+// ── PLANT TYPE DEFAULTS (fallback if no latin name) ────────
+const TYPE_DEFAULTS={
+  'Cactus':{water:21,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10}},
+  'Succulent':{water:14,fert:180,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:5}},
+  'Desert shrub':{water:21,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10}},
+  'Tree':{water:21,fert:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7}},
+  'Flowering':{water:7,fert:30,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:3}},
+  'Tropical':{water:7,fert:60,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:2}},
+  'Herb':{water:3,fert:30,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
+  'Vegetable':{water:3,fert:14,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
+  'Grass':{water:3,fert:30,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
+  'Vine':{water:7,fert:30,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:2}},
+  'Bulb':{water:10,fert:90,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:3}},
+  'Fern':{water:3,fert:60,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
+  'Other':{water:14,fert:90,tempIntervals:{60:21,70:14,80:10,90:7,100:5,110:4}},
+};
+
+// ── SEED DATA ──────────────────────────────────────────────
+const SEED_PLANTS=[
+  {id:'seed_ironwood',name:'Desert Ironwood',type:'Tree',species:'Desert Ironwood',latin:'Olneya tesota',location:'',waterFreq:30,fertFreq:365,datePlanted:'',
+   fact:'Nitrogen-fixing legume. Deep taproot. Extremely drought tolerant once established. Up to 1,500-year lifespan.',
+   tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'Research: 1–2x/month summer (Water Use It Wisely)',aiLookupDone:false},
+  {id:'seed_broom',name:'Desert Broom',type:'Desert shrub',species:'Desert Broom',latin:'Baccharis sarothroides',location:'',waterFreq:21,fertFreq:365,datePlanted:'',
+   fact:'Extremely drought hardy. Thrives with minimal supplemental water once established. Blooms fall–winter.',
+   tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'Research: every 3–4 weeks summer heat (Gardenia.net)',aiLookupDone:false}
+];
+
+// ── CUSTOM CONFIRM ─────────────────────────────────────────
+let confirmCallback=null;
+function showConfirm(title,msg,okLabel='Delete'){
+  return new Promise(resolve=>{
+    confirmCallback=resolve;
+    document.getElementById('confirm-title').textContent=title;
+    document.getElementById('confirm-msg').textContent=msg;
+    document.getElementById('confirm-ok-btn').textContent=okLabel;
     document.getElementById('confirm-overlay').classList.add('open');
   });
 }
-function confirmResolve(result) {
+function confirmResolve(result){
   document.getElementById('confirm-overlay').classList.remove('open');
-  if (confirmCallback) { confirmCallback(result); confirmCallback = null; }
+  if(confirmCallback){confirmCallback(result);confirmCallback=null;}
 }
 
-// ── SEED DATA ─────────────────────────────────────────────
-const SEED_PLANTS = [
-  { id:'seed_ironwood', name:'Desert Ironwood', type:'Tree', species:'Desert Ironwood',
-    latin:'Olneya tesota', location:'', waterFreq:30, fertFreq:365,
-    fact:'Nitrogen-fixing legume. Deep taproot. Extremely drought tolerant once established. Can live on natural rainfall alone. Slow growing — up to 1,500 years lifespan. Host tree for many desert animals.',
-    tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},
-    researchBasis:'Established: 1–2x/month in summer (Water Use It Wisely)' },
-  { id:'seed_broom', name:'Desert Broom', type:'Desert shrub', species:'Desert Broom',
-    latin:'Baccharis sarothroides', location:'', waterFreq:21, fertFreq:365,
-    fact:'Extremely drought hardy. Thrives with minimal supplemental water once established. Dioecious — male and female plants separate. Blooms fall–winter. Native to Sonoran and Mojave Deserts.',
-    tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},
-    researchBasis:'Established: every 3–4 weeks in summer heat (Gardenia.net)' }
-];
-
-// ── JSONBIN SYNC ──────────────────────────────────────────
-function setSyncStatus(state, label) {
-  document.getElementById('sync-dot').className = 'sync-dot ' + state;
-  document.getElementById('sync-label').textContent = label;
+// ── CLOUD SYNC ─────────────────────────────────────────────
+function setSyncStatus(state,label){
+  document.getElementById('sync-dot').className='sync-dot '+state;
+  document.getElementById('sync-label').textContent=label;
 }
-
-async function loadFromCloud() {
+async function loadFromCloud(){
   setSyncStatus('syncing','Loading...');
-  try {
-    const r = await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':API_KEY,'X-Bin-Meta':'false'}});
-    if (!r.ok) throw new Error('fetch failed');
-    const data = await r.json();
-    if (data && Array.isArray(data.plants)) {
-      plants = data.plants; logs = data.logs || [];
-    } else {
-      plants = SEED_PLANTS.map(p=>({...p})); logs = [];
-      await saveToCloud();
-    }
-    setSyncStatus('ok','Synced');
-    renderDashboard();
-  } catch(e) {
-    setSyncStatus('err','Offline — using local data');
-    const local = localStorage.getItem('dlt_local');
-    if (local) { const d=JSON.parse(local); plants=d.plants||SEED_PLANTS.map(p=>({...p})); logs=d.logs||[]; }
-    else { plants=SEED_PLANTS.map(p=>({...p})); logs=[]; }
+  try{
+    const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':API_KEY,'X-Bin-Meta':'false'}});
+    if(!r.ok)throw new Error();
+    const data=await r.json();
+    if(data&&Array.isArray(data.plants)){plants=data.plants;logs=data.logs||[];}
+    else{plants=SEED_PLANTS.map(p=>({...p}));logs=[];await saveToCloud();}
+    setSyncStatus('ok','Synced');renderDashboard();
+  }catch(e){
+    setSyncStatus('err','Offline — local data');
+    const local=localStorage.getItem('dlt_local');
+    if(local){const d=JSON.parse(local);plants=d.plants||SEED_PLANTS.map(p=>({...p}));logs=d.logs||[];}
+    else{plants=SEED_PLANTS.map(p=>({...p}));logs=[];}
     renderDashboard();
   }
 }
-
-async function saveToCloud() {
-  if (saving) return;
-  saving = true;
-  setSyncStatus('syncing','Saving...');
+async function saveToCloud(){
+  if(saving)return;saving=true;setSyncStatus('syncing','Saving...');
   localStorage.setItem('dlt_local',JSON.stringify({plants,logs}));
-  try {
-    const r = await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},body:JSON.stringify({plants,logs})});
-    if (!r.ok) throw new Error('save failed');
+  try{
+    const r=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},body:JSON.stringify({plants,logs})});
+    if(!r.ok)throw new Error();
     setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
-  } catch(e) {
-    setSyncStatus('err','Saved locally — sync failed');
-  }
-  saving = false;
+  }catch(e){setSyncStatus('err','Saved locally — sync failed');}
+  saving=false;
+}
+function scheduleSave(){clearTimeout(syncTimeout);syncTimeout=setTimeout(saveToCloud,800);}
+
+// ── AI WATERING LOOKUP (via Anthropic API, per scientific name) ─────
+async function lookupWateringIntervals(plant){
+  if(!plant.latin||plant.aiLookupDone)return;
+  try{
+    const prompt=`You are a horticultural database. For the plant with scientific name "${plant.latin}" (common name: "${plant.name||''}"), return ONLY a JSON object with these keys:
+- "tempIntervals": object mapping temp bucket (60,70,80,90,100,110 in °F) to recommended watering interval in days for an established plant outdoors in a hot climate like Gilbert AZ (Sonoran Desert region, USDA zone 9b-10a)
+- "fertFreq": recommended fertilization interval in days
+- "waterFreq": default watering interval in days at 85°F
+- "researchBasis": one short sentence source/rationale
+- "fact": 1-2 sentence description of the plant's water needs
+
+Return ONLY valid JSON, no markdown, no explanation.`;
+    const r=await fetch(ANTHROPIC_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await r.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const json=JSON.parse(text.replace(/```json|```/g,'').trim());
+    const p=plants.find(p=>p.id===plant.id);
+    if(p){
+      if(json.tempIntervals)p.tempIntervals=json.tempIntervals;
+      if(json.fertFreq)p.fertFreq=json.fertFreq;
+      if(json.waterFreq)p.waterFreq=json.waterFreq;
+      if(json.researchBasis)p.researchBasis='🤖 '+json.researchBasis;
+      if(json.fact&&!p.fact)p.fact=json.fact;
+      p.aiLookupDone=true;
+      scheduleSave();
+      renderDashboard();
+    }
+  }catch(e){/* fail silently, use defaults */}
 }
 
-function scheduleSave() { clearTimeout(syncTimeout); syncTimeout=setTimeout(saveToCloud,800); }
-
-// ── WEATHER ───────────────────────────────────────────────
-async function fetchGilbertTemp() {
-  try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=33.3528&longitude=-111.7890&daily=temperature_2m_max&temperature_unit=fahrenheit&timezone=America%2FPhoenix&forecast_days=1');
-    return Math.round((await r.json()).daily.temperature_2m_max[0]);
-  } catch(e) { return null; }
+// ── WEATHER ────────────────────────────────────────────────
+async function fetchGilbertTemp(){
+  try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=33.3528&longitude=-111.7890&daily=temperature_2m_max&temperature_unit=fahrenheit&timezone=America%2FPhoenix&forecast_days=1');
+  return Math.round((await r.json()).daily.temperature_2m_max[0]);}catch(e){return null;}
 }
-function getCachedTemp() {
-  try { const c=JSON.parse(localStorage.getItem('dlt_temp')); if(c&&c.date===new Date().toDateString()) return c.temp; } catch(e){}
-  return null;
+function getCachedTemp(){
+  try{const c=JSON.parse(localStorage.getItem('dlt_temp'));if(c&&c.date===new Date().toDateString())return c.temp;}catch(e){}return null;
 }
-async function refreshTemp() {
+async function refreshTemp(){
   document.getElementById('temp-display').textContent='...';
-  const t = await fetchGilbertTemp();
-  if (t) { currentTempHigh=t; localStorage.setItem('dlt_temp',JSON.stringify({temp:t,date:new Date().toDateString()})); }
+  const t=await fetchGilbertTemp();
+  if(t){currentTempHigh=t;localStorage.setItem('dlt_temp',JSON.stringify({temp:t,date:new Date().toDateString()}));}
   renderDashboard();
 }
-function getTempDesc(t) {
-  if(!t) return 'Using estimated 95°F';
-  if(t>=108) return 'Extreme heat — watch all plants closely';
-  if(t>=100) return 'Triple digits — water needs elevated';
-  if(t>=90)  return 'Very hot — monitor soil every few days';
-  if(t>=80)  return 'Hot — normal summer schedule';
-  if(t>=70)  return 'Warm — reduce from summer frequency';
-  return 'Mild — minimal supplemental watering needed';
+function getTempDesc(t){
+  if(!t)return'Using estimated 85°F';
+  if(t>=108)return'Extreme heat — watch all plants';
+  if(t>=100)return'Triple digits — water needs elevated';
+  if(t>=90)return'Very hot — monitor soil every few days';
+  if(t>=80)return'Hot — normal summer schedule';
+  if(t>=70)return'Warm — reduce from peak frequency';
+  return'Mild — minimal supplemental watering';
 }
-function getSeasonTip() {
+function getSeasonTip(){
   const m=new Date().getMonth();
-  if(m>=5&&m<=6) return '☀️ Peak summer — water deeply in early morning. Heat stress risk is high.';
-  if(m===7||m===8) return '🌧️ Monsoon season — check soil before watering. Rain may be enough. Watch for root rot.';
-  if(m>=9&&m<=10) return '🍂 Fall — begin reducing frequency. Good window to fertilize established plants.';
-  if(m>=11||m<=1) return '❄️ Winter — cut watering significantly. Most desert plants are dormant. No fertilizer.';
-  if(m>=2&&m<=3) return '🌸 Spring — ramp up watering as temps rise. Best fertilizer window for most species.';
-  return '🌡️ Late spring — temps climbing toward triple digits. Prepare to increase watering soon.';
+  if(m>=5&&m<=6)return'☀️ Peak summer — water deeply in early morning.';
+  if(m===7||m===8)return'🌧️ Monsoon season — check soil before watering. Rain may be enough.';
+  if(m>=9&&m<=10)return'🍂 Fall — begin reducing frequency. Good time to fertilize.';
+  if(m>=11||m<=1)return'❄️ Winter — reduce watering. Many plants are dormant.';
+  if(m>=2&&m<=3)return'🌸 Spring — increase watering as temps rise. Best fertilizer window.';
+  return'🌡️ Late spring — temps climbing. Prepare to increase watering.';
 }
 
-// ── INTERVAL LOGIC ────────────────────────────────────────
-function getTempBucket(t) {
-  if(t>=108) return 110; if(t>=97) return 100; if(t>=87) return 90;
-  if(t>=77) return 80; if(t>=67) return 70; return 60;
+// ── INTERVAL LOGIC ─────────────────────────────────────────
+function getTempBucket(t){
+  if(t>=108)return 110;if(t>=97)return 100;if(t>=87)return 90;
+  if(t>=77)return 80;if(t>=67)return 70;return 60;
 }
-function getHistoricalInterval(plant, bucket) {
-  const wlogs=logs.filter(l=>l.plantId===plant.id&&l.type==='water'&&l.tempHigh).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(wlogs.length<2) return null;
-  const matches=[];
-  for(let i=1;i<wlogs.length;i++){
-    const pb=getTempBucket(wlogs[i-1].tempHigh), cb=getTempBucket(wlogs[i].tempHigh);
-    if(pb===bucket||cb===bucket){
-      const diff=Math.round((new Date(wlogs[i].date)-new Date(wlogs[i-1].date))/86400000);
-      if(diff>0&&diff<120) matches.push(diff);
-    }
+function getHistoricalInterval(plant,bucket){
+  const wl=logs.filter(l=>l.plantId===plant.id&&l.type==='water'&&l.tempHigh).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(wl.length<2)return null;
+  const m=[];
+  for(let i=1;i<wl.length;i++){
+    const pb=getTempBucket(wl[i-1].tempHigh),cb=getTempBucket(wl[i].tempHigh);
+    if(pb===bucket||cb===bucket){const d=Math.round((new Date(wl[i].date)-new Date(wl[i-1].date))/86400000);if(d>0&&d<120)m.push(d);}
   }
-  if(!matches.length) return null;
-  return Math.round(matches.reduce((a,b)=>a+b,0)/matches.length);
+  if(!m.length)return null;
+  return Math.round(m.reduce((a,b)=>a+b,0)/m.length);
 }
-function getInterval(plant, tempHigh) {
-  const t=tempHigh||95, bucket=getTempBucket(t);
+function getInterval(plant,tempHigh){
+  const t=tempHigh||85,bucket=getTempBucket(t);
   const hist=getHistoricalInterval(plant,bucket);
-  if(hist!==null) return {days:hist,basis:'your history at ~'+bucket+'°F',historical:true};
+  if(hist!==null)return{days:hist,basis:'✓ your history at ~'+bucket+'°F',historical:true};
   if(plant.tempIntervals){
     const keys=Object.keys(plant.tempIntervals).map(Number).sort((a,b)=>a-b);
     let chosen=plant.tempIntervals[keys[0]];
-    for(const k of keys){if(bucket>=k) chosen=plant.tempIntervals[k];}
-    return {days:chosen,basis:plant.researchBasis||'research default',historical:false};
+    for(const k of keys){if(bucket>=k)chosen=plant.tempIntervals[k];}
+    return{days:chosen,basis:plant.researchBasis||'type-based default',historical:false};
   }
-  return {days:plant.waterFreq||14,basis:'saved default',historical:false};
+  const def=TYPE_DEFAULTS[plant.type]||TYPE_DEFAULTS['Other'];
+  const keys=Object.keys(def.tempIntervals).map(Number).sort((a,b)=>a-b);
+  let chosen=def.tempIntervals[keys[0]];
+  for(const k of keys){if(bucket>=k)chosen=def.tempIntervals[k];}
+  return{days:chosen,basis:'type-based default',historical:false};
 }
 
-// ── DATE HELPERS ──────────────────────────────────────────
-function getLastEvent(plantId,type){
-  const evts=logs.filter(l=>l.plantId===plantId&&l.type===type).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  return evts[0]?.date||null;
-}
-function daysSince(ds){if(!ds) return 9999; return Math.floor((new Date()-new Date(ds))/86400000);}
+// ── DATE / AGE HELPERS ─────────────────────────────────────
+function getLastEvent(pid,type){const e=logs.filter(l=>l.plantId===pid&&l.type===type).sort((a,b)=>new Date(b.date)-new Date(a.date));return e[0]?.date||null;}
+function daysSince(ds){if(!ds)return 9999;return Math.floor((new Date()-new Date(ds))/86400000);}
 function addDays(ds,n){const d=new Date(ds);d.setDate(d.getDate()+n);return d;}
 function daysFromNow(d){return Math.round((d-new Date())/86400000);}
 function fmtDate(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}
-function getPrediction(plant,temp){
-  const lastW=getLastEvent(plant.id,'water'), iv=getInterval(plant,temp);
-  if(!lastW) return {date:null,daysUntil:null,interval:iv.days,basis:iv.basis,historical:iv.historical,never:true};
-  const next=addDays(lastW,iv.days), du=daysFromNow(next);
-  return {date:next,daysUntil:du,interval:iv.days,basis:iv.basis,historical:iv.historical,never:false};
+function plantAge(datePlanted){
+  if(!datePlanted)return null;
+  const days=Math.floor((new Date()-new Date(datePlanted))/86400000);
+  if(days<30)return days+'d old';
+  if(days<365)return Math.floor(days/30)+'mo old';
+  const yrs=(days/365);return yrs<2?Math.round(yrs*10)/10+'yr old':Math.floor(yrs)+'yrs old';
 }
-function predBadge(du,never){if(never||du<=0) return 'badge-due'; if(du<=3) return 'badge-soon'; return 'badge-ok';}
+function getPrediction(plant,temp){
+  const lastW=getLastEvent(plant.id,'water'),iv=getInterval(plant,temp);
+  if(!lastW)return{date:null,daysUntil:null,interval:iv.days,basis:iv.basis,historical:iv.historical,never:true};
+  const next=addDays(lastW,iv.days),du=daysFromNow(next);
+  return{date:next,daysUntil:du,interval:iv.days,basis:iv.basis,historical:iv.historical,never:false};
+}
+function predBadge(du,never){if(never||du<=0)return'badge-due';if(du<=3)return'badge-soon';return'badge-ok';}
 function predLabel(pred){
-  if(pred.never) return 'Never watered';
-  if(pred.daysUntil<=0) return `Overdue ${Math.abs(pred.daysUntil)}d`;
-  if(pred.daysUntil===1) return 'Tomorrow';
-  return `In ${pred.daysUntil} days`;
+  if(pred.never)return'Never watered';
+  if(pred.daysUntil<=0)return`Overdue ${Math.abs(pred.daysUntil)}d`;
+  if(pred.daysUntil===1)return'Tomorrow';
+  return`In ${pred.daysUntil} days`;
 }
 function getFertStatus(plant){
-  const last=getLastEvent(plant.id,'fertilizer'), freq=plant.fertFreq||365;
-  if(!last) return {label:'Never fertilized',badge:'badge-due'};
+  const last=getLastEvent(plant.id,'fertilizer'),freq=plant.fertFreq||90;
+  if(!last)return{label:'Never fertilized',badge:'badge-due'};
   const until=freq-daysSince(last);
-  if(until<=0) return {label:`Fert overdue ${Math.abs(until)}d`,badge:'badge-due'};
-  if(until<=14) return {label:`Fert due in ${until}d`,badge:'badge-soon'};
-  return {label:`Next fert in ${until}d`,badge:'badge-ok'};
+  if(until<=0)return{label:`Fert overdue ${Math.abs(until)}d`,badge:'badge-due'};
+  if(until<=14)return{label:`Fert due in ${until}d`,badge:'badge-soon'};
+  return{label:`Next fert in ${until}d`,badge:'badge-ok'};
 }
 
-// ── DASHBOARD ─────────────────────────────────────────────
-function renderDashboard() {
-  const temp=currentTempHigh||getCachedTemp()||95;
+// ── SORT ───────────────────────────────────────────────────
+function setSort(mode,btn){
+  currentSort=mode;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDashboard();
+}
+function sortPlants(preds,temp){
+  return [...preds].sort((a,b)=>{
+    if(currentSort==='water'){
+      const ad=a.pred.never?-999:(a.pred.daysUntil??999),bd=b.pred.never?-999:(b.pred.daysUntil??999);
+      return ad-bd;
+    }
+    if(currentSort==='name')return a.plant.name.localeCompare(b.plant.name);
+    if(currentSort==='type')return(a.plant.type||'').localeCompare(b.plant.type||'');
+    if(currentSort==='age'){
+      const ad=a.plant.datePlanted?new Date(a.plant.datePlanted).getTime():0;
+      const bd=b.plant.datePlanted?new Date(b.plant.datePlanted).getTime():0;
+      return ad-bd; // oldest first
+    }
+    return 0;
+  });
+}
+
+// ── COLLAPSE ───────────────────────────────────────────────
+function toggleCard(id){
+  expandedCards[id]=!expandedCards[id];
+  const expEl=document.getElementById('exp-'+id),chev=document.getElementById('chev-'+id);
+  if(expEl)expEl.style.display=expandedCards[id]?'block':'none';
+  if(chev)chev.className='dash-chevron'+(expandedCards[id]?' open':'');
+}
+function collapseAll(){plants.forEach(p=>{expandedCards[p.id]=false;});renderDashboard();}
+function expandAll(){plants.forEach(p=>{expandedCards[p.id]=true;});renderDashboard();}
+
+// ── DASHBOARD ──────────────────────────────────────────────
+function renderDashboard(){
+  const temp=currentTempHigh||getCachedTemp()||85;
   document.getElementById('temp-display').textContent=currentTempHigh?`${temp}°F`:`~${temp}°F`;
   document.getElementById('temp-desc').textContent=getTempDesc(currentTempHigh?temp:null);
   document.getElementById('season-banner').textContent=getSeasonTip();
@@ -598,83 +622,86 @@ function renderDashboard() {
   document.getElementById('m-today').textContent=preds.filter(x=>x.pred.never||x.pred.daysUntil<=0).length;
   document.getElementById('m-week').textContent=preds.filter(x=>!x.pred.never&&x.pred.daysUntil>0&&x.pred.daysUntil<=7).length;
   document.getElementById('m-fert').textContent=plants.filter(p=>['badge-due','badge-soon'].includes(getFertStatus(p).badge)).length;
-  const sorted=[...preds].sort((a,b)=>{
-    const ad=a.pred.never?-999:(a.pred.daysUntil??999), bd=b.pred.never?-999:(b.pred.daysUntil??999);
-    return ad-bd;
-  });
+
+  const sorted=sortPlants(preds,temp);
   const el=document.getElementById('dash-list');
-  if(!plants.length){el.innerHTML='<div class="empty">No plants yet — tap Add to get started.</div>';return;}
+  if(!plants.length){el.innerHTML='<div class="empty">No plants yet — tap Add Plant to get started.</div>';return;}
+
   el.innerHTML=sorted.map(({plant:p,pred})=>{
-    const badge=predBadge(pred.daysUntil,pred.never), lbl=predLabel(pred);
-    const fs=getFertStatus(p), lastW=getLastEvent(p.id,'water'), bucket=getTempBucket(temp);
-    const nextStr=pred.never?'Water now — no history yet':pred.daysUntil<=0?`Water today (${Math.abs(pred.daysUntil)}d overdue)`:`${fmtDate(pred.date)} · in ${pred.daysUntil} day${pred.daysUntil===1?'':'s'}`;
-    const basisStr=pred.historical?`✓ Your logged history at ~${bucket}°F`:`📖 ${pred.basis}`;
-    return `<div class="card clickable-card" onclick="openPlantDetail('${p.id}')">
-      <div class="card-header">
-        <div>
-          <div class="plant-name">${p.name}</div>
-          <div class="plant-latin">${p.latin||''}</div>
-          <div class="plant-meta">${p.type}${p.location?' · '+p.location:''}</div>
+    const badge=predBadge(pred.daysUntil,pred.never),lbl=predLabel(pred);
+    const fs=getFertStatus(p),lastW=getLastEvent(p.id,'water'),bucket=getTempBucket(temp);
+    const nextStr=pred.never?'Water now — no history':pred.daysUntil<=0?`Water today (${Math.abs(pred.daysUntil)}d overdue)`:`${fmtDate(pred.date)} · in ${pred.daysUntil}d`;
+    const basisStr=pred.historical?`✓ Your history at ~${bucket}°F`:(pred.basis||'type default');
+    const icon=plantIcon(p.type);
+    const age=plantAge(p.datePlanted);
+    const lastWStr=lastW?`Last watered ${lastW}`:'Never watered';
+    const nextShort=pred.never?'Water now':pred.daysUntil<=0?'Overdue':`Next: ${fmtDate(pred.date)}`;
+    if(expandedCards[p.id]===undefined)expandedCards[p.id]=true;
+    const isExp=expandedCards[p.id];
+
+    return `<div class="dash-card" id="card-${p.id}">
+      <div class="dash-card-header" onclick="toggleCard('${p.id}')">
+        <span class="plant-icon">${icon}</span>
+        <span class="badge ${badge}" style="margin-left:0;margin-right:4px;">${lbl}</span>
+        <div class="dash-collapsed-info">
+          <div class="dash-collapsed-name">${p.name}${age?` <span style="font-size:10px;color:var(--text3);font-weight:400;">${age}</span>`:''}</div>
+          <div class="dash-collapsed-sub">${lastWStr} · ${nextShort}</div>
+          ${!isExp?`<div class="dash-collapsed-basis">${basisStr} · every ${pred.interval}d at ${temp}°F</div>`:''}
         </div>
-        <span class="badge ${badge}">${lbl}</span>
+        <i class="ti ti-chevron-down dash-chevron${isExp?' open':''}" id="chev-${p.id}"></i>
       </div>
-      <div class="pred-box">
-        <div class="pred-date">${nextStr}</div>
-        <div class="pred-basis">${basisStr} · every ${pred.interval}d at ${temp}°F</div>
-        ${lastW?`<div class="pred-basis">Last watered: ${lastW}</div>`:''}
-      </div>
-      <div class="fert-line">${fs.label}</div>
-      <div class="action-row" onclick="event.stopPropagation()">
-        <button class="btn" onclick="quickLog('${p.id}','water')"><i class="ti ti-droplet"></i> Log water</button>
-        <button class="btn" onclick="quickLog('${p.id}','fertilizer')"><i class="ti ti-leaf"></i> Log fert</button>
+      <div id="exp-${p.id}" style="display:${isExp?'block':'none'}">
+        <hr class="dash-divider"/>
+        <div class="dash-expanded">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">${p.type}${p.latin?` · <em>${p.latin}</em>`:''}${p.location?' · '+p.location:''}</div>
+          <div class="pred-box" style="margin-top:0;">
+            <div class="pred-date">${nextStr}</div>
+            <div class="pred-basis">${basisStr} · every ${pred.interval}d at ${temp}°F</div>
+            ${lastW?`<div class="pred-basis">Last watered: ${lastW}</div>`:''}
+          </div>
+          <div style="font-size:12px;color:var(--text2);margin-top:8px;">${fs.label}</div>
+          ${p.fact?`<div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5;">${p.fact}</div>`:''}
+          <div class="action-row">
+            <button class="btn" onclick="quickLog('${p.id}','water')"><i class="ti ti-droplet"></i> Log water</button>
+            <button class="btn" onclick="quickLog('${p.id}','fertilizer')"><i class="ti ti-leaf"></i> Log fert</button>
+            <button class="btn" onclick="openPlantDetail('${p.id}')"><i class="ti ti-info-circle"></i> Details</button>
+          </div>
+        </div>
       </div>
     </div>`;
   }).join('');
+
+  // trigger AI lookups for plants without it
+  plants.filter(p=>p.latin&&!p.aiLookupDone).forEach(p=>lookupWateringIntervals(p));
 }
 
-// ── PLANT DETAIL ──────────────────────────────────────────
-function openPlantDetail(id) {
-  prevSection = document.querySelector('.section.active')?.id?.replace('s-','') || 'dashboard';
-  detailPlantId = id;
-  renderPlantDetail(id);
-  showSection('detail');
+// ── PLANT DETAIL ───────────────────────────────────────────
+function openPlantDetail(id){
+  prevSection=document.querySelector('.section.active')?.id?.replace('s-','')||'dashboard';
+  detailPlantId=id;renderPlantDetail(id);showSection('detail');
 }
-
-function goBack() {
-  showSection(prevSection);
-}
-
-function renderPlantDetail(id) {
-  const p = plants.find(p=>p.id===id);
-  if (!p) return;
-  const temp = currentTempHigh||getCachedTemp()||95;
-  const pred = getPrediction(p, temp);
-  const fs   = getFertStatus(p);
-  const badge= predBadge(pred.daysUntil, pred.never);
-  const lbl  = predLabel(pred);
-  const lastW= getLastEvent(p.id,'water');
-  const lastF= getLastEvent(p.id,'fertilizer');
-  const bucket= getTempBucket(temp);
-  const nextStr= pred.never?'Water now — no history yet':pred.daysUntil<=0?`Overdue ${Math.abs(pred.daysUntil)}d`:fmtDate(pred.date)+` (in ${pred.daysUntil}d)`;
-
-  // Plant water logs
-  const waterLogs = logs.filter(l=>l.plantId===id&&l.type==='water').sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const fertLogs  = logs.filter(l=>l.plantId===id&&l.type==='fertilizer').sort((a,b)=>new Date(b.date)-new Date(a.date));
-
-  const logRows = (entries, isWater) => {
-    if (!entries.length) return '<div style="color:var(--text2);font-size:13px;padding:8px 0;">No events logged yet</div>';
+function goBack(){showSection(prevSection);}
+function renderPlantDetail(id){
+  const p=plants.find(p=>p.id===id);if(!p)return;
+  const temp=currentTempHigh||getCachedTemp()||85;
+  const pred=getPrediction(p,temp),fs=getFertStatus(p);
+  const badge=predBadge(pred.daysUntil,pred.never),lbl=predLabel(pred);
+  const lastW=getLastEvent(p.id,'water'),lastF=getLastEvent(p.id,'fertilizer');
+  const bucket=getTempBucket(temp);
+  const nextStr=pred.never?'Water now':pred.daysUntil<=0?`Overdue ${Math.abs(pred.daysUntil)}d`:`${fmtDate(pred.date)} (in ${pred.daysUntil}d)`;
+  const age=plantAge(p.datePlanted);
+  const waterLogs=logs.filter(l=>l.plantId===id&&l.type==='water').sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const fertLogs=logs.filter(l=>l.plantId===id&&l.type==='fertilizer').sort((a,b)=>new Date(b.date)-new Date(a.date));
+  function logRows(entries,isWater){
+    if(!entries.length)return`<div style="color:var(--text2);font-size:13px;padding:8px 0;">No events logged yet</div>`;
     return entries.map(l=>{
-      const detail = isWater
-        ? [l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' ')
-        : [l.fertType,l.fertAmount].filter(Boolean).join(' ');
-      return `<div class="log-item">
+      const detail=isWater?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+      return`<div class="log-item">
         <div style="display:flex;align-items:flex-start;gap:8px;flex:1;">
           <span class="dot ${isWater?'dot-water':'dot-fert'}"></span>
-          <div>
-            <div style="font-size:13px;font-weight:500;">${l.date}</div>
-            <div style="font-size:12px;color:var(--text2);">${detail||'—'}${l.tempHigh?' · '+l.tempHigh+'°F':''}</div>
-            ${l.notes?`<div style="font-size:11px;color:var(--text3);">${l.notes}</div>`:''}
-          </div>
+          <div><div style="font-size:13px;font-weight:500;">${l.date}</div>
+          <div style="font-size:12px;color:var(--text2);">${detail||'—'}${l.tempHigh?' · '+l.tempHigh+'°F':''}</div>
+          ${l.notes?`<div style="font-size:11px;color:var(--text3);">${l.notes}</div>`:''}</div>
         </div>
         <div style="display:flex;gap:4px;flex-shrink:0;">
           <button class="btn" onclick="openEditLogModal('${l.id}')" style="padding:3px 7px;font-size:11px;"><i class="ti ti-pencil"></i></button>
@@ -682,128 +709,228 @@ function renderPlantDetail(id) {
         </div>
       </div>`;
     }).join('');
-  };
-
-  document.getElementById('detail-content').innerHTML = `
-    <div class="detail-hero card">
+  }
+  document.getElementById('detail-content').innerHTML=`
+    <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
         <div>
-          <div class="detail-hero-name">${p.name}</div>
-          <div class="detail-hero-latin">${p.latin||''}</div>
-          <div class="detail-hero-meta" style="margin-top:6px;">${p.type}${p.species&&p.species!==p.name?' · '+p.species:''}${p.location?' · '+p.location:''}</div>
+          <div style="font-size:26px;margin-bottom:4px;">${plantIcon(p.type)}</div>
+          <div style="font-size:20px;font-weight:700;">${p.name}</div>
+          ${p.latin?`<div style="font-style:italic;font-size:12px;color:var(--text3);margin-top:2px;">${p.latin}</div>`:''}
+          <div style="font-size:13px;color:var(--text2);margin-top:4px;">${p.type}${p.species&&p.species!==p.name?' · '+p.species:''}${p.location?' · '+p.location:''}</div>
+          ${age?`<div style="font-size:12px;color:var(--text3);margin-top:2px;">Planted ${p.datePlanted} · ${age}</div>`:''}
         </div>
         <span class="badge ${badge}">${lbl}</span>
       </div>
       ${p.fact?`<div style="margin-top:10px;font-size:13px;color:var(--text2);line-height:1.5;">${p.fact}</div>`:''}
+      ${p.researchBasis?`<div style="font-size:11px;color:var(--text3);margin-top:6px;">${p.researchBasis}</div>`:''}
       <div class="action-row" style="margin-top:12px;">
         <button class="btn" onclick="quickLog('${p.id}','water')"><i class="ti ti-droplet"></i> Log water</button>
         <button class="btn" onclick="quickLog('${p.id}','fertilizer')"><i class="ti ti-leaf"></i> Log fert</button>
         <button class="btn" onclick="openEditModal('${p.id}')"><i class="ti ti-pencil"></i> Edit</button>
+        <button class="btn btn-danger" onclick="deletePlantById('${p.id}')"><i class="ti ti-trash"></i> Delete</button>
       </div>
     </div>
-
     <div class="detail-stat-row">
-      <div class="detail-stat">
-        <div class="detail-stat-label">Next water</div>
-        <div class="detail-stat-value" style="font-size:14px;color:var(--blue-text);">${nextStr}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:3px;">${pred.historical?'✓ your history at ~'+bucket+'°F':'📖 research · every '+pred.interval+'d'}</div>
+      <div class="detail-stat"><div class="detail-stat-label">Next water</div>
+        <div class="detail-stat-value" style="color:var(--blue-text);">${nextStr}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">${pred.historical?'✓ your history at ~'+bucket+'°F':'📖 every '+pred.interval+'d at '+temp+'°F'}</div>
       </div>
-      <div class="detail-stat">
-        <div class="detail-stat-label">Fertilizer</div>
-        <div class="detail-stat-value" style="font-size:14px;">${fs.label}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:3px;">Every ${p.fertFreq||365}d</div>
+      <div class="detail-stat"><div class="detail-stat-label">Fertilizer</div>
+        <div class="detail-stat-value">${fs.label}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">Every ${p.fertFreq||90}d</div>
       </div>
     </div>
-
     <div class="detail-stat-row">
-      <div class="detail-stat">
-        <div class="detail-stat-label">Water interval</div>
-        <div class="detail-stat-value">${pred.interval}d</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:3px;">at ${temp}°F today</div>
+      <div class="detail-stat"><div class="detail-stat-label">Interval at ${temp}°F</div>
+        <div class="detail-stat-value">${pred.interval} days</div>
       </div>
-      <div class="detail-stat">
-        <div class="detail-stat-label">Total events logged</div>
-        <div class="detail-stat-value">${waterLogs.length + fertLogs.length}</div>
+      <div class="detail-stat"><div class="detail-stat-label">Total events</div>
+        <div class="detail-stat-value">${waterLogs.length+fertLogs.length}</div>
         <div style="font-size:11px;color:var(--text2);margin-top:3px;">${waterLogs.length} water · ${fertLogs.length} fert</div>
       </div>
     </div>
-
     <div class="card">
-      <div class="history-section-title" style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
-        <span><i class="ti ti-droplet" style="color:var(--blue);"></i> Watering history</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:14px;font-weight:600;"><i class="ti ti-droplet" style="color:var(--blue);"></i> Watering history</div>
         <span style="font-size:12px;color:var(--text2);">Last: ${lastW||'never'}</span>
-      </div>
-      ${logRows(waterLogs, true)}
+      </div>${logRows(waterLogs,true)}
     </div>
-
     <div class="card">
-      <div class="history-section-title" style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
-        <span><i class="ti ti-leaf" style="color:var(--green);"></i> Fertilizer history</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:14px;font-weight:600;"><i class="ti ti-leaf" style="color:var(--green);"></i> Fertilizer history</div>
         <span style="font-size:12px;color:var(--text2);">Last: ${lastF||'never'}</span>
-      </div>
-      ${logRows(fertLogs, false)}
-    </div>
-  `;
-}
-
-// ── PLANTS LIST ───────────────────────────────────────────
-function renderPlants() {
-  const temp=currentTempHigh||getCachedTemp()||95;
-  const el=document.getElementById('plant-list');
-  if(!plants.length){el.innerHTML='<div class="empty">No plants yet.</div>';return;}
-  el.innerHTML=plants.map(p=>{
-    const pred=getPrediction(p,temp), badge=predBadge(pred.daysUntil,pred.never), lbl=predLabel(pred);
-    const fs=getFertStatus(p), lastW=getLastEvent(p.id,'water'), lastF=getLastEvent(p.id,'fertilizer');
-    const nextStr=pred.never?'Water now':pred.daysUntil<=0?`Overdue ${Math.abs(pred.daysUntil)}d`:`${fmtDate(pred.date)} · ${pred.daysUntil}d`;
-    return `<div class="card clickable-card" onclick="openPlantDetail('${p.id}')">
-      <div class="card-header">
-        <div>
-          <div class="plant-name">${p.name}</div>
-          <div class="plant-latin">${p.latin||''}</div>
-          <div class="plant-meta">${p.type}${p.location?' · '+p.location:''}</div>
-        </div>
-        <span class="badge ${badge}">${lbl}</span>
-      </div>
-      <div class="pred-box">
-        <div class="pred-date">${nextStr}</div>
-        <div class="pred-basis">Every ${pred.interval}d at ${temp}°F · ${pred.historical?'✓ your history':'📖 research'}</div>
-      </div>
-      <div class="fert-line">${fs.label}</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:6px;">Last watered: ${lastW||'never'} · Last fed: ${lastF||'never'}</div>
-      ${p.fact?`<div class="hint" style="margin-top:8px;margin-bottom:0;">${p.fact}</div>`:''}
-      <div class="action-row" onclick="event.stopPropagation()">
-        <button class="btn" onclick="quickLog('${p.id}','water')"><i class="ti ti-droplet"></i> Water</button>
-        <button class="btn" onclick="quickLog('${p.id}','fertilizer')"><i class="ti ti-leaf"></i> Fert</button>
-        <button class="btn" onclick="openEditModal('${p.id}')"><i class="ti ti-pencil"></i> Edit</button>
-        <button class="btn btn-danger" onclick="deletePlantById('${p.id}')"><i class="ti ti-trash"></i></button>
-      </div>
+      </div>${logRows(fertLogs,false)}
     </div>`;
-  }).join('');
 }
 
-// ── HISTORY ───────────────────────────────────────────────
-function getFilteredLogs() {
-  const plantSel=document.getElementById('history-filter').value;
-  const typeSel=document.getElementById('history-type-filter').value;
-  return logs.filter(l=>(!plantSel||l.plantId===plantSel)&&(!typeSel||l.type===typeSel)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+// ── DELETE ─────────────────────────────────────────────────
+async function deleteLogById(id){
+  const l=logs.find(l=>l.id===id),plant=plants.find(p=>p.id===l?.plantId);
+  const ok=await showConfirm('Delete event?',`Remove this ${l?.type==='water'?'watering':'fertilizer'} entry for ${plant?.name||'this plant'} on ${l?.date}?`);
+  if(!ok)return;
+  logs=logs.filter(l=>l.id!==id);scheduleSave();
+  const active=document.querySelector('.section.active')?.id;
+  if(active==='s-history')renderHistory();
+  if(active==='s-detail')renderPlantDetail(detailPlantId);
+  if(active==='s-dashboard')renderDashboard();
+  toast('Entry deleted');
+}
+async function deletePlantById(id){
+  const p=plants.find(p=>p.id===id);
+  const ok=await showConfirm('Remove plant?',`Remove "${p?.name}" and all its logs? This cannot be undone.`);
+  if(!ok)return;
+  plants=plants.filter(p=>p.id!==id);logs=logs.filter(l=>l.plantId!==id);
+  delete expandedCards[id];scheduleSave();toast('Plant removed');goBack();
 }
 
-function renderHistory() {
-  const filter=document.getElementById('history-filter'), sel=filter.value;
+// ── EDIT LOG ───────────────────────────────────────────────
+function openEditLogModal(id){
+  const l=logs.find(l=>l.id===id);if(!l)return;editingLogId=id;
+  document.getElementById('el-plant').innerHTML=plants.map(p=>`<option value="${p.id}"${p.id===l.plantId?' selected':''}>${p.name}</option>`).join('');
+  document.getElementById('el-type').value=l.type||'water';
+  document.getElementById('el-gallons').value=l.gallons||'';document.getElementById('el-duration').value=l.duration||'';
+  document.getElementById('el-fert-type').value=l.fertType||'';document.getElementById('el-fert-amount').value=l.fertAmount||'';
+  document.getElementById('el-date').value=l.date||'';document.getElementById('el-temp').value=l.tempHigh||'';
+  document.getElementById('el-notes').value=l.notes||'';
+  document.getElementById('el-water').style.display=l.type==='water'?'block':'none';
+  document.getElementById('el-fert').style.display=l.type==='fertilizer'?'block':'none';
+  document.getElementById('edit-log-modal').classList.add('open');
+}
+function closeEditLogModal(){document.getElementById('edit-log-modal').classList.remove('open');editingLogId=null;}
+function saveEditLog(){
+  const l=logs.find(l=>l.id===editingLogId);if(!l)return;
+  l.plantId=document.getElementById('el-plant').value;l.type=document.getElementById('el-type').value;
+  l.date=document.getElementById('el-date').value;l.gallons=document.getElementById('el-gallons').value;
+  l.duration=document.getElementById('el-duration').value;l.fertType=document.getElementById('el-fert-type').value;
+  l.fertAmount=document.getElementById('el-fert-amount').value;
+  l.tempHigh=document.getElementById('el-temp').value?parseFloat(document.getElementById('el-temp').value):null;
+  l.notes=document.getElementById('el-notes').value;
+  closeEditLogModal();toast('Event updated!');scheduleSave();
+  const active=document.querySelector('.section.active')?.id;
+  if(active==='s-history')renderHistory();
+  if(active==='s-detail')renderPlantDetail(detailPlantId);
+  if(active==='s-dashboard')renderDashboard();
+}
+
+// ── EDIT PLANT ─────────────────────────────────────────────
+function openEditModal(id){
+  const p=plants.find(p=>p.id===id);if(!p)return;editingPlantId=id;
+  document.getElementById('edit-name').value=p.name||'';document.getElementById('edit-type').value=p.type||'';
+  document.getElementById('edit-species').value=p.species||'';document.getElementById('edit-latin').value=p.latin||'';
+  document.getElementById('edit-location').value=p.location||'';document.getElementById('edit-planted').value=p.datePlanted||'';
+  document.getElementById('edit-water-freq').value=p.waterFreq||'';document.getElementById('edit-fert-freq').value=p.fertFreq||'';
+  document.getElementById('edit-fact').value=p.fact||'';
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');editingPlantId=null;}
+function saveEditPlant(){
+  const p=plants.find(p=>p.id===editingPlantId);if(!p)return;
+  const name=document.getElementById('edit-name').value.trim(),type=document.getElementById('edit-type').value;
+  if(!name||!type){toast('Name and type are required');return;}
+  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS['Other'];
+  const newLatin=document.getElementById('edit-latin').value.trim();
+  const latinChanged=newLatin!==p.latin;
+  p.name=name;p.type=type;p.species=document.getElementById('edit-species').value.trim();
+  p.latin=newLatin;p.location=document.getElementById('edit-location').value.trim();
+  p.datePlanted=document.getElementById('edit-planted').value;
+  p.waterFreq=parseInt(document.getElementById('edit-water-freq').value)||def.water;
+  p.fertFreq=parseInt(document.getElementById('edit-fert-freq').value)||def.fert;
+  p.fact=document.getElementById('edit-fact').value.trim();
+  if(latinChanged&&p.latin){p.aiLookupDone=false;} // re-trigger lookup if latin name changed
+  if(!p.tempIntervals)p.tempIntervals=def.tempIntervals;
+  closeEditModal();toast(`"${p.name}" updated!`);scheduleSave();
+  const active=document.querySelector('.section.active')?.id;
+  if(active==='s-detail')renderPlantDetail(detailPlantId);
+  if(active==='s-dashboard')renderDashboard();
+}
+
+// ── ADD PLANT ──────────────────────────────────────────────
+function addPlant(){
+  const name=document.getElementById('ap-name').value.trim(),type=document.getElementById('ap-type').value;
+  if(!name||!type){toast('Name and type are required');return;}
+  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS['Other'];
+  const newId=Date.now().toString();
+  plants.push({id:newId,name,type,
+    species:document.getElementById('ap-species').value.trim(),
+    latin:document.getElementById('ap-latin').value.trim(),
+    location:document.getElementById('ap-location').value.trim(),
+    datePlanted:document.getElementById('ap-planted').value,
+    waterFreq:parseInt(document.getElementById('ap-water-freq').value)||def.water,
+    fertFreq:parseInt(document.getElementById('ap-fert-freq').value)||def.fert,
+    tempIntervals:def.tempIntervals,researchBasis:'',fact:'',aiLookupDone:false
+  });
+  expandedCards[newId]=true;
+  ['ap-name','ap-species','ap-latin','ap-location','ap-planted','ap-water-freq','ap-fert-freq'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ap-type').value='';
+  toast(`"${name}" added!`);scheduleSave();showSection('dashboard');
+}
+
+// ── LOG ────────────────────────────────────────────────────
+function setLogType(type,btn){
+  currentLogType=type;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('water-fields').style.display=type==='water'?'block':'none';
+  document.getElementById('fert-fields').style.display=type==='fertilizer'?'block':'none';
+}
+function populateLogSelect(){
+  document.getElementById('log-plant').innerHTML='<option value="">Select plant...</option>'+plants.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('log-date').value=new Date().toISOString().split('T')[0];
+}
+function saveLog(){
+  const plantId=document.getElementById('log-plant').value;
+  if(!plantId){toast('Please select a plant');return;}
+  const temp=currentTempHigh||getCachedTemp()||null;
+  logs.push({id:Date.now().toString(),plantId,type:currentLogType,
+    date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
+    notes:document.getElementById('log-notes').value,gallons:document.getElementById('log-gallons').value,
+    duration:document.getElementById('log-duration').value,fertType:document.getElementById('log-fert-type').value,
+    fertAmount:document.getElementById('log-fert-amount').value,tempHigh:temp
+  });
+  ['log-notes','log-gallons','log-duration','log-fert-type','log-fert-amount'].forEach(id=>document.getElementById(id).value='');
+  toast('Logged!');scheduleSave();showSection('dashboard');
+}
+
+// ── QUICK LOG MODAL ────────────────────────────────────────
+function quickLog(plantId,type){
+  modalPlantId=plantId;
+  document.getElementById('modal-type').value=type;
+  document.getElementById('modal-water').style.display=type==='water'?'block':'none';
+  document.getElementById('modal-title').textContent=`Log ${type} — ${plants.find(p=>p.id===plantId)?.name}`;
+  ['modal-notes','modal-gallons','modal-duration'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('log-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('log-modal').classList.remove('open');}
+function saveModalLog(){
+  const temp=currentTempHigh||getCachedTemp()||null;
+  logs.push({id:Date.now().toString(),plantId:modalPlantId,
+    type:document.getElementById('modal-type').value,date:new Date().toISOString().split('T')[0],
+    notes:document.getElementById('modal-notes').value,gallons:document.getElementById('modal-gallons').value,
+    duration:document.getElementById('modal-duration').value,tempHigh:temp
+  });
+  closeModal();toast('Logged!');scheduleSave();
+  const active=document.querySelector('.section.active')?.id;
+  if(active==='s-detail')renderPlantDetail(detailPlantId);else renderDashboard();
+}
+
+// ── HISTORY ────────────────────────────────────────────────
+function getFilteredLogs(){
+  const ps=document.getElementById('history-filter').value,ts=document.getElementById('history-type-filter').value;
+  return logs.filter(l=>(!ps||l.plantId===ps)&&(!ts||l.type===ts)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+}
+function renderHistory(){
+  const filter=document.getElementById('history-filter'),sel=filter.value;
   filter.innerHTML='<option value="">All plants</option>'+plants.map(p=>`<option value="${p.id}"${sel===p.id?' selected':''}>${p.name}</option>`).join('');
-  if(historyViewMode==='table') renderHistoryTable(); else renderHistoryList();
+  if(historyViewMode==='table')renderHistoryTable();else renderHistoryList();
 }
-
-function renderHistoryList() {
-  const filtered=getFilteredLogs();
-  const el=document.getElementById('history-list');
-  document.getElementById('history-table-wrap').style.display='none';
-  el.style.display='block';
+function renderHistoryList(){
+  const filtered=getFilteredLogs(),el=document.getElementById('history-list');
+  document.getElementById('history-table-wrap').style.display='none';el.style.display='block';
   if(!filtered.length){el.innerHTML='<div class="card"><div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px;">No events yet</div></div>';return;}
   el.innerHTML='<div class="card">'+filtered.map(l=>{
-    const plant=plants.find(p=>p.id===l.plantId), isW=l.type==='water';
+    const plant=plants.find(p=>p.id===l.plantId),isW=l.type==='water';
     const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
-    return `<div class="log-item">
+    return`<div class="log-item">
       <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;">
         <span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:5px;"></span>
         <div style="flex:1;min-width:0;">
@@ -820,25 +947,21 @@ function renderHistoryList() {
     </div>`;
   }).join('')+'</div>';
 }
-
-function renderHistoryTable() {
-  const filtered=getFilteredLogs();
-  const listEl=document.getElementById('history-list'), tableEl=document.getElementById('history-table-wrap');
-  listEl.style.display='none'; tableEl.style.display='block';
-  if(!filtered.length){tableEl.innerHTML='<div class="card"><div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px;">No events yet</div></div>';return;}
+function renderHistoryTable(){
+  const filtered=getFilteredLogs(),listEl=document.getElementById('history-list'),tableEl=document.getElementById('history-table-wrap');
+  listEl.style.display='none';tableEl.style.display='block';
+  if(!filtered.length){tableEl.innerHTML='<div class="card"><div style="text-align:center;padding:2rem;color:var(--text2);">No events yet</div></div>';return;}
   const ts=`style="width:100%;border-collapse:collapse;font-size:13px;"`;
   const ths=`style="text-align:left;padding:8px 10px;background:var(--bg2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;"`;
   const tds=`style="padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:top;"`;
   const rows=filtered.map(l=>{
-    const plant=plants.find(p=>p.id===l.plantId), isW=l.type==='water';
+    const plant=plants.find(p=>p.id===l.plantId),isW=l.type==='water';
     const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
-    return `<tr>
-      <td ${tds}>${l.date}</td>
-      <td ${tds}>${plant?.name||'Unknown'}</td>
+    return`<tr>
+      <td ${tds}>${l.date}</td><td ${tds}>${plant?.name||'Unknown'}</td>
       <td ${tds}><span style="display:flex;align-items:center;gap:5px;"><span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:0;"></span>${isW?'Water':'Fert'}</span></td>
-      <td ${tds}>${detail||'—'}</td>
-      <td ${tds}>${l.tempHigh?l.tempHigh+'°F':'—'}</td>
-      <td ${tds} style="max-width:120px;overflow:hidden;text-overflow:ellipsis;">${l.notes||'—'}</td>
+      <td ${tds}>${detail||'—'}</td><td ${tds}>${l.tempHigh?l.tempHigh+'°F':'—'}</td>
+      <td ${tds}>${l.notes||'—'}</td>
       <td ${tds}><div style="display:flex;gap:4px;">
         <button class="btn" onclick="openEditLogModal('${l.id}')" style="padding:3px 7px;font-size:11px;"><i class="ti ti-pencil"></i></button>
         <button class="btn btn-danger" onclick="deleteLogById('${l.id}')" style="padding:3px 7px;font-size:11px;"><i class="ti ti-trash"></i></button>
@@ -849,244 +972,50 @@ function renderHistoryTable() {
     <th ${ths}>Date</th><th ${ths}>Plant</th><th ${ths}>Type</th><th ${ths}>Detail</th><th ${ths}>Temp</th><th ${ths}>Notes</th><th ${ths}></th>
   </tr></thead><tbody>${rows}</tbody></table></div>`;
 }
-
-function toggleHistoryView() {
+function toggleHistoryView(){
   historyViewMode=historyViewMode==='list'?'table':'list';
   document.getElementById('view-toggle-icon').className=historyViewMode==='table'?'ti ti-list':'ti ti-table';
   document.getElementById('view-toggle-label').textContent=historyViewMode==='table'?'List':'Table';
   renderHistory();
 }
-
-// ── DELETE HANDLERS (use custom confirm) ──────────────────
-async function deleteLogById(id) {
-  const l = logs.find(l=>l.id===id);
-  const plant = plants.find(p=>p.id===l?.plantId);
-  const ok = await showConfirm('Delete event?', `Remove this ${l?.type==='water'?'watering':'fertilizer'} entry for ${plant?.name||'this plant'} on ${l?.date}?`);
-  if (!ok) return;
-  logs = logs.filter(l=>l.id!==id);
-  scheduleSave();
-  // Refresh whatever is currently showing
-  const active = document.querySelector('.section.active')?.id;
-  if (active==='s-history') renderHistory();
-  if (active==='s-detail') renderPlantDetail(detailPlantId);
-  if (active==='s-dashboard') renderDashboard();
-  toast('Entry deleted');
-}
-
-async function deletePlantById(id) {
-  const p = plants.find(p=>p.id===id);
-  const ok = await showConfirm('Remove plant?', `Remove "${p?.name}" and all its logged events? This cannot be undone.`);
-  if (!ok) return;
-  plants = plants.filter(p=>p.id!==id);
-  logs   = logs.filter(l=>l.plantId!==id);
-  scheduleSave();
-  renderPlants();
-  toast('Plant removed');
-}
-
-// ── EDIT LOG ──────────────────────────────────────────────
-function openEditLogModal(id) {
-  const l=logs.find(l=>l.id===id);
-  if(!l) return;
-  editingLogId=id;
-  document.getElementById('el-plant').innerHTML=plants.map(p=>`<option value="${p.id}"${p.id===l.plantId?' selected':''}>${p.name}</option>`).join('');
-  document.getElementById('el-type').value=l.type||'water';
-  document.getElementById('el-gallons').value=l.gallons||'';
-  document.getElementById('el-duration').value=l.duration||'';
-  document.getElementById('el-fert-type').value=l.fertType||'';
-  document.getElementById('el-fert-amount').value=l.fertAmount||'';
-  document.getElementById('el-date').value=l.date||'';
-  document.getElementById('el-temp').value=l.tempHigh||'';
-  document.getElementById('el-notes').value=l.notes||'';
-  document.getElementById('el-water').style.display=l.type==='water'?'block':'none';
-  document.getElementById('el-fert').style.display=l.type==='fertilizer'?'block':'none';
-  document.getElementById('edit-log-modal').classList.add('open');
-}
-function closeEditLogModal(){document.getElementById('edit-log-modal').classList.remove('open');editingLogId=null;}
-function saveEditLog(){
-  const l=logs.find(l=>l.id===editingLogId); if(!l) return;
-  l.plantId=document.getElementById('el-plant').value;
-  l.type=document.getElementById('el-type').value;
-  l.date=document.getElementById('el-date').value;
-  l.gallons=document.getElementById('el-gallons').value;
-  l.duration=document.getElementById('el-duration').value;
-  l.fertType=document.getElementById('el-fert-type').value;
-  l.fertAmount=document.getElementById('el-fert-amount').value;
-  l.tempHigh=document.getElementById('el-temp').value?parseFloat(document.getElementById('el-temp').value):null;
-  l.notes=document.getElementById('el-notes').value;
-  closeEditLogModal(); toast('Event updated!'); scheduleSave();
-  const active=document.querySelector('.section.active')?.id;
-  if(active==='s-history') renderHistory();
-  if(active==='s-detail') renderPlantDetail(detailPlantId);
-  if(active==='s-dashboard') renderDashboard();
-}
-
-// ── EDIT PLANT ────────────────────────────────────────────
-const TYPE_DEFAULTS={
-  Cactus:{water:21,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},basis:'Established cactus: every 2–3wk summer (Arizona Cooperative Extension)'},
-  Succulent:{water:14,fert:180,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:5},basis:'Established succulent: weekly–biweekly in heat'},
-  'Desert shrub':{water:21,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},basis:'Established desert shrub: every 2–3wk summer'},
-  Tree:{water:21,fert:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},basis:'Established desert tree: every 1–2wk summer (Water Use It Wisely)'},
-  'Flowering / annual':{water:5,fert:30,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:2},basis:'Flowering annuals: every 3–7d in heat'}
-};
-function openEditModal(id){
-  const p=plants.find(p=>p.id===id); if(!p) return;
-  editingPlantId=id;
-  document.getElementById('edit-name').value=p.name||'';
-  document.getElementById('edit-type').value=p.type||'';
-  document.getElementById('edit-species').value=p.species||'';
-  document.getElementById('edit-latin').value=p.latin||'';
-  document.getElementById('edit-location').value=p.location||'';
-  document.getElementById('edit-water-freq').value=p.waterFreq||'';
-  document.getElementById('edit-fert-freq').value=p.fertFreq||'';
-  document.getElementById('edit-fact').value=p.fact||'';
-  document.getElementById('edit-modal').classList.add('open');
-}
-function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');editingPlantId=null;}
-function saveEditPlant(){
-  const p=plants.find(p=>p.id===editingPlantId); if(!p) return;
-  const name=document.getElementById('edit-name').value.trim(), type=document.getElementById('edit-type').value;
-  if(!name||!type){toast('Name and type are required');return;}
-  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS.Tree;
-  p.name=name; p.type=type;
-  p.species=document.getElementById('edit-species').value.trim();
-  p.latin=document.getElementById('edit-latin').value.trim();
-  p.location=document.getElementById('edit-location').value.trim();
-  p.waterFreq=parseInt(document.getElementById('edit-water-freq').value)||def.water;
-  p.fertFreq=parseInt(document.getElementById('edit-fert-freq').value)||def.fert;
-  p.fact=document.getElementById('edit-fact').value.trim();
-  if(!p.tempIntervals){p.tempIntervals=def.tempIntervals;p.researchBasis=def.basis;}
-  closeEditModal(); toast(`"${p.name}" updated!`); scheduleSave();
-  const active=document.querySelector('.section.active')?.id;
-  if(active==='s-plants') renderPlants();
-  if(active==='s-detail') renderPlantDetail(detailPlantId);
-  if(active==='s-dashboard') renderDashboard();
-}
-
-// ── ADD PLANT ─────────────────────────────────────────────
-function addPlant(){
-  const name=document.getElementById('ap-name').value.trim(), type=document.getElementById('ap-type').value;
-  if(!name||!type){toast('Name and type are required');return;}
-  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS.Tree;
-  plants.push({
-    id:Date.now().toString(),name,type,
-    species:document.getElementById('ap-species').value.trim(),
-    latin:document.getElementById('ap-latin').value.trim(),
-    location:document.getElementById('ap-location').value.trim(),
-    waterFreq:parseInt(document.getElementById('ap-water-freq').value)||def.water,
-    fertFreq:parseInt(document.getElementById('ap-fert-freq').value)||def.fert,
-    tempIntervals:def.tempIntervals, researchBasis:def.basis, fact:''
-  });
-  ['ap-name','ap-species','ap-latin','ap-location','ap-water-freq','ap-fert-freq'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('ap-type').value='';
-  toast(`"${name}" added!`); scheduleSave(); showSection('plants');
-}
-
-// ── LOG EVENT ─────────────────────────────────────────────
-function setLogType(type,btn){
-  currentLogType=type;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active');
-  document.getElementById('water-fields').style.display=type==='water'?'block':'none';
-  document.getElementById('fert-fields').style.display=type==='fertilizer'?'block':'none';
-}
-function populateLogSelect(){
-  document.getElementById('log-plant').innerHTML='<option value="">Select plant...</option>'+plants.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  document.getElementById('log-date').value=new Date().toISOString().split('T')[0];
-}
-function saveLog(){
-  const plantId=document.getElementById('log-plant').value;
-  if(!plantId){toast('Please select a plant');return;}
-  const temp=currentTempHigh||getCachedTemp()||null;
-  logs.push({
-    id:Date.now().toString(),plantId,type:currentLogType,
-    date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
-    notes:document.getElementById('log-notes').value,
-    gallons:document.getElementById('log-gallons').value,
-    duration:document.getElementById('log-duration').value,
-    fertType:document.getElementById('log-fert-type').value,
-    fertAmount:document.getElementById('log-fert-amount').value,
-    tempHigh:temp
-  });
-  ['log-notes','log-gallons','log-duration','log-fert-type','log-fert-amount'].forEach(id=>document.getElementById(id).value='');
-  toast('Logged!'); scheduleSave(); showSection('dashboard');
-}
-
-// ── QUICK LOG MODAL ───────────────────────────────────────
-function quickLog(plantId,type){
-  modalPlantId=plantId;
-  document.getElementById('modal-type').value=type;
-  document.getElementById('modal-water').style.display=type==='water'?'block':'none';
-  document.getElementById('modal-title').textContent=`Log ${type} — ${plants.find(p=>p.id===plantId)?.name}`;
-  document.getElementById('modal-notes').value='';
-  document.getElementById('modal-gallons').value='';
-  document.getElementById('modal-duration').value='';
-  document.getElementById('log-modal').classList.add('open');
-}
-function closeModal(){document.getElementById('log-modal').classList.remove('open');}
-function saveModalLog(){
-  const temp=currentTempHigh||getCachedTemp()||null;
-  logs.push({
-    id:Date.now().toString(),plantId:modalPlantId,
-    type:document.getElementById('modal-type').value,
-    date:new Date().toISOString().split('T')[0],
-    notes:document.getElementById('modal-notes').value,
-    gallons:document.getElementById('modal-gallons').value,
-    duration:document.getElementById('modal-duration').value,
-    tempHigh:temp
-  });
-  closeModal(); toast('Logged!'); scheduleSave(); renderDashboard();
-  // refresh detail if open
-  if(document.getElementById('s-detail').classList.contains('active')) renderPlantDetail(detailPlantId);
-}
-
-// ── CSV EXPORT ────────────────────────────────────────────
 function exportCSV(){
-  const filtered=getFilteredLogs();
-  if(!filtered.length){toast('No events to export');return;}
-  const headers=['Date','Plant','Latin Name','Type','Gallons','Duration (min)','Fert Type','Fert Amount','Temp High (°F)','Notes'];
+  const filtered=getFilteredLogs();if(!filtered.length){toast('No events to export');return;}
+  const headers=['Date','Plant','Latin Name','Type','Gallons','Duration (min)','Fert Type','Fert Amount','Temp (°F)','Notes'];
   const rows=filtered.map(l=>{
     const plant=plants.find(p=>p.id===l.plantId);
-    return [l.date,plant?.name||'Unknown',plant?.latin||'',l.type==='water'?'Watering':'Fertilizer',
+    return[l.date,plant?.name||'',plant?.latin||'',l.type==='water'?'Watering':'Fertilizer',
       l.gallons||'',l.duration||'',l.fertType||'',l.fertAmount||'',l.tempHigh||'',(l.notes||'').replace(/,/g,' ')
     ].map(v=>`"${v}"`).join(',');
   });
   const csv=[headers.join(','),...rows].join('\n');
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  const a=document.createElement('a'); a.href=url; a.download=`desert-tracker-${new Date().toISOString().split('T')[0]}.csv`; a.click();
-  URL.revokeObjectURL(url); toast('CSV downloaded!');
+  const a=document.createElement('a');a.href=url;a.download=`plant-tracker-${new Date().toISOString().split('T')[0]}.csv`;a.click();
+  URL.revokeObjectURL(url);toast('CSV downloaded!');
 }
 
-// ── NAV ───────────────────────────────────────────────────
+// ── NAV ────────────────────────────────────────────────────
 function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('s-'+id).classList.add('active');
-  const ids=['dashboard','plants','detail','log','history','addplant'];
-  const navIds=['dashboard','plants','','log','history','addplant'];
-  const ni=navIds.indexOf(id);
-  if(ni>=0) document.querySelectorAll('.nav-btn')[['dashboard','plants','log','history','addplant'].indexOf(id)]?.classList.add('active');
-  if(id==='dashboard') renderDashboard();
-  if(id==='plants')    renderPlants();
-  if(id==='history')   renderHistory();
-  if(id==='log')       populateLogSelect();
+  const navMap={dashboard:0,log:1,history:2,addplant:3};
+  if(navMap[id]!==undefined)document.querySelectorAll('.nav-btn')[navMap[id]].classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='history')renderHistory();
+  if(id==='log')populateLogSelect();
 }
 
-// ── TOAST ─────────────────────────────────────────────────
 function toast(msg){
-  const el=document.getElementById('toast'); el.textContent=msg;
-  el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2200);
+  const el=document.getElementById('toast');el.textContent=msg;
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-// ── INIT ──────────────────────────────────────────────────
+// ── INIT ───────────────────────────────────────────────────
 (async()=>{
-  const cached=getCachedTemp(); if(cached) currentTempHigh=cached;
+  const cached=getCachedTemp();if(cached)currentTempHigh=cached;
   await loadFromCloud();
   const fresh=await fetchGilbertTemp();
-  if(fresh){
-    currentTempHigh=fresh;
-    localStorage.setItem('dlt_temp',JSON.stringify({temp:fresh,date:new Date().toDateString()}));
-    renderDashboard();
-  }
+  if(fresh){currentTempHigh=fresh;localStorage.setItem('dlt_temp',JSON.stringify({temp:fresh,date:new Date().toDateString()}));renderDashboard();}
 })();
 </script>
 </body>
