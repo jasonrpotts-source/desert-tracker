@@ -236,6 +236,46 @@
   </nav>
 </div>
 
+<!-- EDIT PLANT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">Edit plant</div>
+    <label>Name / nickname</label>
+    <input type="text" id="edit-name" placeholder="e.g. Front yard saguaro"/>
+    <label>Plant type</label>
+    <select id="edit-type">
+      <option value="">Select type...</option>
+      <option value="Cactus">Cactus</option>
+      <option value="Succulent">Succulent</option>
+      <option value="Desert shrub">Desert shrub</option>
+      <option value="Tree">Tree</option>
+      <option value="Flowering / annual">Flowering / annual</option>
+    </select>
+    <label>Species / common name</label>
+    <input type="text" id="edit-species" placeholder="e.g. Saguaro"/>
+    <label>Latin name</label>
+    <input type="text" id="edit-latin" placeholder="e.g. Carnegiea gigantea"/>
+    <label>Location</label>
+    <input type="text" id="edit-location" placeholder="e.g. Front yard east bed"/>
+    <div class="form-row">
+      <div>
+        <label>Water every (days)</label>
+        <input type="number" id="edit-water-freq" min="1" inputmode="numeric"/>
+      </div>
+      <div>
+        <label>Fertilize every (days)</label>
+        <input type="number" id="edit-fert-freq" min="1" inputmode="numeric"/>
+      </div>
+    </div>
+    <label>Care notes</label>
+    <input type="text" id="edit-fact" placeholder="Optional care notes"/>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditPlant()">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- QUICK LOG MODAL -->
 <div class="modal-overlay" id="log-modal">
   <div class="modal">
@@ -582,6 +622,7 @@ function renderPlants() {
       <div class="action-row">
         <button class="btn" onclick="quickLog('${p.id}','water')"><i class="ti ti-droplet"></i> Water</button>
         <button class="btn" onclick="quickLog('${p.id}','fertilizer')"><i class="ti ti-leaf"></i> Fert</button>
+        <button class="btn" onclick="openEditModal('${p.id}')"><i class="ti ti-pencil"></i> Edit</button>
         <button class="btn btn-danger" onclick="deletePlant('${p.id}')"><i class="ti ti-trash"></i></button>
       </div>
     </div>`;
@@ -740,6 +781,60 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+// ── EDIT PLANT MODAL ──────────────────────────────────────
+let editingPlantId = null;
+
+function openEditModal(id) {
+  const p = plants.find(p=>p.id===id);
+  if (!p) return;
+  editingPlantId = id;
+  document.getElementById('edit-name').value     = p.name || '';
+  document.getElementById('edit-type').value     = p.type || '';
+  document.getElementById('edit-species').value  = p.species || '';
+  document.getElementById('edit-latin').value    = p.latin || '';
+  document.getElementById('edit-location').value = p.location || '';
+  document.getElementById('edit-water-freq').value = p.waterFreq || '';
+  document.getElementById('edit-fert-freq').value  = p.fertFreq || '';
+  document.getElementById('edit-fact').value     = p.fact || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editingPlantId = null;
+}
+
+function saveEditPlant() {
+  const p = plants.find(p=>p.id===editingPlantId);
+  if (!p) return;
+  const name = document.getElementById('edit-name').value.trim();
+  const type = document.getElementById('edit-type').value;
+  if (!name||!type) { toast('Name and type are required'); return; }
+
+  const newType = type;
+  const def = TYPE_DEFAULTS[newType] || TYPE_DEFAULTS.Tree;
+
+  p.name     = name;
+  p.type     = newType;
+  p.species  = document.getElementById('edit-species').value.trim();
+  p.latin    = document.getElementById('edit-latin').value.trim();
+  p.location = document.getElementById('edit-location').value.trim();
+  p.waterFreq = parseInt(document.getElementById('edit-water-freq').value) || def.water;
+  p.fertFreq  = parseInt(document.getElementById('edit-fert-freq').value)  || def.fert;
+  p.fact      = document.getElementById('edit-fact').value.trim();
+
+  // Update temp intervals if type changed
+  if (!p.tempIntervals || p.type !== type) {
+    p.tempIntervals  = def.tempIntervals;
+    p.researchBasis  = def.basis;
+  }
+
+  closeEditModal();
+  toast(`"${p.name}" updated!`);
+  scheduleSave();
+  renderPlants();
 }
 
 // ── INIT ──────────────────────────────────────────────────
