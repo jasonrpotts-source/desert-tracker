@@ -455,7 +455,7 @@ const PLANT_KC={
   Tropical:  {kc:0.80, stressAt:0.55},
   Herb:      {kc:0.85, stressAt:0.55},
   Vegetable: {kc:0.90, stressAt:0.60},
-  Grass:     {kc:1.00, stressAt:0.60},
+  Grass:     {kc:0.55, stressAt:0.45},  // Ornamental/warm-season grasses; turf needs custom override
   Vine:      {kc:0.70, stressAt:0.50},
   Bulb:      {kc:0.60, stressAt:0.45},
   Fern:      {kc:0.80, stressAt:0.55},
@@ -523,16 +523,23 @@ function estimateSoilMoisture(plant, weather){
   const rootDepthInches = {
     Cactus:60, Agave:48, Yucca:36, Shrub:24, Tree:48,
     Succulent:12, Flowering:18, Tropical:18, Herb:12, Vegetable:18,
-    Grass:8, Vine:24, Bulb:18, Fern:12, Other:24
+    Grass:18, Vine:24, Bulb:18, Fern:12, Other:24  // 18" for ornamental grasses; turf ~8"
   }[plant.type]||24;
 
   // Moisture added per gallon (simplified: gallon/rootzone volume fraction)
   // 1 gal = 231 in³. Root zone modeled as cylinder 12" radius × rootDepthInches.
   const rootVol = Math.PI * 12*12 * rootDepthInches; // in³
-  const moistureAdded = gallons > 0 ? Math.min(gallons * 231 / rootVol, availWater * 0.8) : availWater * 0.5;
-
-  // Starting moisture after last watering (capped at field capacity)
-  let moisture = Math.min(soil.fieldCap, soil.wiltPt + moistureAdded + availWater * 0.3);
+  // If gallons were logged, convert to volumetric moisture added.
+  // If gallons NOT logged, assume a thorough watering brought soil to field capacity —
+  // it's safer and more accurate to assume adequate watering than to penalise missing data.
+  let moisture;
+  if(gallons > 0){
+    const moistureAdded = Math.min(gallons * 231 / rootVol, availWater);
+    moisture = Math.min(soil.fieldCap, soil.wiltPt + moistureAdded + availWater * 0.2);
+  } else {
+    // No gallons recorded — assume soil reached field capacity after watering
+    moisture = soil.fieldCap;
+  }
 
   // Simulate day by day from last watering to today
   const today = new Date();
@@ -600,7 +607,8 @@ function estimateSoilMoisture(plant, weather){
 
   const soilLabel = SOIL_PROPS[settings.soil]?.label||'loam';
   const mulchNote = settings.mulch ? ', mulched' : '';
-  const modelBasis = `ET₀ Hargreaves-Samani · ${soilLabel}${mulchNote} · Kc ${kc.kc}`;
+  const galNote = gallons > 0 ? `` : ` · assumed full watering`;
+  const modelBasis = `ET₀ Hargreaves-Samani · ${soilLabel}${mulchNote} · Kc ${kc.kc}${galNote}`;
 
   return {moisturePct:Math.max(0,Math.min(100,currentMoisturePct)),
     nextWaterDate:nextDate, daysUntil, modelBasis};
