@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="Plant Tracker"/>
 <title>Plant Care Tracker</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
@@ -18,8 +17,7 @@
   --green-bg:#eaf3de;--green:#3B6D11;
   --amber-bg:#faeeda;--amber:#854F0B;
   --red-bg:#fcebeb;--red:#A32D2D;
-  --coral:#D85A30;
-  --radius:12px;--radius-sm:8px;
+  --coral:#D85A30;--radius:12px;--radius-sm:8px;
 }
 @media(prefers-color-scheme:dark){:root{
   --bg:#1c1c1a;--bg2:#242422;--bg3:#2c2c2a;
@@ -55,8 +53,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .metric{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
 .metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;}.metric-value{font-size:24px;font-weight:600;}
 .temp-bar{background:var(--bg);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
-.temp-big{font-size:28px;font-weight:700;color:var(--coral);}
-.temp-info{flex:1;}.temp-info .tlabel{font-size:11px;color:var(--text2);}.temp-info .tdesc{font-size:13px;color:var(--text);margin-top:2px;}
+.temp-big{font-size:26px;font-weight:700;color:var(--coral);}
+.temp-info{flex:1;}.temp-info .tlabel{font-size:11px;color:var(--text2);}.temp-info .tdesc{font-size:12px;color:var(--text);margin-top:2px;}
 .season-banner{background:var(--amber-bg);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--amber);}
 input,select,textarea{width:100%;font-size:15px;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);margin-bottom:12px;appearance:none;-webkit-appearance:none;}
 input:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px;}
@@ -89,7 +87,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 .detail-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 .detail-stat{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
 .detail-stat-label{font-size:11px;color:var(--text2);margin-bottom:3px;}.detail-stat-value{font-size:15px;font-weight:600;}
-/* Collapsible dashboard cards */
 .dash-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;}
 .dash-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px;user-select:none;cursor:pointer;}
 .dash-card-header:active{background:var(--bg2);}
@@ -101,14 +98,29 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 .dash-collapsed-basis{font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .dash-expanded{padding:0 14px 14px;}
 .dash-divider{border:none;border-top:0.5px solid var(--border);margin:0 0 12px;}
-/* Plant type icon */
 .plant-icon{font-size:22px;flex-shrink:0;}
-/* Sort bar */
 .sort-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
 .sort-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;}
 .sort-btn.active{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue);}
-/* AI lookup spinner */
-.ai-badge{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--green-bg);color:var(--green);margin-left:6px;vertical-align:middle;}
+/* Moisture bar */
+.moisture-bar-wrap{margin-top:8px;}
+.moisture-bar-label{font-size:11px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:3px;}
+.moisture-bar-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.moisture-bar-fill{height:6px;border-radius:3px;transition:width 0.4s;}
+.moisture-hi{background:#378ADD;}.moisture-mid{background:#52b052;}.moisture-lo{background:var(--amber);}.moisture-dry{background:var(--red);}
+/* City search */
+.city-results{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-sm);margin-top:-10px;margin-bottom:12px;overflow:hidden;}
+.city-result-item{padding:10px 12px;font-size:14px;cursor:pointer;border-bottom:0.5px solid var(--border);}
+.city-result-item:last-child{border-bottom:none;}
+.city-result-item:active{background:var(--bg2);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.toggle-row label{margin-bottom:0;font-size:14px;color:var(--text);}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--bg3);border-radius:24px;border:0.5px solid var(--border2);transition:.3s;}
+.toggle-slider:before{content:'';position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:var(--text3);border-radius:50%;transition:.3s;}
+.toggle input:checked+.toggle-slider{background:var(--blue);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(20px);background:#fff;}
 </style>
 </head>
 <body>
@@ -116,6 +128,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
   <div class="header">
     <h1>🌿 Plant Care Tracker</h1>
     <div class="header-sub">
+      <span id="city-display">—</span> &nbsp;·&nbsp;
       <span class="sync-dot" id="sync-dot"></span>
       <span id="sync-label">Loading...</span>
     </div>
@@ -124,12 +137,16 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
   <!-- DASHBOARD -->
   <div id="s-dashboard" class="section active">
     <div class="temp-bar card" style="margin-bottom:10px;">
-      <div class="temp-big" id="temp-display">--°</div>
-      <div class="temp-info">
-        <div class="tlabel">Today's high · Gilbert, AZ</div>
-        <div class="tdesc" id="temp-desc">Fetching weather...</div>
+      <div>
+        <div class="temp-big" id="temp-display">--°</div>
+        <div style="font-size:10px;color:var(--text3);" id="humidity-display">— humidity</div>
       </div>
-      <button class="btn" onclick="refreshTemp()" style="padding:6px 10px;"><i class="ti ti-refresh"></i></button>
+      <div class="temp-info">
+        <div class="tlabel" id="temp-city-label">Today's high</div>
+        <div class="tdesc" id="temp-desc">Fetching weather...</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="precip-display"></div>
+      </div>
+      <button class="btn" onclick="refreshWeather()" style="padding:6px 10px;"><i class="ti ti-refresh"></i></button>
     </div>
     <div class="season-banner" id="season-banner"></div>
     <div class="metrics">
@@ -164,8 +181,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
   <div id="s-log" class="section">
     <div class="section-title">Log an event</div>
     <div class="card">
-      <label>Plant</label>
-      <select id="log-plant"><option value="">Select plant...</option></select>
+      <label>Plant</label><select id="log-plant"><option value="">Select plant...</option></select>
       <div class="tab-bar">
         <button class="tab active" onclick="setLogType('water',this)"><i class="ti ti-droplet"></i> Water</button>
         <button class="tab" onclick="setLogType('fertilizer',this)"><i class="ti ti-leaf"></i> Fertilizer</button>
@@ -207,32 +223,76 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <div id="history-table-wrap" style="display:none;overflow-x:auto;"></div>
   </div>
 
-  <!-- ADD PLANT -->
-  <div id="s-addplant" class="section">
-    <div class="section-title">Add a plant</div>
+  <!-- SETTINGS -->
+  <div id="s-settings" class="section">
+    <div class="section-title">Settings</div>
+
     <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;"><i class="ti ti-map-pin"></i> Location</div>
+      <label>Search for your city</label>
+      <input type="text" id="city-search-input" placeholder="e.g. Gilbert, Arizona" oninput="debounceCity()" style="margin-bottom:6px;"/>
+      <div id="city-results" class="city-results" style="display:none;"></div>
+      <div id="city-saved" style="font-size:13px;color:var(--green);margin-bottom:12px;"></div>
+
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;margin-top:4px;"><i class="ti ti-plant"></i> Soil & mulch</div>
+      <label>Soil type</label>
+      <select id="settings-soil">
+        <option value="clay">Clay (slow draining — stays moist longer)</option>
+        <option value="loam" selected>Loam (balanced — typical garden soil)</option>
+        <option value="sandy">Sandy (fast draining — dries quickly)</option>
+        <option value="caliche">Caliche / hardpan (very slow draining)</option>
+        <option value="rocky">Rocky / decomposed granite</option>
+        <option value="amended">Amended / raised bed (fast draining)</option>
+      </select>
+      <div class="toggle-row">
+        <label>Using mulch? (reduces evaporation ~30%)</label>
+        <label class="toggle"><input type="checkbox" id="settings-mulch"/><span class="toggle-slider"></span></label>
+      </div>
+      <div id="mulch-depth-row" style="display:none;">
+        <label>Mulch depth</label>
+        <select id="settings-mulch-depth">
+          <option value="1">Thin (~1 inch) — ~15% moisture retention boost</option>
+          <option value="2" selected>Medium (~2-3 inches) — ~30% boost</option>
+          <option value="3">Thick (~4+ inches) — ~40% boost</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;padding:12px;margin-top:4px;">Save settings</button>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px;"><i class="ti ti-info-circle"></i> How watering dates are calculated</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+        The app estimates <strong>soil moisture %</strong> from the day you last watered, depleting daily using a simplified <strong>Hargreaves-Samani evapotranspiration (ET₀)</strong> formula that accounts for:
+        <br><br>
+        <strong>• Temperature</strong> — higher temps = faster soil drying<br>
+        <strong>• Humidity</strong> — high humidity slows evaporation<br>
+        <strong>• Precipitation</strong> — rain events replenish soil moisture<br>
+        <strong>• Soil type</strong> — clay retains moisture; sandy drains fast<br>
+        <strong>• Mulch</strong> — reduces surface evaporation significantly<br>
+        <strong>• Gallons applied</strong> — more water = longer moisture window<br>
+        <strong>• Plant crop coefficient (Kc)</strong> — drought-adapted plants tolerate lower moisture before needing water
+        <br><br>
+        Watering is recommended when estimated soil moisture drops below the plant's threshold. Your logged history at similar temperatures is always used when available.
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;"><i class="ti ti-plus"></i> Add a plant</div>
       <label>Name / nickname</label><input type="text" id="ap-name" placeholder="e.g. Back patio olive"/>
       <label>Plant type</label>
       <select id="ap-type">
         <option value="">Select type...</option>
-        <option value="Cactus">🌵 Cactus</option>
-        <option value="Succulent">🪴 Succulent</option>
-        <option value="Agave">🌵 Agave</option>
-        <option value="Yucca">🌾 Yucca</option>
-        <option value="Shrub">🌿 Shrub</option>
-        <option value="Tree">🌳 Tree</option>
-        <option value="Flowering">🌸 Flowering plant</option>
-        <option value="Tropical">🌴 Tropical</option>
-        <option value="Herb">🌱 Herb</option>
-        <option value="Vegetable">🥦 Vegetable</option>
-        <option value="Grass">🌾 Grass / lawn</option>
-        <option value="Vine">🍃 Vine / climber</option>
-        <option value="Bulb">🧅 Bulb plant</option>
-        <option value="Fern">🌿 Fern</option>
+        <option value="Cactus">🌵 Cactus</option><option value="Succulent">🪴 Succulent</option>
+        <option value="Agave">🌵 Agave</option><option value="Yucca">🌾 Yucca</option>
+        <option value="Shrub">🌿 Shrub</option><option value="Tree">🌳 Tree</option>
+        <option value="Flowering">🌸 Flowering plant</option><option value="Tropical">🌴 Tropical</option>
+        <option value="Herb">🌱 Herb</option><option value="Vegetable">🥦 Vegetable</option>
+        <option value="Grass">🌾 Grass / lawn</option><option value="Vine">🍃 Vine / climber</option>
+        <option value="Bulb">🧅 Bulb plant</option><option value="Fern">🌿 Fern</option>
         <option value="Other">🪹 Other</option>
       </select>
       <label>Species / common name</label><input type="text" id="ap-species" placeholder="e.g. Olive Tree"/>
-      <label>Latin / scientific name <span style="font-size:11px;color:var(--text3);">(used for smart watering intervals)</span></label>
+      <label>Latin / scientific name <span style="font-size:11px;color:var(--text3);">(used for smart intervals)</span></label>
       <input type="text" id="ap-latin" placeholder="e.g. Olea europaea"/>
       <label>Location</label><input type="text" id="ap-location" placeholder="e.g. Back patio, east bed"/>
       <label>Date planted</label><input type="date" id="ap-planted"/>
@@ -240,7 +300,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
         <div><label>Water every (days)</label><input type="number" id="ap-water-freq" placeholder="auto" min="1" inputmode="numeric"/></div>
         <div><label>Fertilize every (days)</label><input type="number" id="ap-fert-freq" placeholder="auto" min="1" inputmode="numeric"/></div>
       </div>
-      <div class="hint">Enter the scientific name for AI-powered watering interval recommendations based on peer-reviewed horticultural data. Leave water/fert blank to auto-calculate.</div>
+      <div class="hint">Scientific name enables species-specific watering intervals. Leave water/fert blank to auto-calculate from soil moisture model.</div>
       <button class="btn btn-primary" onclick="addPlant()" style="width:100%;justify-content:center;padding:12px;">Add plant</button>
     </div>
   </div>
@@ -249,7 +309,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <button class="nav-btn active" onclick="showSection('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
     <button class="nav-btn" onclick="showSection('log')"><i class="ti ti-droplet"></i>Log</button>
     <button class="nav-btn" onclick="showSection('history')"><i class="ti ti-history"></i>History</button>
-    <button class="nav-btn" onclick="showSection('addplant')"><i class="ti ti-plus"></i>Add Plant</button>
+    <button class="nav-btn" onclick="showSection('settings')"><i class="ti ti-settings"></i>Settings</button>
   </nav>
 </div>
 
@@ -273,8 +333,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <label>Plant type</label>
     <select id="edit-type">
       <option value="Cactus">🌵 Cactus</option><option value="Succulent">🪴 Succulent</option>
-        <option value="Agave">🌵 Agave</option>
-        <option value="Yucca">🌾 Yucca</option>
+      <option value="Agave">🌵 Agave</option><option value="Yucca">🌾 Yucca</option>
       <option value="Shrub">🌿 Shrub</option><option value="Tree">🌳 Tree</option>
       <option value="Flowering">🌸 Flowering plant</option><option value="Tropical">🌴 Tropical</option>
       <option value="Herb">🌱 Herb</option><option value="Vegetable">🥦 Vegetable</option>
@@ -355,141 +414,218 @@ const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
 // ── STATE ──────────────────────────────────────────────────
 let plants=[],logs=[],currentLogType='water',modalPlantId=null;
-let currentTempHigh=null,syncTimeout=null,saving=false;
+let currentWeather=null,syncTimeout=null,saving=false;
 let historyViewMode='list',editingPlantId=null,editingLogId=null;
 let prevSection='dashboard',detailPlantId=null;
 let expandedCards={},currentSort='water';
+let cityDebounce=null;
 
-// ── PLANT TYPE ICONS ───────────────────────────────────────
-const TYPE_ICONS={
-  'Cactus':'🌵','Succulent':'🪴','Shrub':'🌿','Agave':'🌵','Yucca':'🌾','Tree':'🌳',
-  'Flowering':'🌸','Tropical':'🌴','Herb':'🌱','Vegetable':'🥦',
-  'Grass':'🌾','Vine':'🍃','Bulb':'🧅','Fern':'🌿','Other':'🪹'
-};
-function plantIcon(type){return TYPE_ICONS[type]||'🪴';}
-
-// ── PLANT TYPE DEFAULTS (fallback if no latin name) ────────
-const TYPE_DEFAULTS={
-  'Cactus':{water:21,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10}},
-  'Succulent':{water:14,fert:180,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:5}},
-  'Shrub':{water:21,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10}},
-  'Agave':{water:30,fert:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10}},
-  'Yucca':{water:21,fert:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7}},
-  'Tree':{water:21,fert:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7}},
-  'Flowering':{water:7,fert:30,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:3}},
-  'Tropical':{water:7,fert:60,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:2}},
-  'Herb':{water:3,fert:30,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
-  'Vegetable':{water:3,fert:14,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
-  'Grass':{water:3,fert:30,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
-  'Vine':{water:7,fert:30,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:2}},
-  'Bulb':{water:10,fert:90,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:3}},
-  'Fern':{water:3,fert:60,tempIntervals:{60:5,70:4,80:3,90:2,100:2,110:1}},
-  'Other':{water:14,fert:90,tempIntervals:{60:21,70:14,80:10,90:7,100:5,110:4}},
+// settings (persisted to cloud with data)
+let settings={
+  city:{name:'Gilbert, AZ',lat:33.3528,lon:-111.7890,timezone:'America/Phoenix'},
+  soil:'clay', mulch:false, mulchDepth:2
 };
 
-// ── SEED DATA ──────────────────────────────────────────────
-const SEED_PLANTS=[
-  {id:'seed_ironwood',name:'Desert Ironwood',type:'Tree',species:'Desert Ironwood',latin:'Olneya tesota',location:'',waterFreq:30,fertFreq:365,datePlanted:'',
-   fact:'Nitrogen-fixing legume. Deep taproot. Extremely drought tolerant once established. Up to 1,500-year lifespan.',
-   tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'Research: 1–2x/month summer (Water Use It Wisely)',aiLookupDone:false},
-  {id:'seed_broom',name:'Desert Broom',type:'Shrub',species:'Desert Broom',latin:'Baccharis sarothroides',location:'',waterFreq:21,fertFreq:365,datePlanted:'',
-   fact:'Extremely drought hardy. Thrives with minimal supplemental water once established. Blooms fall–winter.',
-   tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'Research: every 3–4 weeks summer heat (Gardenia.net)',aiLookupDone:false}
-];
+// ── SOIL MODEL CONSTANTS ───────────────────────────────────
+// Field capacity (FC) = moisture at which soil holds water after drainage
+// Wilting point (WP) = moisture at which plants start to stress
+// Plant Stress Threshold (PST) = % of available water remaining before watering needed
+const SOIL_PROPS={
+  clay:     {drainFactor:0.55, fieldCap:0.42, wiltPt:0.22, label:'Clay'},
+  loam:     {drainFactor:0.75, fieldCap:0.31, wiltPt:0.14, label:'Loam'},
+  sandy:    {drainFactor:1.30, fieldCap:0.18, wiltPt:0.08, label:'Sandy'},
+  caliche:  {drainFactor:0.40, fieldCap:0.48, wiltPt:0.25, label:'Caliche'},
+  rocky:    {drainFactor:1.20, fieldCap:0.20, wiltPt:0.09, label:'Rocky/DG'},
+  amended:  {drainFactor:1.10, fieldCap:0.28, wiltPt:0.10, label:'Amended'},
+};
+// Mulch evaporation reduction factors by depth setting
+const MULCH_FACTORS={1:0.85, 2:0.70, 3:0.60};
 
-// ── CUSTOM CONFIRM ─────────────────────────────────────────
-let confirmCallback=null;
-function showConfirm(title,msg,okLabel='Delete'){
-  return new Promise(resolve=>{
-    confirmCallback=resolve;
-    document.getElementById('confirm-title').textContent=title;
-    document.getElementById('confirm-msg').textContent=msg;
-    document.getElementById('confirm-ok-btn').textContent=okLabel;
-    document.getElementById('confirm-overlay').classList.add('open');
-  });
+// Plant crop coefficient (Kc) and stress threshold (0–1, lower = more drought tolerant)
+// Kc: multiplier on ET₀ for actual plant water use
+// stressAt: fraction of available water at which to recommend watering
+const PLANT_KC={
+  Cactus:    {kc:0.15, stressAt:0.15},
+  Succulent: {kc:0.20, stressAt:0.20},
+  Agave:     {kc:0.15, stressAt:0.15},
+  Yucca:     {kc:0.20, stressAt:0.20},
+  Shrub:     {kc:0.40, stressAt:0.35},
+  Tree:      {kc:0.50, stressAt:0.40},
+  Flowering: {kc:0.70, stressAt:0.50},
+  Tropical:  {kc:0.80, stressAt:0.55},
+  Herb:      {kc:0.85, stressAt:0.55},
+  Vegetable: {kc:0.90, stressAt:0.60},
+  Grass:     {kc:1.00, stressAt:0.60},
+  Vine:      {kc:0.70, stressAt:0.50},
+  Bulb:      {kc:0.60, stressAt:0.45},
+  Fern:      {kc:0.80, stressAt:0.55},
+  Other:     {kc:0.55, stressAt:0.40},
+};
+
+// ── HARGREAVES-SAMANI ET₀ ─────────────────────────────────
+// ET₀ (mm/day) = 0.0023 × Ra × (Tmean + 17.8) × √(Tmax - Tmin)
+// Ra = extraterrestrial radiation estimated from latitude & day of year
+// Humidity correction: ET₀ × (1 - 0.14 × (RH/100 - 0.45)) clamped >0
+// Returns inches/day (1mm = 0.0394in)
+function dayOfYear(dateStr){
+  const d=new Date(dateStr),s=new Date(d.getFullYear(),0,0);
+  return Math.floor((d-s)/86400000);
 }
-function confirmResolve(result){
-  document.getElementById('confirm-overlay').classList.remove('open');
-  if(confirmCallback){confirmCallback(result);confirmCallback=null;}
+function raFromLatDoy(latDeg,doy){
+  const lat=latDeg*Math.PI/180;
+  const dr=1+0.033*Math.cos(2*Math.PI*doy/365);
+  const decl=0.409*Math.sin(2*Math.PI*doy/365-1.39);
+  const ws=Math.acos(-Math.tan(lat)*Math.tan(decl));
+  const Ra=118.08/Math.PI*(ws*Math.sin(lat)*Math.sin(decl)+Math.cos(lat)*Math.cos(decl)*Math.sin(ws));
+  return Math.max(Ra,0); // MJ/m²/day
+}
+function calcET0(tmaxF,tminF,rhPct,dateStr,latDeg){
+  const tmaxC=(tmaxF-32)*5/9, tminC=(tminF-32)*5/9;
+  const tmeanC=(tmaxC+tminC)/2;
+  const tr=Math.max(tmaxC-tminC,0);
+  const doy=dayOfYear(dateStr||new Date().toISOString().split('T')[0]);
+  const Ra=raFromLatDoy(latDeg||33.35,doy);
+  let et0=0.0023*Ra*(tmeanC+17.8)*Math.sqrt(tr); // mm/day
+  // Humidity correction (Samani 2000 extension)
+  const rhFrac=Math.max(0,Math.min(1,(rhPct||30)/100));
+  const humCorr=1-0.14*(rhFrac-0.45);
+  et0*=Math.max(0.3,humCorr);
+  return et0*0.0394; // convert to inches/day
 }
 
-// ── CLOUD SYNC ─────────────────────────────────────────────
-function setSyncStatus(state,label){
-  document.getElementById('sync-dot').className='sync-dot '+state;
-  document.getElementById('sync-label').textContent=label;
-}
-async function loadFromCloud(){
-  setSyncStatus('syncing','Loading...');
-  try{
-    const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':API_KEY,'X-Bin-Meta':'false'}});
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    if(data&&Array.isArray(data.plants)){plants=data.plants;logs=data.logs||[];}
-    else{plants=SEED_PLANTS.map(p=>({...p}));logs=[];await saveToCloud();}
-    setSyncStatus('ok','Synced');renderDashboard();
-  }catch(e){
-    setSyncStatus('err','Offline — local data');
-    const local=localStorage.getItem('dlt_local');
-    if(local){const d=JSON.parse(local);plants=d.plants||SEED_PLANTS.map(p=>({...p}));logs=d.logs||[];}
-    else{plants=SEED_PLANTS.map(p=>({...p}));logs=[];}
-    renderDashboard();
+// ── SOIL MOISTURE MODEL ────────────────────────────────────
+// Returns {moisturePct, nextWaterDate, daysUntil, modelBasis}
+// moisturePct: 0–100 where 100 = field capacity
+function estimateSoilMoisture(plant, weather){
+  const lastWLog = logs.filter(l=>l.plantId===plant.id&&l.type==='water').sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  const soil = SOIL_PROPS[settings.soil] || SOIL_PROPS.loam;
+  const kc   = (PLANT_KC[plant.type]||PLANT_KC.Other);
+  const mulchFactor = settings.mulch ? (MULCH_FACTORS[settings.mulchDepth]||0.70) : 1.0;
+
+  // Available water = field capacity - wilting point (fraction of volume)
+  const availWater = soil.fieldCap - soil.wiltPt; // e.g. 0.20 for clay
+
+  // Stress threshold in absolute terms
+  const stressFrac = kc.stressAt; // fraction of available water remaining
+  const stressAbsolute = soil.wiltPt + stressFrac * availWater;
+
+  if(!lastWLog){
+    return {moisturePct:null, nextWaterDate:null, daysUntil:null,
+      modelBasis:'No watering history — water now to establish baseline', noHistory:true};
   }
-}
-async function saveToCloud(){
-  if(saving)return;saving=true;setSyncStatus('syncing','Saving...');
-  localStorage.setItem('dlt_local',JSON.stringify({plants,logs}));
-  try{
-    const r=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},body:JSON.stringify({plants,logs})});
-    if(!r.ok)throw new Error();
-    setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
-  }catch(e){setSyncStatus('err','Saved locally — sync failed');}
-  saving=false;
-}
-function scheduleSave(){clearTimeout(syncTimeout);syncTimeout=setTimeout(saveToCloud,800);}
 
-// ── SPECIES DATABASE (scientific-name keyed, replaces API call) ────
-// Intervals in days per temp bucket (°F). Source: peer-reviewed extension
-// publications, RHS, Sunset Western Garden Book, Arizona Cooperative Extension.
+  const lastDate = new Date(lastWLog.date);
+  const gallons  = parseFloat(lastWLog.gallons)||0;
+
+  // Convert gallons to inches of water (assume 1ft² application area → ~1.5 gallon per inch per sq ft for reference)
+  // Simplified: 1 gallon ≈ 0.1 inches moisture add to top 12" for an established plant root zone
+  // Range: shallow-rooted plants need more freq; we use a representative root zone factor
+  const rootDepthInches = {
+    Cactus:60, Agave:48, Yucca:36, Shrub:24, Tree:48,
+    Succulent:12, Flowering:18, Tropical:18, Herb:12, Vegetable:18,
+    Grass:8, Vine:24, Bulb:18, Fern:12, Other:24
+  }[plant.type]||24;
+
+  // Moisture added per gallon (simplified: gallon/rootzone volume fraction)
+  // 1 gal = 231 in³. Root zone modeled as cylinder 12" radius × rootDepthInches.
+  const rootVol = Math.PI * 12*12 * rootDepthInches; // in³
+  const moistureAdded = gallons > 0 ? Math.min(gallons * 231 / rootVol, availWater * 0.8) : availWater * 0.5;
+
+  // Starting moisture after last watering (capped at field capacity)
+  let moisture = Math.min(soil.fieldCap, soil.wiltPt + moistureAdded + availWater * 0.3);
+
+  // Simulate day by day from last watering to today
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let d = new Date(lastDate);
+  d.setHours(0,0,0,0);
+
+  const lat = settings.city.lat || 33.35;
+
+  // Build precip map from weather forecast data
+  const precipMap={};
+  if(weather && weather.daily){
+    weather.daily.time.forEach((t,i)=>{
+      precipMap[t]=(weather.daily.precipitation_sum[i]||0);
+    });
+  }
+
+  while(d < today){
+    const ds=d.toISOString().split('T')[0];
+    const tmax = currentWeather?.todayHigh || 95;
+    const tmin = tmax - 25;
+    const rh   = currentWeather?.humidity || 20;
+    const precip = (precipMap[ds]||0)*0.0394; // mm→inches
+
+    const et0 = calcET0(tmax, tmin, rh, ds, lat);
+    const dailyLoss = et0 * kc.kc * mulchFactor * soil.drainFactor;
+
+    // Add precipitation (with runoff factor for clay/caliche)
+    const infiltration = precip * (settings.soil==='clay'||settings.soil==='caliche' ? 0.5 : 0.8);
+    moisture = Math.min(soil.fieldCap, moisture + infiltration - dailyLoss);
+    moisture = Math.max(soil.wiltPt * 0.5, moisture);
+    d.setDate(d.getDate()+1);
+  }
+
+  const currentMoisturePct = Math.round(((moisture - soil.wiltPt) / availWater) * 100);
+
+  // Project forward from today to find next watering date
+  let projMoisture = moisture;
+  let daysUntil = 0;
+  const forecastTemps = weather?.daily?.temperature_2m_max || [];
+  const forecastRH    = weather?.daily?.relative_humidity_2m_mean || [];
+  const forecastPrecip= weather?.daily?.precipitation_sum || [];
+  const forecastDates = weather?.daily?.time || [];
+
+  while(projMoisture > stressAbsolute && daysUntil < 60){
+    daysUntil++;
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate()+daysUntil);
+    const fds = futureDate.toISOString().split('T')[0];
+    const fi  = forecastDates.indexOf(fds);
+    const ftmax = fi>=0 ? forecastTemps[fi] : (currentWeather?.todayHigh||95);
+    const fRH   = fi>=0 ? (forecastRH[fi]||20) : (currentWeather?.humidity||20);
+    const fPrecip = fi>=0 ? (forecastPrecip[fi]||0)*0.0394 : 0;
+    const fet0  = calcET0(ftmax, ftmax-25, fRH, fds, lat);
+    const fLoss = fet0 * kc.kc * mulchFactor * soil.drainFactor;
+    const fInfil= fPrecip * (settings.soil==='clay'||settings.soil==='caliche' ? 0.5 : 0.8);
+    projMoisture = Math.min(soil.fieldCap, projMoisture + fInfil - fLoss);
+    projMoisture = Math.max(soil.wiltPt*0.5, projMoisture);
+  }
+
+  if(daysUntil===0) daysUntil=-1; // already past threshold
+
+  const nextDate = new Date(today);
+  nextDate.setDate(today.getDate() + Math.max(0,daysUntil));
+
+  const soilLabel = SOIL_PROPS[settings.soil]?.label||'loam';
+  const mulchNote = settings.mulch ? ', mulched' : '';
+  const modelBasis = `ET₀ model · ${soilLabel}${mulchNote} · ${kc.kc} Kc`;
+
+  return {moisturePct:Math.max(0,Math.min(100,currentMoisturePct)),
+    nextWaterDate:nextDate, daysUntil, modelBasis};
+}
+
+// ── SPECIES DATABASE ───────────────────────────────────────
 const SPECIES_DB={
-  // Cacti
-  'carnegiea gigantea':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Saguaro: deep water every 2–4wk summer, monthly winter (AZ Cooperative Extension)',fact:'Stores water in pleated trunk. Overwatering is the #1 killer. Allow soil to fully dry between waterings.'},
-  'ferocactus wislizeni':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Barrel cactus: water every 2–3wk summer; skip winter (Desert Botanical Garden)',fact:'Extremely drought adapted. Needs excellent drainage. Water deeply but infrequently.'},
-  'echinocactus grusonii':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Golden barrel: monthly summer waterings sufficient when established (RHS)',fact:'One of the most drought-tolerant cacti. Needs bright sun and fast-draining soil.'},
-  'opuntia ficus-indica':{waterFreq:14,fertFreq:180,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Prickly pear: water every 1–2wk in heat; drought tolerant once established (USDA)',fact:'Fast growing and prolific. More water-tolerant than most cacti; responds well to deep occasional irrigation.'},
-  // Agaves
-  'agave americana':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:10},researchBasis:'🤖 Century plant: water every 2–4wk established; monthly in winter (AZ Extension)',fact:'Monocarpic — blooms once then dies. Extremely drought tolerant; overwatering causes root rot.'},
-  'agave parryi':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:10},researchBasis:'🤖 Parry agave: deep water every 2–3wk summer; very cold hardy (High Country Gardens)',fact:'One of the most cold-hardy agaves. Thrives on neglect; excellent for low-water landscapes.'},
-  'agave attenuata':{waterFreq:14,fertFreq:180,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Soft agave: water every 1–2wk summer; less drought-tolerant than other agaves (Sunset)',fact:'Soft, spineless leaves. Prefers some shade in extreme heat. More moisture-loving than most agaves.'},
-  'agave victoriae-reginae':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Queen Victoria agave: monthly deep watering; extremely drought adapted (DBG)',fact:'Slow-growing architectural gem. Needs minimal water and excellent drainage.'},
-  // Yuccas
-  'yucca rigida':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 Blue yucca: water every 2–3wk established; very heat/drought tolerant (Plant Select)',fact:'Striking blue foliage. Extremely drought and heat tolerant once established.'},
-  'yucca rostrata':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 Beaked yucca: deep water monthly established; tolerates reflected heat (High Country)',fact:'Slow-growing single-trunk yucca. Very cold-hardy and drought-tolerant.'},
-  'yucca elephantipes':{waterFreq:10,fertFreq:90,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:4},researchBasis:'🤖 Spineless yucca: water every 1–2wk; more moisture tolerant than desert yuccas (RHS)',fact:'Popular landscape and indoor plant. Requires more water than native desert yuccas.'},
-  'yucca filamentosa':{waterFreq:14,fertFreq:180,tempIntervals:{60:21,70:14,80:10,90:7,100:5,110:5},researchBasis:'🤖 Adams needle: deep water every 1–2wk; drought tolerant when established (NC Extension)',fact:'Adaptable yucca tolerating heat, cold, and drought. Needs well-drained soil.'},
-  // Desert trees
-  'olneya tesota':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 Desert ironwood: 1–2x/month established; one of slowest-growing Sonoran trees (Water Use It Wisely)',fact:'Nitrogen-fixing legume. Deep taproot. Extremely drought tolerant. Can live 1,500+ years.'},
-  'parkinsonia florida':{waterFreq:14,fertFreq:365,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Blue palo verde: deep water every 1–2wk summer; drought tolerant established (AZ Extension)',fact:'State tree of Arizona. Photosynthesizes through its green bark. Fast-growing and cold-hardy.'},
-  'parkinsonia microphylla':{waterFreq:14,fertFreq:365,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Foothill palo verde: water every 1–2wk established; very heat tolerant (Sonoran Desert)',fact:'Slower growing than blue palo verde. Yellow-green bark. Extremely drought adapted.'},
-  'prosopis velutina':{waterFreq:14,fertFreq:365,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Velvet mesquite: deep water every 1–3wk established (AZ Cooperative Extension)',fact:'Deep taproot taps groundwater. Nitrogen-fixing. Very drought and heat tolerant once established.'},
-  'cercidium hybrid':{waterFreq:14,fertFreq:365,tempIntervals:{60:21,70:14,80:10,90:7,100:5,110:5},researchBasis:'🤖 Desert Museum palo verde: water every 1–2wk summer; near thornless hybrid (Civano)',fact:'Most popular landscape palo verde. Thornless, longer bloom, faster growth than native species.'},
-  // Desert shrubs
-  'baccharis sarothroides':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Desert broom: water every 3–4wk summer established; minimal inputs needed (Gardenia.net)',fact:'Native Sonoran shrub. Extremely drought hardy. Male plants are non-seeding — preferred in landscapes.'},
-  'larrea tridentata':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Creosote: rarely needs watering when established; one of most drought-tolerant plants (AZ Extension)',fact:'Iconic Sonoran Desert shrub. Produces rain-smell chemical (petrichor). Can live 10,000+ years via cloning.'},
-  'encelia farinosa':{waterFreq:14,fertFreq:365,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Brittlebush: water every 1–2wk established; goes summer dormant without water (DBG)',fact:'Cheerful yellow blooms late winter–spring. Goes dormant in drought. Silver leaves reduce water loss.'},
-  'salvia greggii':{waterFreq:7,fertFreq:90,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:4},researchBasis:'🤖 Autumn sage: water every 1–2wk; more moisture-loving than true desert shrubs (Texas A&M)',fact:'Long-blooming hummingbird magnet. Drought tolerant but performs better with regular summer water.'},
-  // Succulents
-  'aloe vera':{waterFreq:14,fertFreq:180,tempIntervals:{60:21,70:14,80:10,90:7,100:7,110:7},researchBasis:'🤖 Aloe vera: water every 2–3wk; allow soil to dry completely (University of Florida IFAS)',fact:'Medicinal succulent. Overwatering is the most common mistake — soil must dry completely between waterings.'},
-  'aloe arborescens':{waterFreq:14,fertFreq:180,tempIntervals:{60:21,70:14,80:10,90:7,100:7,110:7},researchBasis:'🤖 Torch aloe: drought tolerant; water every 2wk summer, monthly winter (UC ANR)',fact:'Multi-stemmed shrubby aloe. More cold-hardy and drought-tolerant than aloe vera.'},
-  'dasylirion wheeleri':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:10},researchBasis:'🤖 Desert spoon: deep water monthly established; extremely heat tolerant (Plant Select)',fact:'Architectural grass-like succulent. Once established requires almost no supplemental water in the Sonoran desert.'},
-  // Common landscape trees
-  'olea europaea':{waterFreq:14,fertFreq:90,tempIntervals:{60:21,70:14,80:10,90:7,100:5,110:5},researchBasis:'🤖 Olive: deep water every 1–2wk summer; drought tolerant established (UC Cooperative Extension)',fact:'Mediterranean tree adapted to hot, dry climates. Deep infrequent watering encourages deep roots.'},
-  'citrus sinensis':{waterFreq:7,fertFreq:60,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:3},researchBasis:'🤖 Sweet orange: water every 5–10d summer; consistent moisture critical for fruit set (UC Riverside)',fact:'Requires consistent moisture and regular fertilization. Deep watering to 3ft encourages strong root development.'},
-  'citrus limon':{waterFreq:7,fertFreq:60,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:3},researchBasis:'🤖 Lemon: water every 5–10d in heat; sensitive to drought stress during fruiting (AZ Master Gardener)',fact:'Most cold-sensitive common citrus. Needs frequent summer watering and 3–4 fertilizations/year in AZ.'},
-  'phoenix dactylifera':{waterFreq:7,fertFreq:90,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:4},researchBasis:'🤖 Date palm: deep water weekly in summer heat; very drought tolerant established (FAO)',fact:'Iconic desert palm. Once established tolerates extreme heat and drought but performs best with regular deep watering.'},
-  // Flowering plants
-  'lantana camara':{waterFreq:7,fertFreq:30,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:3},researchBasis:'🤖 Lantana: water every 5–7d established; very heat tolerant (Texas A&M AgriLife)',fact:'Prolific bloomer in desert heat. Drought tolerant once established but blooms better with regular water.'},
-  'bougainvillea spectabilis':{waterFreq:10,fertFreq:30,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:4},researchBasis:'🤖 Bougainvillea: water every 7–10d; drought stress triggers bloom (AZ Master Gardener)',fact:'Blooms best under mild drought stress. Overwatering produces lush leaves but few bracts.'},
-  'rosa hybrid':{waterFreq:4,fertFreq:14,tempIntervals:{60:7,70:5,80:4,90:3,100:3,110:2},researchBasis:'🤖 Rose: water every 3–5d in heat; consistent moisture required (ARS)',fact:'High-water plant in desert climates. Deep watering, mulching, and morning irrigation reduce disease.'},
+  'carnegiea gigantea':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Saguaro: deep water every 2–4wk summer (AZ Cooperative Extension)',fact:'Stores water in pleated trunk. Overwatering is the #1 killer.'},
+  'ferocactus wislizeni':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Barrel cactus: every 2–3wk summer; skip winter (Desert Botanical Garden)',fact:'Extremely drought adapted. Needs excellent drainage.'},
+  'agave americana':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:10},researchBasis:'🤖 Century plant: every 2–4wk established (AZ Extension)',fact:'Monocarpic — blooms once then dies. Overwatering causes root rot.'},
+  'agave parryi':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:10},researchBasis:'🤖 Parry agave: deep water every 2–3wk summer (High Country Gardens)',fact:'One of the most cold-hardy agaves. Thrives on neglect.'},
+  'agave attenuata':{waterFreq:14,fertFreq:180,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Soft agave: every 1–2wk summer (Sunset)',fact:'Soft spineless leaves. Prefers some shade in extreme heat.'},
+  'yucca rigida':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 Blue yucca: every 2–3wk established (Plant Select)',fact:'Striking blue foliage. Extremely drought and heat tolerant.'},
+  'yucca rostrata':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 Beaked yucca: deep water monthly established (High Country)',fact:'Slow-growing single-trunk yucca. Very cold-hardy and drought-tolerant.'},
+  'olneya tesota':{waterFreq:21,fertFreq:365,tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 Desert ironwood: 1–2x/month established (Water Use It Wisely)',fact:'Nitrogen-fixing legume. Deep taproot. Can live 1,500+ years.'},
+  'parkinsonia florida':{waterFreq:14,fertFreq:365,tempIntervals:{60:30,70:21,80:14,90:10,100:7,110:7},researchBasis:'🤖 Blue palo verde: every 1–2wk summer (AZ Extension)',fact:'State tree of Arizona. Photosynthesizes through its green bark.'},
+  'baccharis sarothroides':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Desert broom: every 3–4wk summer established (Gardenia.net)',fact:'Native Sonoran shrub. Extremely drought hardy.'},
+  'larrea tridentata':{waterFreq:21,fertFreq:365,tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Creosote: rarely needs water when established (AZ Extension)',fact:'Iconic Sonoran shrub. Produces the classic rain-smell (petrichor).'},
+  'aloe vera':{waterFreq:14,fertFreq:180,tempIntervals:{60:21,70:14,80:10,90:7,100:7,110:7},researchBasis:'🤖 Aloe vera: every 2–3wk; allow soil to dry completely (UF IFAS)',fact:'Allow soil to dry completely between waterings. Overwatering is the most common mistake.'},
+  'olea europaea':{waterFreq:14,fertFreq:90,tempIntervals:{60:21,70:14,80:10,90:7,100:5,110:5},researchBasis:'🤖 Olive: deep water every 1–2wk summer (UC Cooperative Extension)',fact:'Mediterranean tree. Deep infrequent watering encourages deep roots.'},
+  'citrus sinensis':{waterFreq:7,fertFreq:60,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:3},researchBasis:'🤖 Sweet orange: every 5–10d summer (UC Riverside)',fact:'Requires consistent moisture and 3–4 fertilizations/year in AZ.'},
+  'citrus limon':{waterFreq:7,fertFreq:60,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:3},researchBasis:'🤖 Lemon: every 5–10d in heat (AZ Master Gardener)',fact:'Most cold-sensitive common citrus. Needs frequent summer watering.'},
+  'rosa hybrid':{waterFreq:4,fertFreq:14,tempIntervals:{60:7,70:5,80:4,90:3,100:3,110:2},researchBasis:'🤖 Rose: every 3–5d in heat (ARS)',fact:'Deep watering and mulching reduce disease in desert climates.'},
+  'lantana camara':{waterFreq:7,fertFreq:30,tempIntervals:{60:10,70:7,80:5,90:4,100:3,110:3},researchBasis:'🤖 Lantana: every 5–7d established (Texas A&M AgriLife)',fact:'Prolific bloomer in desert heat. Drought tolerant once established.'},
+  'bougainvillea spectabilis':{waterFreq:10,fertFreq:30,tempIntervals:{60:14,70:10,80:7,90:5,100:4,110:4},researchBasis:'🤖 Bougainvillea: every 7–10d; drought stress triggers bloom (AZ Master Gardener)',fact:'Blooms best under mild drought stress. Overwatering reduces flowering.'},
 };
 
 function lookupWateringIntervals(plant){
@@ -505,36 +641,147 @@ function lookupWateringIntervals(plant){
     if(data.researchBasis)p.researchBasis=data.researchBasis;
     if(data.fact&&!p.fact)p.fact=data.fact;
   } else {
-    // Not in DB — mark with a note so user knows
     if(!p.researchBasis)p.researchBasis='📖 Species not in database — using plant-type defaults';
   }
   p.aiLookupDone=true;
   scheduleSave();
-  renderDashboard();
+}
+
+// ── PLANT TYPE DATA ────────────────────────────────────────
+const TYPE_ICONS={'Cactus':'🌵','Succulent':'🪴','Agave':'🌵','Yucca':'🌾','Shrub':'🌿','Tree':'🌳','Flowering':'🌸','Tropical':'🌴','Herb':'🌱','Vegetable':'🥦','Grass':'🌾','Vine':'🍃','Bulb':'🧅','Fern':'🌿','Other':'🪹'};
+const TYPE_DEFAULTS={'Cactus':{water:21,fert:365},'Succulent':{water:14,fert:180},'Agave':{water:21,fert:365},'Yucca':{water:21,fert:365},'Shrub':{water:21,fert:365},'Tree':{water:21,fert:365},'Flowering':{water:7,fert:30},'Tropical':{water:7,fert:60},'Herb':{water:3,fert:30},'Vegetable':{water:3,fert:14},'Grass':{water:3,fert:30},'Vine':{water:7,fert:30},'Bulb':{water:10,fert:90},'Fern':{water:3,fert:60},'Other':{water:14,fert:90}};
+const TYPE_TEMP={'Cactus':{60:60,70:45,80:30,90:21,100:14,110:10},'Succulent':{60:30,70:21,80:14,90:10,100:7,110:5},'Agave':{60:45,70:30,80:21,90:14,100:10,110:10},'Yucca':{60:45,70:30,80:21,90:14,100:10,110:7},'Shrub':{60:60,70:45,80:30,90:21,100:14,110:10},'Tree':{60:45,70:30,80:21,90:14,100:10,110:7},'Flowering':{60:14,70:10,80:7,90:5,100:4,110:3},'Tropical':{60:10,70:7,80:5,90:4,100:3,110:2},'Herb':{60:5,70:4,80:3,90:2,100:2,110:1},'Vegetable':{60:5,70:4,80:3,90:2,100:2,110:1},'Grass':{60:5,70:4,80:3,90:2,100:2,110:1},'Vine':{60:10,70:7,80:5,90:4,100:3,110:2},'Bulb':{60:14,70:10,80:7,90:5,100:4,110:3},'Fern':{60:5,70:4,80:3,90:2,100:2,110:1},'Other':{60:21,70:14,80:10,90:7,100:5,110:4}};
+
+// ── SEED DATA ──────────────────────────────────────────────
+const SEED_PLANTS=[
+  {id:'seed_ironwood',name:'Desert Ironwood',type:'Tree',species:'Desert Ironwood',latin:'Olneya tesota',location:'',waterFreq:30,fertFreq:365,datePlanted:'',fact:'Nitrogen-fixing legume. Deep taproot. Can live 1,500+ years.',tempIntervals:{60:45,70:30,80:21,90:14,100:10,110:7},researchBasis:'🤖 1–2x/month established (Water Use It Wisely)',aiLookupDone:true},
+  {id:'seed_broom',name:'Desert Broom',type:'Shrub',species:'Desert Broom',latin:'Baccharis sarothroides',location:'',waterFreq:21,fertFreq:365,datePlanted:'',fact:'Extremely drought hardy. Blooms fall–winter.',tempIntervals:{60:60,70:45,80:30,90:21,100:14,110:10},researchBasis:'🤖 Every 3–4wk summer (Gardenia.net)',aiLookupDone:true}
+];
+
+// ── CLOUD SYNC ─────────────────────────────────────────────
+function setSyncStatus(s,l){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-label').textContent=l;}
+async function loadFromCloud(){
+  setSyncStatus('syncing','Loading...');
+  try{
+    const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':API_KEY,'X-Bin-Meta':'false'}});
+    if(!r.ok)throw new Error();
+    const data=await r.json();
+    if(data&&Array.isArray(data.plants)){
+      plants=data.plants;logs=data.logs||[];
+      if(data.settings)Object.assign(settings,data.settings);
+    } else {plants=SEED_PLANTS.map(p=>({...p}));logs=[];await saveToCloud();}
+    setSyncStatus('ok','Synced');applySettingsUI();renderDashboard();
+  }catch(e){
+    setSyncStatus('err','Offline — local data');
+    const local=localStorage.getItem('dlt_local');
+    if(local){const d=JSON.parse(local);plants=d.plants||SEED_PLANTS.map(p=>({...p}));logs=d.logs||[];if(d.settings)Object.assign(settings,d.settings);}
+    else{plants=SEED_PLANTS.map(p=>({...p}));logs=[];}
+    applySettingsUI();renderDashboard();
+  }
+}
+async function saveToCloud(){
+  if(saving)return;saving=true;setSyncStatus('syncing','Saving...');
+  localStorage.setItem('dlt_local',JSON.stringify({plants,logs,settings}));
+  try{
+    const r=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},body:JSON.stringify({plants,logs,settings})});
+    if(!r.ok)throw new Error();
+    setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  }catch(e){setSyncStatus('err','Saved locally — sync failed');}
+  saving=false;
+}
+function scheduleSave(){clearTimeout(syncTimeout);syncTimeout=setTimeout(saveToCloud,800);}
+
+// ── SETTINGS ───────────────────────────────────────────────
+function applySettingsUI(){
+  document.getElementById('settings-soil').value=settings.soil||'loam';
+  document.getElementById('settings-mulch').checked=!!settings.mulch;
+  document.getElementById('settings-mulch-depth').value=settings.mulchDepth||2;
+  document.getElementById('mulch-depth-row').style.display=settings.mulch?'block':'none';
+  document.getElementById('city-display').textContent=settings.city?.name||'—';
+  document.getElementById('temp-city-label').textContent='Today\'s high · '+(settings.city?.name||'—');
+  if(settings.city?.name) document.getElementById('city-saved').textContent='✓ '+settings.city.name;
+}
+document.getElementById('settings-mulch').addEventListener('change',function(){
+  document.getElementById('mulch-depth-row').style.display=this.checked?'block':'none';
+});
+function saveSettings(){
+  settings.soil=document.getElementById('settings-soil').value;
+  settings.mulch=document.getElementById('settings-mulch').checked;
+  settings.mulchDepth=parseInt(document.getElementById('settings-mulch-depth').value)||2;
+  scheduleSave();toast('Settings saved!');renderDashboard();
+}
+
+// ── CITY SEARCH ────────────────────────────────────────────
+function debounceCity(){clearTimeout(cityDebounce);cityDebounce=setTimeout(searchCity,400);}
+async function searchCity(){
+  const q=document.getElementById('city-search-input').value.trim();
+  if(q.length<2){document.getElementById('city-results').style.display='none';return;}
+  try{
+    const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`);
+    const d=await r.json();
+    const res=document.getElementById('city-results');
+    if(!d.results?.length){res.style.display='none';return;}
+    res.style.display='block';
+    res.innerHTML=d.results.map(c=>{
+      const label=[c.name,c.admin1,c.country].filter(Boolean).join(', ');
+      return`<div class="city-result-item" onclick="selectCity(${c.latitude},${c.longitude},'${label.replace(/'/g,"\\'")}','${c.timezone||'UTC'}')">${label}</div>`;
+    }).join('');
+  }catch(e){document.getElementById('city-results').style.display='none';}
+}
+function selectCity(lat,lon,name,tz){
+  settings.city={lat,lon,name,timezone:tz};
+  document.getElementById('city-results').style.display='none';
+  document.getElementById('city-search-input').value='';
+  document.getElementById('city-saved').textContent='✓ '+name;
+  document.getElementById('city-display').textContent=name;
+  document.getElementById('temp-city-label').textContent='Today\'s high · '+name;
+  currentWeather=null;
+  scheduleSave();
+  refreshWeather();
 }
 
 // ── WEATHER ────────────────────────────────────────────────
-async function fetchGilbertTemp(){
-  try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=33.3528&longitude=-111.7890&daily=temperature_2m_max&temperature_unit=fahrenheit&timezone=America%2FPhoenix&forecast_days=1');
-  return Math.round((await r.json()).daily.temperature_2m_max[0]);}catch(e){return null;}
+async function fetchWeather(lat,lon,tz){
+  const base='https://api.open-meteo.com/v1/forecast';
+  const params=`latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(tz||'auto')}`+
+    `&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,precipitation_sum`+
+    `&forecast_days=14&temperature_unit=fahrenheit`;
+  const r=await fetch(`${base}?${params}`);
+  return await r.json();
 }
-function getCachedTemp(){
-  try{const c=JSON.parse(localStorage.getItem('dlt_temp'));if(c&&c.date===new Date().toDateString())return c.temp;}catch(e){}return null;
+function getCachedWeather(){
+  try{const c=JSON.parse(localStorage.getItem('dlt_weather'));if(c&&c.date===new Date().toDateString())return c;}catch(e){}return null;
 }
-async function refreshTemp(){
+async function refreshWeather(){
   document.getElementById('temp-display').textContent='...';
-  const t=await fetchGilbertTemp();
-  if(t){currentTempHigh=t;localStorage.setItem('dlt_temp',JSON.stringify({temp:t,date:new Date().toDateString()}));}
-  renderDashboard();
+  try{
+    const {lat,lon,timezone}=settings.city;
+    const data=await fetchWeather(lat,lon,timezone);
+    const todayHigh=Math.round(data.daily.temperature_2m_max[0]);
+    const todayLow=Math.round(data.daily.temperature_2m_min[0]);
+    const humidity=Math.round(data.daily.relative_humidity_2m_mean[0]||20);
+    const precipMM=(data.daily.precipitation_sum[0]||0);
+    currentWeather={todayHigh,todayLow,humidity,precipMM,daily:data.daily};
+    localStorage.setItem('dlt_weather',JSON.stringify({...currentWeather,date:new Date().toDateString()}));
+  }catch(e){
+    const c=getCachedWeather();if(c)currentWeather=c;
+    else currentWeather={todayHigh:95,todayLow:70,humidity:20,precipMM:0,daily:null};
+  }
+  updateWeatherUI();renderDashboard();
 }
-function getTempDesc(t){
-  if(!t)return'Using estimated 85°F';
-  if(t>=108)return'Extreme heat — watch all plants';
-  if(t>=100)return'Triple digits — water needs elevated';
-  if(t>=90)return'Very hot — monitor soil every few days';
-  if(t>=80)return'Hot — normal summer schedule';
-  if(t>=70)return'Warm — reduce from peak frequency';
-  return'Mild — minimal supplemental watering';
+function updateWeatherUI(){
+  if(!currentWeather)return;
+  const t=currentWeather.todayHigh;
+  document.getElementById('temp-display').textContent=`${t}°F`;
+  document.getElementById('humidity-display').textContent=`${currentWeather.humidity}% RH`;
+  let desc='';
+  if(t>=108)desc='Extreme heat';else if(t>=100)desc='Triple digits';else if(t>=90)desc='Very hot';
+  else if(t>=80)desc='Hot';else if(t>=70)desc='Warm';else desc='Mild';
+  if(currentWeather.precipMM>0)desc+=` · ${currentWeather.precipMM.toFixed(1)}mm rain today`;
+  document.getElementById('temp-desc').textContent=desc;
+  const fc=currentWeather.daily?.precipitation_sum?.slice(1,4)||[];
+  const fcRain=fc.reduce((a,b)=>a+(b||0),0);
+  document.getElementById('precip-display').textContent=fcRain>0?`${fcRain.toFixed(1)}mm forecast next 3 days`:'';
 }
 function getSeasonTip(){
   const m=new Date().getMonth();
@@ -546,11 +793,19 @@ function getSeasonTip(){
   return'🌡️ Late spring — temps climbing. Prepare to increase watering.';
 }
 
-// ── INTERVAL LOGIC ─────────────────────────────────────────
-function getTempBucket(t){
-  if(t>=108)return 110;if(t>=97)return 100;if(t>=87)return 90;
-  if(t>=77)return 80;if(t>=67)return 70;return 60;
+// ── MOISTURE BAR ───────────────────────────────────────────
+function moistureBarHTML(pct){
+  if(pct===null)return'';
+  const cls=pct>70?'moisture-hi':pct>40?'moisture-mid':pct>20?'moisture-lo':'moisture-dry';
+  const label=pct>70?'Moist':pct>40?'Adequate':pct>20?'Getting dry':'Dry — water soon';
+  return`<div class="moisture-bar-wrap">
+    <div class="moisture-bar-label"><span>Soil moisture</span><span>${pct}% · ${label}</span></div>
+    <div class="moisture-bar-track"><div class="moisture-bar-fill ${cls}" style="width:${pct}%"></div></div>
+  </div>`;
 }
+
+// ── HISTORICAL INTERVAL FALLBACK ───────────────────────────
+function getTempBucket(t){if(t>=108)return 110;if(t>=97)return 100;if(t>=87)return 90;if(t>=77)return 80;if(t>=67)return 70;return 60;}
 function getHistoricalInterval(plant,bucket){
   const wl=logs.filter(l=>l.plantId===plant.id&&l.type==='water'&&l.tempHigh).sort((a,b)=>new Date(a.date)-new Date(b.date));
   if(wl.length<2)return null;
@@ -562,49 +817,14 @@ function getHistoricalInterval(plant,bucket){
   if(!m.length)return null;
   return Math.round(m.reduce((a,b)=>a+b,0)/m.length);
 }
-function getInterval(plant,tempHigh){
-  const t=tempHigh||85,bucket=getTempBucket(t);
-  const hist=getHistoricalInterval(plant,bucket);
-  if(hist!==null)return{days:hist,basis:'✓ your history at ~'+bucket+'°F',historical:true};
-  if(plant.tempIntervals){
-    const keys=Object.keys(plant.tempIntervals).map(Number).sort((a,b)=>a-b);
-    let chosen=plant.tempIntervals[keys[0]];
-    for(const k of keys){if(bucket>=k)chosen=plant.tempIntervals[k];}
-    return{days:chosen,basis:plant.researchBasis||'type-based default',historical:false};
-  }
-  const def=TYPE_DEFAULTS[plant.type]||TYPE_DEFAULTS['Other'];
-  const keys=Object.keys(def.tempIntervals).map(Number).sort((a,b)=>a-b);
-  let chosen=def.tempIntervals[keys[0]];
-  for(const k of keys){if(bucket>=k)chosen=def.tempIntervals[k];}
-  return{days:chosen,basis:'type-based default',historical:false};
-}
 
-// ── DATE / AGE HELPERS ─────────────────────────────────────
+// ── DATE HELPERS ───────────────────────────────────────────
 function getLastEvent(pid,type){const e=logs.filter(l=>l.plantId===pid&&l.type===type).sort((a,b)=>new Date(b.date)-new Date(a.date));return e[0]?.date||null;}
 function daysSince(ds){if(!ds)return 9999;return Math.floor((new Date()-new Date(ds))/86400000);}
 function addDays(ds,n){const d=new Date(ds);d.setDate(d.getDate()+n);return d;}
 function daysFromNow(d){return Math.round((d-new Date())/86400000);}
 function fmtDate(d){return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}
-function plantAge(datePlanted){
-  if(!datePlanted)return null;
-  const days=Math.floor((new Date()-new Date(datePlanted))/86400000);
-  if(days<30)return days+'d old';
-  if(days<365)return Math.floor(days/30)+'mo old';
-  const yrs=(days/365);return yrs<2?Math.round(yrs*10)/10+'yr old':Math.floor(yrs)+'yrs old';
-}
-function getPrediction(plant,temp){
-  const lastW=getLastEvent(plant.id,'water'),iv=getInterval(plant,temp);
-  if(!lastW)return{date:null,daysUntil:null,interval:iv.days,basis:iv.basis,historical:iv.historical,never:true};
-  const next=addDays(lastW,iv.days),du=daysFromNow(next);
-  return{date:next,daysUntil:du,interval:iv.days,basis:iv.basis,historical:iv.historical,never:false};
-}
-function predBadge(du,never){if(never||du<=0)return'badge-due';if(du<=3)return'badge-soon';return'badge-ok';}
-function predLabel(pred){
-  if(pred.never)return'Never watered';
-  if(pred.daysUntil<=0)return`Overdue ${Math.abs(pred.daysUntil)}d`;
-  if(pred.daysUntil===1)return'Tomorrow';
-  return`In ${pred.daysUntil} days`;
-}
+function plantAge(dp){if(!dp)return null;const days=Math.floor((new Date()-new Date(dp))/86400000);if(days<30)return days+'d old';if(days<365)return Math.floor(days/30)+'mo old';const y=(days/365);return y<2?Math.round(y*10)/10+'yr old':Math.floor(y)+'yrs old';}
 function getFertStatus(plant){
   const last=getLastEvent(plant.id,'fertilizer'),freq=plant.fertFreq||90;
   if(!last)return{label:'Never fertilized',badge:'badge-due'};
@@ -614,76 +834,95 @@ function getFertStatus(plant){
   return{label:`Next fert in ${until}d`,badge:'badge-ok'};
 }
 
-// ── SORT ───────────────────────────────────────────────────
-function setSort(mode,btn){
-  currentSort=mode;
-  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderDashboard();
+// ── UNIFIED PREDICTION ─────────────────────────────────────
+// Combines ET₀ soil model with historical interval fallback
+function getPrediction(plant){
+  const bucket=getTempBucket(currentWeather?.todayHigh||85);
+  const histInterval=getHistoricalInterval(plant,bucket);
+
+  // Try ET₀ soil model first
+  const sm=estimateSoilMoisture(plant,currentWeather);
+
+  // If we have enough historical data (3+ logs), blend with history
+  const waterLogs=logs.filter(l=>l.plantId===plant.id&&l.type==='water');
+  let nextDate, daysUntil, basis, moisturePct=sm.moisturePct;
+
+  if(sm.noHistory){
+    nextDate=null;daysUntil=null;basis='Water now to establish baseline';
+    return{date:null,daysUntil:null,interval:null,basis,never:true,moisturePct:null};
+  }
+
+  if(histInterval && waterLogs.length>=3){
+    // Blend: ET model for trend, history for calibration
+    const histDate=addDays(getLastEvent(plant.id,'water'),histInterval);
+    const histDays=daysFromNow(histDate);
+    const etDays=sm.daysUntil;
+    // Weight: 60% history, 40% ET model if both available
+    const blendedDays=Math.round(histDays*0.60+etDays*0.40);
+    daysUntil=blendedDays;
+    nextDate=new Date();nextDate.setDate(nextDate.getDate()+Math.max(0,daysUntil));
+    basis=`✓ History + ET₀ model · ${sm.modelBasis}`;
+  } else {
+    daysUntil=sm.daysUntil;
+    nextDate=sm.nextWaterDate;
+    basis=sm.modelBasis;
+  }
+
+  return{date:nextDate,daysUntil,interval:null,basis,never:false,moisturePct};
 }
-function sortPlants(preds,temp){
-  return [...preds].sort((a,b)=>{
-    if(currentSort==='water'){
-      const ad=a.pred.never?-999:(a.pred.daysUntil??999),bd=b.pred.never?-999:(b.pred.daysUntil??999);
-      return ad-bd;
-    }
+
+function predBadge(du,never){if(never||du<=0)return'badge-due';if(du<=3)return'badge-soon';return'badge-ok';}
+function predLabel(pred){
+  if(pred.never)return'Never watered';
+  if(pred.daysUntil<=0)return`Overdue ${Math.abs(pred.daysUntil)}d`;
+  if(pred.daysUntil===1)return'Tomorrow';
+  return`In ${pred.daysUntil} days`;
+}
+
+// ── SORT & COLLAPSE ────────────────────────────────────────
+function setSort(m,btn){currentSort=m;document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();}
+function sortPreds(preds){
+  return[...preds].sort((a,b)=>{
+    if(currentSort==='water'){const ad=a.pred.never?-999:(a.pred.daysUntil??999),bd=b.pred.never?-999:(b.pred.daysUntil??999);return ad-bd;}
     if(currentSort==='name')return a.plant.name.localeCompare(b.plant.name);
     if(currentSort==='type')return(a.plant.type||'').localeCompare(b.plant.type||'');
-    if(currentSort==='age'){
-      const ad=a.plant.datePlanted?new Date(a.plant.datePlanted).getTime():0;
-      const bd=b.plant.datePlanted?new Date(b.plant.datePlanted).getTime():0;
-      return ad-bd; // oldest first
-    }
+    if(currentSort==='age'){const ad=a.plant.datePlanted?new Date(a.plant.datePlanted).getTime():0,bd=b.plant.datePlanted?new Date(b.plant.datePlanted).getTime():0;return ad-bd;}
     return 0;
   });
 }
-
-// ── COLLAPSE ───────────────────────────────────────────────
-function toggleCard(id){
-  expandedCards[id]=!expandedCards[id];
-  const expEl=document.getElementById('exp-'+id),chev=document.getElementById('chev-'+id);
-  if(expEl)expEl.style.display=expandedCards[id]?'block':'none';
-  if(chev)chev.className='dash-chevron'+(expandedCards[id]?' open':'');
-}
+function toggleCard(id){expandedCards[id]=!expandedCards[id];const e=document.getElementById('exp-'+id),c=document.getElementById('chev-'+id);if(e)e.style.display=expandedCards[id]?'block':'none';if(c)c.className='dash-chevron'+(expandedCards[id]?' open':'');}
 function collapseAll(){plants.forEach(p=>{expandedCards[p.id]=false;});renderDashboard();}
 function expandAll(){plants.forEach(p=>{expandedCards[p.id]=true;});renderDashboard();}
 
 // ── DASHBOARD ──────────────────────────────────────────────
 function renderDashboard(){
-  const temp=currentTempHigh||getCachedTemp()||85;
-  document.getElementById('temp-display').textContent=currentTempHigh?`${temp}°F`:`~${temp}°F`;
-  document.getElementById('temp-desc').textContent=getTempDesc(currentTempHigh?temp:null);
+  updateWeatherUI();
   document.getElementById('season-banner').textContent=getSeasonTip();
-  const preds=plants.map(p=>({plant:p,pred:getPrediction(p,temp)}));
+  const preds=plants.map(p=>({plant:p,pred:getPrediction(p)}));
   document.getElementById('m-total').textContent=plants.length;
   document.getElementById('m-today').textContent=preds.filter(x=>x.pred.never||x.pred.daysUntil<=0).length;
   document.getElementById('m-week').textContent=preds.filter(x=>!x.pred.never&&x.pred.daysUntil>0&&x.pred.daysUntil<=7).length;
   document.getElementById('m-fert').textContent=plants.filter(p=>['badge-due','badge-soon'].includes(getFertStatus(p).badge)).length;
-
-  const sorted=sortPlants(preds,temp);
+  const sorted=sortPreds(preds);
   const el=document.getElementById('dash-list');
-  if(!plants.length){el.innerHTML='<div class="empty">No plants yet — tap Add Plant to get started.</div>';return;}
-
+  if(!plants.length){el.innerHTML='<div class="empty">No plants yet — go to Settings to add your first plant.</div>';return;}
   el.innerHTML=sorted.map(({plant:p,pred})=>{
     const badge=predBadge(pred.daysUntil,pred.never),lbl=predLabel(pred);
-    const fs=getFertStatus(p),lastW=getLastEvent(p.id,'water'),bucket=getTempBucket(temp);
-    const nextStr=pred.never?'Water now — no history':pred.daysUntil<=0?`Water today (${Math.abs(pred.daysUntil)}d overdue)`:`${fmtDate(pred.date)} · in ${pred.daysUntil}d`;
-    const basisStr=pred.historical?`✓ Your history at ~${bucket}°F`:(pred.basis||'type default');
-    const icon=plantIcon(p.type);
+    const fs=getFertStatus(p),lastW=getLastEvent(p.id,'water');
+    const nextStr=pred.never?'Water now — log first watering to start':pred.daysUntil<=0?`Water today (${Math.abs(pred.daysUntil)}d overdue)`:`${fmtDate(pred.date)} · in ${pred.daysUntil}d`;
     const age=plantAge(p.datePlanted);
     const lastWStr=lastW?`Last watered ${lastW}`:'Never watered';
     const nextShort=pred.never?'Water now':pred.daysUntil<=0?'Overdue':`Next: ${fmtDate(pred.date)}`;
     if(expandedCards[p.id]===undefined)expandedCards[p.id]=false;
     const isExp=expandedCards[p.id];
-
-    return `<div class="dash-card" id="card-${p.id}">
+    return`<div class="dash-card" id="card-${p.id}">
       <div class="dash-card-header" onclick="toggleCard('${p.id}')">
-        <span class="plant-icon">${icon}</span>
+        <span class="plant-icon">${TYPE_ICONS[p.type]||'🪴'}</span>
         <span class="badge ${badge}" style="margin-left:0;margin-right:4px;">${lbl}</span>
         <div class="dash-collapsed-info">
           <div class="dash-collapsed-name">${p.name}${age?` <span style="font-size:10px;color:var(--text3);font-weight:400;">${age}</span>`:''}</div>
           <div class="dash-collapsed-sub">${lastWStr} · ${nextShort}</div>
-          ${!isExp?`<div class="dash-collapsed-basis">${basisStr} · every ${pred.interval}d at ${temp}°F</div>`:''}
+          ${!isExp?`<div class="dash-collapsed-basis">${pred.basis||''}</div>`:''}
         </div>
         <i class="ti ti-chevron-down dash-chevron${isExp?' open':''}" id="chev-${p.id}"></i>
       </div>
@@ -693,9 +932,10 @@ function renderDashboard(){
           <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">${p.type}${p.latin?` · <em>${p.latin}</em>`:''}${p.location?' · '+p.location:''}</div>
           <div class="pred-box" style="margin-top:0;">
             <div class="pred-date">${nextStr}</div>
-            <div class="pred-basis">${basisStr} · every ${pred.interval}d at ${temp}°F</div>
+            <div class="pred-basis">${pred.basis||''}</div>
             ${lastW?`<div class="pred-basis">Last watered: ${lastW}</div>`:''}
           </div>
+          ${moistureBarHTML(pred.moisturePct)}
           <div style="font-size:12px;color:var(--text2);margin-top:8px;">${fs.label}</div>
           ${p.fact?`<div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5;">${p.fact}</div>`:''}
           <div class="action-row">
@@ -707,25 +947,18 @@ function renderDashboard(){
       </div>
     </div>`;
   }).join('');
-
-  // trigger AI lookups for plants without it
   plants.filter(p=>p.latin&&!p.aiLookupDone).forEach(p=>lookupWateringIntervals(p));
 }
 
 // ── PLANT DETAIL ───────────────────────────────────────────
-function openPlantDetail(id){
-  prevSection=document.querySelector('.section.active')?.id?.replace('s-','')||'dashboard';
-  detailPlantId=id;renderPlantDetail(id);showSection('detail');
-}
+function openPlantDetail(id){prevSection=document.querySelector('.section.active')?.id?.replace('s-','')||'dashboard';detailPlantId=id;renderPlantDetail(id);showSection('detail');}
 function goBack(){showSection(prevSection);}
 function renderPlantDetail(id){
   const p=plants.find(p=>p.id===id);if(!p)return;
-  const temp=currentTempHigh||getCachedTemp()||85;
-  const pred=getPrediction(p,temp),fs=getFertStatus(p);
+  const pred=getPrediction(p),fs=getFertStatus(p);
   const badge=predBadge(pred.daysUntil,pred.never),lbl=predLabel(pred);
   const lastW=getLastEvent(p.id,'water'),lastF=getLastEvent(p.id,'fertilizer');
-  const bucket=getTempBucket(temp);
-  const nextStr=pred.never?'Water now':pred.daysUntil<=0?`Overdue ${Math.abs(pred.daysUntil)}d`:`${fmtDate(pred.date)} (in ${pred.daysUntil}d)`;
+  const nextStr=pred.never?'Water now — log first watering':pred.daysUntil<=0?`Overdue ${Math.abs(pred.daysUntil)}d`:`${fmtDate(pred.date)} (in ${pred.daysUntil}d)`;
   const age=plantAge(p.datePlanted);
   const waterLogs=logs.filter(l=>l.plantId===id&&l.type==='water').sort((a,b)=>new Date(b.date)-new Date(a.date));
   const fertLogs=logs.filter(l=>l.plantId===id&&l.type==='fertilizer').sort((a,b)=>new Date(b.date)-new Date(a.date));
@@ -747,11 +980,12 @@ function renderPlantDetail(id){
       </div>`;
     }).join('');
   }
+  const soilLabel=SOIL_PROPS[settings.soil]?.label||'Loam';
+  const mulchNote=settings.mulch?` + mulch (${['','thin','medium','thick'][settings.mulchDepth]||'medium'})`:'';
   document.getElementById('detail-content').innerHTML=`
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-          <div style="font-size:26px;margin-bottom:4px;">${plantIcon(p.type)}</div>
+        <div><div style="font-size:26px;margin-bottom:4px;">${TYPE_ICONS[p.type]||'🪴'}</div>
           <div style="font-size:20px;font-weight:700;">${p.name}</div>
           ${p.latin?`<div style="font-style:italic;font-size:12px;color:var(--text3);margin-top:2px;">${p.latin}</div>`:''}
           <div style="font-size:13px;color:var(--text2);margin-top:4px;">${p.type}${p.species&&p.species!==p.name?' · '+p.species:''}${p.location?' · '+p.location:''}</div>
@@ -771,7 +1005,7 @@ function renderPlantDetail(id){
     <div class="detail-stat-row">
       <div class="detail-stat"><div class="detail-stat-label">Next water</div>
         <div class="detail-stat-value" style="color:var(--blue-text);">${nextStr}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:3px;">${pred.historical?'✓ your history at ~'+bucket+'°F':'📖 every '+pred.interval+'d at '+temp+'°F'}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">${pred.basis||''}</div>
       </div>
       <div class="detail-stat"><div class="detail-stat-label">Fertilizer</div>
         <div class="detail-stat-value">${fs.label}</div>
@@ -779,14 +1013,15 @@ function renderPlantDetail(id){
       </div>
     </div>
     <div class="detail-stat-row">
-      <div class="detail-stat"><div class="detail-stat-label">Interval at ${temp}°F</div>
-        <div class="detail-stat-value">${pred.interval} days</div>
+      <div class="detail-stat"><div class="detail-stat-label">Soil type</div>
+        <div class="detail-stat-value" style="font-size:13px;">${soilLabel}${mulchNote}</div>
       </div>
       <div class="detail-stat"><div class="detail-stat-label">Total events</div>
         <div class="detail-stat-value">${waterLogs.length+fertLogs.length}</div>
         <div style="font-size:11px;color:var(--text2);margin-top:3px;">${waterLogs.length} water · ${fertLogs.length} fert</div>
       </div>
     </div>
+    ${pred.moisturePct!==null?`<div class="card">${moistureBarHTML(pred.moisturePct)}</div>`:''}
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div style="font-size:14px;font-weight:600;"><i class="ti ti-droplet" style="color:var(--blue);"></i> Watering history</div>
@@ -801,63 +1036,54 @@ function renderPlantDetail(id){
     </div>`;
 }
 
-// ── DELETE ─────────────────────────────────────────────────
+// ── CONFIRM ────────────────────────────────────────────────
+let confirmCallback=null;
+function showConfirm(title,msg){return new Promise(r=>{confirmCallback=r;document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').textContent=msg;document.getElementById('confirm-overlay').classList.add('open');});}
+function confirmResolve(r){document.getElementById('confirm-overlay').classList.remove('open');if(confirmCallback){confirmCallback(r);confirmCallback=null;}}
+
 async function deleteLogById(id){
   const l=logs.find(l=>l.id===id),plant=plants.find(p=>p.id===l?.plantId);
   const ok=await showConfirm('Delete event?',`Remove this ${l?.type==='water'?'watering':'fertilizer'} entry for ${plant?.name||'this plant'} on ${l?.date}?`);
   if(!ok)return;
   logs=logs.filter(l=>l.id!==id);scheduleSave();
   const active=document.querySelector('.section.active')?.id;
-  if(active==='s-history')renderHistory();
-  if(active==='s-detail')renderPlantDetail(detailPlantId);
-  if(active==='s-dashboard')renderDashboard();
+  if(active==='s-history')renderHistory();if(active==='s-detail')renderPlantDetail(detailPlantId);if(active==='s-dashboard')renderDashboard();
   toast('Entry deleted');
 }
 async function deletePlantById(id){
   const p=plants.find(p=>p.id===id);
-  const ok=await showConfirm('Remove plant?',`Remove "${p?.name}" and all its logs? This cannot be undone.`);
+  const ok=await showConfirm('Remove plant?',`Remove "${p?.name}" and all its logs? Cannot be undone.`);
   if(!ok)return;
-  plants=plants.filter(p=>p.id!==id);logs=logs.filter(l=>l.plantId!==id);
-  delete expandedCards[id];scheduleSave();toast('Plant removed');goBack();
+  plants=plants.filter(p=>p.id!==id);logs=logs.filter(l=>l.plantId!==id);delete expandedCards[id];scheduleSave();toast('Plant removed');goBack();
 }
 
 // ── EDIT LOG ───────────────────────────────────────────────
 function openEditLogModal(id){
   const l=logs.find(l=>l.id===id);if(!l)return;editingLogId=id;
   document.getElementById('el-plant').innerHTML=plants.map(p=>`<option value="${p.id}"${p.id===l.plantId?' selected':''}>${p.name}</option>`).join('');
-  document.getElementById('el-type').value=l.type||'water';
-  document.getElementById('el-gallons').value=l.gallons||'';document.getElementById('el-duration').value=l.duration||'';
-  document.getElementById('el-fert-type').value=l.fertType||'';document.getElementById('el-fert-amount').value=l.fertAmount||'';
-  document.getElementById('el-date').value=l.date||'';document.getElementById('el-temp').value=l.tempHigh||'';
-  document.getElementById('el-notes').value=l.notes||'';
-  document.getElementById('el-water').style.display=l.type==='water'?'block':'none';
-  document.getElementById('el-fert').style.display=l.type==='fertilizer'?'block':'none';
+  document.getElementById('el-type').value=l.type||'water';document.getElementById('el-gallons').value=l.gallons||'';document.getElementById('el-duration').value=l.duration||'';
+  document.getElementById('el-fert-type').value=l.fertType||'';document.getElementById('el-fert-amount').value=l.fertAmount||'';document.getElementById('el-date').value=l.date||'';
+  document.getElementById('el-temp').value=l.tempHigh||'';document.getElementById('el-notes').value=l.notes||'';
+  document.getElementById('el-water').style.display=l.type==='water'?'block':'none';document.getElementById('el-fert').style.display=l.type==='fertilizer'?'block':'none';
   document.getElementById('edit-log-modal').classList.add('open');
 }
 function closeEditLogModal(){document.getElementById('edit-log-modal').classList.remove('open');editingLogId=null;}
 function saveEditLog(){
   const l=logs.find(l=>l.id===editingLogId);if(!l)return;
-  l.plantId=document.getElementById('el-plant').value;l.type=document.getElementById('el-type').value;
-  l.date=document.getElementById('el-date').value;l.gallons=document.getElementById('el-gallons').value;
-  l.duration=document.getElementById('el-duration').value;l.fertType=document.getElementById('el-fert-type').value;
-  l.fertAmount=document.getElementById('el-fert-amount').value;
-  l.tempHigh=document.getElementById('el-temp').value?parseFloat(document.getElementById('el-temp').value):null;
-  l.notes=document.getElementById('el-notes').value;
+  l.plantId=document.getElementById('el-plant').value;l.type=document.getElementById('el-type').value;l.date=document.getElementById('el-date').value;
+  l.gallons=document.getElementById('el-gallons').value;l.duration=document.getElementById('el-duration').value;l.fertType=document.getElementById('el-fert-type').value;
+  l.fertAmount=document.getElementById('el-fert-amount').value;l.tempHigh=document.getElementById('el-temp').value?parseFloat(document.getElementById('el-temp').value):null;l.notes=document.getElementById('el-notes').value;
   closeEditLogModal();toast('Event updated!');scheduleSave();
   const active=document.querySelector('.section.active')?.id;
-  if(active==='s-history')renderHistory();
-  if(active==='s-detail')renderPlantDetail(detailPlantId);
-  if(active==='s-dashboard')renderDashboard();
+  if(active==='s-history')renderHistory();if(active==='s-detail')renderPlantDetail(detailPlantId);if(active==='s-dashboard')renderDashboard();
 }
 
 // ── EDIT PLANT ─────────────────────────────────────────────
 function openEditModal(id){
   const p=plants.find(p=>p.id===id);if(!p)return;editingPlantId=id;
-  document.getElementById('edit-name').value=p.name||'';document.getElementById('edit-type').value=p.type||'';
-  document.getElementById('edit-species').value=p.species||'';document.getElementById('edit-latin').value=p.latin||'';
-  document.getElementById('edit-location').value=p.location||'';document.getElementById('edit-planted').value=p.datePlanted||'';
-  document.getElementById('edit-water-freq').value=p.waterFreq||'';document.getElementById('edit-fert-freq').value=p.fertFreq||'';
-  document.getElementById('edit-fact').value=p.fact||'';
+  document.getElementById('edit-name').value=p.name||'';document.getElementById('edit-type').value=p.type||'';document.getElementById('edit-species').value=p.species||'';
+  document.getElementById('edit-latin').value=p.latin||'';document.getElementById('edit-location').value=p.location||'';document.getElementById('edit-planted').value=p.datePlanted||'';
+  document.getElementById('edit-water-freq').value=p.waterFreq||'';document.getElementById('edit-fert-freq').value=p.fertFreq||'';document.getElementById('edit-fact').value=p.fact||'';
   document.getElementById('edit-modal').classList.add('open');
 }
 function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');editingPlantId=null;}
@@ -865,86 +1091,62 @@ function saveEditPlant(){
   const p=plants.find(p=>p.id===editingPlantId);if(!p)return;
   const name=document.getElementById('edit-name').value.trim(),type=document.getElementById('edit-type').value;
   if(!name||!type){toast('Name and type are required');return;}
-  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS['Other'];
   const newLatin=document.getElementById('edit-latin').value.trim();
-  const latinChanged=newLatin!==p.latin;
-  p.name=name;p.type=type;p.species=document.getElementById('edit-species').value.trim();
-  p.latin=newLatin;p.location=document.getElementById('edit-location').value.trim();
-  p.datePlanted=document.getElementById('edit-planted').value;
-  p.waterFreq=parseInt(document.getElementById('edit-water-freq').value)||def.water;
-  p.fertFreq=parseInt(document.getElementById('edit-fert-freq').value)||def.fert;
+  if(newLatin!==p.latin)p.aiLookupDone=false;
+  p.name=name;p.type=type;p.species=document.getElementById('edit-species').value.trim();p.latin=newLatin;
+  p.location=document.getElementById('edit-location').value.trim();p.datePlanted=document.getElementById('edit-planted').value;
+  p.waterFreq=parseInt(document.getElementById('edit-water-freq').value)||(TYPE_DEFAULTS[type]?.water||14);
+  p.fertFreq=parseInt(document.getElementById('edit-fert-freq').value)||(TYPE_DEFAULTS[type]?.fert||90);
   p.fact=document.getElementById('edit-fact').value.trim();
-  if(latinChanged&&p.latin){p.aiLookupDone=false;} // re-trigger lookup if latin name changed
-  if(!p.tempIntervals)p.tempIntervals=def.tempIntervals;
+  if(!p.tempIntervals)p.tempIntervals=TYPE_TEMP[type]||TYPE_TEMP.Other;
   closeEditModal();toast(`"${p.name}" updated!`);scheduleSave();
   const active=document.querySelector('.section.active')?.id;
-  if(active==='s-detail')renderPlantDetail(detailPlantId);
-  if(active==='s-dashboard')renderDashboard();
+  if(active==='s-detail')renderPlantDetail(detailPlantId);if(active==='s-dashboard')renderDashboard();
 }
 
 // ── ADD PLANT ──────────────────────────────────────────────
 function addPlant(){
   const name=document.getElementById('ap-name').value.trim(),type=document.getElementById('ap-type').value;
   if(!name||!type){toast('Name and type are required');return;}
-  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS['Other'];
+  const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS.Other;
   const newId=Date.now().toString();
-  plants.push({id:newId,name,type,
-    species:document.getElementById('ap-species').value.trim(),
-    latin:document.getElementById('ap-latin').value.trim(),
-    location:document.getElementById('ap-location').value.trim(),
-    datePlanted:document.getElementById('ap-planted').value,
-    waterFreq:parseInt(document.getElementById('ap-water-freq').value)||def.water,
-    fertFreq:parseInt(document.getElementById('ap-fert-freq').value)||def.fert,
-    tempIntervals:def.tempIntervals,researchBasis:'',fact:'',aiLookupDone:false
-  });
-  expandedCards[newId]=true;
+  plants.push({id:newId,name,type,species:document.getElementById('ap-species').value.trim(),latin:document.getElementById('ap-latin').value.trim(),
+    location:document.getElementById('ap-location').value.trim(),datePlanted:document.getElementById('ap-planted').value,
+    waterFreq:parseInt(document.getElementById('ap-water-freq').value)||def.water,fertFreq:parseInt(document.getElementById('ap-fert-freq').value)||def.fert,
+    tempIntervals:TYPE_TEMP[type]||TYPE_TEMP.Other,researchBasis:'',fact:'',aiLookupDone:false});
+  expandedCards[newId]=false;
   ['ap-name','ap-species','ap-latin','ap-location','ap-planted','ap-water-freq','ap-fert-freq'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ap-type').value='';
   toast(`"${name}" added!`);scheduleSave();showSection('dashboard');
 }
 
-// ── LOG ────────────────────────────────────────────────────
+// ── LOG EVENT ──────────────────────────────────────────────
 function setLogType(type,btn){
-  currentLogType=type;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
-  document.getElementById('water-fields').style.display=type==='water'?'block':'none';
-  document.getElementById('fert-fields').style.display=type==='fertilizer'?'block':'none';
+  currentLogType=type;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('water-fields').style.display=type==='water'?'block':'none';document.getElementById('fert-fields').style.display=type==='fertilizer'?'block':'none';
 }
 function populateLogSelect(){
   document.getElementById('log-plant').innerHTML='<option value="">Select plant...</option>'+plants.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
   document.getElementById('log-date').value=new Date().toISOString().split('T')[0];
 }
 function saveLog(){
-  const plantId=document.getElementById('log-plant').value;
-  if(!plantId){toast('Please select a plant');return;}
-  const temp=currentTempHigh||getCachedTemp()||null;
-  logs.push({id:Date.now().toString(),plantId,type:currentLogType,
-    date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
-    notes:document.getElementById('log-notes').value,gallons:document.getElementById('log-gallons').value,
-    duration:document.getElementById('log-duration').value,fertType:document.getElementById('log-fert-type').value,
-    fertAmount:document.getElementById('log-fert-amount').value,tempHigh:temp
-  });
+  const plantId=document.getElementById('log-plant').value;if(!plantId){toast('Please select a plant');return;}
+  logs.push({id:Date.now().toString(),plantId,type:currentLogType,date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
+    notes:document.getElementById('log-notes').value,gallons:document.getElementById('log-gallons').value,duration:document.getElementById('log-duration').value,
+    fertType:document.getElementById('log-fert-type').value,fertAmount:document.getElementById('log-fert-amount').value,tempHigh:currentWeather?.todayHigh||null});
   ['log-notes','log-gallons','log-duration','log-fert-type','log-fert-amount'].forEach(id=>document.getElementById(id).value='');
   toast('Logged!');scheduleSave();showSection('dashboard');
 }
-
-// ── QUICK LOG MODAL ────────────────────────────────────────
 function quickLog(plantId,type){
-  modalPlantId=plantId;
-  document.getElementById('modal-type').value=type;
-  document.getElementById('modal-water').style.display=type==='water'?'block':'none';
+  modalPlantId=plantId;document.getElementById('modal-type').value=type;document.getElementById('modal-water').style.display=type==='water'?'block':'none';
   document.getElementById('modal-title').textContent=`Log ${type} — ${plants.find(p=>p.id===plantId)?.name}`;
   ['modal-notes','modal-gallons','modal-duration'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('log-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('log-modal').classList.remove('open');}
 function saveModalLog(){
-  const temp=currentTempHigh||getCachedTemp()||null;
-  logs.push({id:Date.now().toString(),plantId:modalPlantId,
-    type:document.getElementById('modal-type').value,date:new Date().toISOString().split('T')[0],
-    notes:document.getElementById('modal-notes').value,gallons:document.getElementById('modal-gallons').value,
-    duration:document.getElementById('modal-duration').value,tempHigh:temp
-  });
+  logs.push({id:Date.now().toString(),plantId:modalPlantId,type:document.getElementById('modal-type').value,date:new Date().toISOString().split('T')[0],
+    notes:document.getElementById('modal-notes').value,gallons:document.getElementById('modal-gallons').value,duration:document.getElementById('modal-duration').value,tempHigh:currentWeather?.todayHigh||null});
   closeModal();toast('Logged!');scheduleSave();
   const active=document.querySelector('.section.active')?.id;
   if(active==='s-detail')renderPlantDetail(detailPlantId);else renderDashboard();
@@ -970,8 +1172,7 @@ function renderHistoryList(){
     return`<div class="log-item">
       <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;">
         <span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:5px;"></span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:500;font-size:14px;">${plant?.name||'Unknown'}</div>
+        <div style="flex:1;min-width:0;"><div style="font-weight:500;font-size:14px;">${plant?.name||'Unknown'}</div>
           <div style="color:var(--text2);font-size:12px;">${isW?'Watered':'Fertilized'}${detail?' · '+detail:''}${l.tempHigh?' · '+l.tempHigh+'°F':''}</div>
           ${l.notes?`<div style="color:var(--text3);font-size:11px;">${l.notes}</div>`:''}
           <div style="color:var(--text3);font-size:11px;">${l.date}</div>
@@ -991,23 +1192,19 @@ function renderHistoryTable(){
   const ts=`style="width:100%;border-collapse:collapse;font-size:13px;"`;
   const ths=`style="text-align:left;padding:8px 10px;background:var(--bg2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;"`;
   const tds=`style="padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:top;"`;
-  const rows=filtered.map(l=>{
+  tableEl.innerHTML=`<div class="card" style="padding:0;overflow:hidden;"><table ${ts}><thead><tr>
+    <th ${ths}>Date</th><th ${ths}>Plant</th><th ${ths}>Type</th><th ${ths}>Detail</th><th ${ths}>Temp</th><th ${ths}>Notes</th><th ${ths}></th>
+  </tr></thead><tbody>`+filtered.map(l=>{
     const plant=plants.find(p=>p.id===l.plantId),isW=l.type==='water';
     const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
-    return`<tr>
-      <td ${tds}>${l.date}</td><td ${tds}>${plant?.name||'Unknown'}</td>
+    return`<tr><td ${tds}>${l.date}</td><td ${tds}>${plant?.name||'Unknown'}</td>
       <td ${tds}><span style="display:flex;align-items:center;gap:5px;"><span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:0;"></span>${isW?'Water':'Fert'}</span></td>
-      <td ${tds}>${detail||'—'}</td><td ${tds}>${l.tempHigh?l.tempHigh+'°F':'—'}</td>
-      <td ${tds}>${l.notes||'—'}</td>
+      <td ${tds}>${detail||'—'}</td><td ${tds}>${l.tempHigh?l.tempHigh+'°F':'—'}</td><td ${tds}>${l.notes||'—'}</td>
       <td ${tds}><div style="display:flex;gap:4px;">
         <button class="btn" onclick="openEditLogModal('${l.id}')" style="padding:3px 7px;font-size:11px;"><i class="ti ti-pencil"></i></button>
         <button class="btn btn-danger" onclick="deleteLogById('${l.id}')" style="padding:3px 7px;font-size:11px;"><i class="ti ti-trash"></i></button>
-      </div></td>
-    </tr>`;
-  }).join('');
-  tableEl.innerHTML=`<div class="card" style="padding:0;overflow:hidden;"><table ${ts}><thead><tr>
-    <th ${ths}>Date</th><th ${ths}>Plant</th><th ${ths}>Type</th><th ${ths}>Detail</th><th ${ths}>Temp</th><th ${ths}>Notes</th><th ${ths}></th>
-  </tr></thead><tbody>${rows}</tbody></table></div>`;
+      </div></td></tr>`;
+  }).join('')+'</tbody></table></div>';
 }
 function toggleHistoryView(){
   historyViewMode=historyViewMode==='list'?'table':'list';
@@ -1017,17 +1214,10 @@ function toggleHistoryView(){
 }
 function exportCSV(){
   const filtered=getFilteredLogs();if(!filtered.length){toast('No events to export');return;}
-  const headers=['Date','Plant','Latin Name','Type','Gallons','Duration (min)','Fert Type','Fert Amount','Temp (°F)','Notes'];
-  const rows=filtered.map(l=>{
-    const plant=plants.find(p=>p.id===l.plantId);
-    return[l.date,plant?.name||'',plant?.latin||'',l.type==='water'?'Watering':'Fertilizer',
-      l.gallons||'',l.duration||'',l.fertType||'',l.fertAmount||'',l.tempHigh||'',(l.notes||'').replace(/,/g,' ')
-    ].map(v=>`"${v}"`).join(',');
-  });
-  const csv=[headers.join(','),...rows].join('\n');
-  const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  const a=document.createElement('a');a.href=url;a.download=`plant-tracker-${new Date().toISOString().split('T')[0]}.csv`;a.click();
-  URL.revokeObjectURL(url);toast('CSV downloaded!');
+  const headers=['Date','Plant','Latin','Type','Gallons','Duration(min)','FertType','FertAmount','Temp(°F)','Notes'];
+  const rows=filtered.map(l=>{const p=plants.find(p=>p.id===l.plantId);return[l.date,p?.name||'',p?.latin||'',l.type==='water'?'Watering':'Fertilizer',l.gallons||'',l.duration||'',l.fertType||'',l.fertAmount||'',l.tempHigh||'',(l.notes||'').replace(/,/g,' ')].map(v=>`"${v}"`).join(',');});
+  const url=URL.createObjectURL(new Blob([[headers.join(','),...rows].join('\n')],{type:'text/csv'}));
+  const a=document.createElement('a');a.href=url;a.download=`plant-tracker-${new Date().toISOString().split('T')[0]}.csv`;a.click();URL.revokeObjectURL(url);toast('CSV downloaded!');
 }
 
 // ── NAV ────────────────────────────────────────────────────
@@ -1035,24 +1225,28 @@ function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('s-'+id).classList.add('active');
-  const navMap={dashboard:0,log:1,history:2,addplant:3};
+  const navMap={dashboard:0,log:1,history:2,settings:3};
   if(navMap[id]!==undefined)document.querySelectorAll('.nav-btn')[navMap[id]].classList.add('active');
-  if(id==='dashboard')renderDashboard();
-  if(id==='history')renderHistory();
-  if(id==='log')populateLogSelect();
+  if(id==='dashboard')renderDashboard();if(id==='history')renderHistory();if(id==='log')populateLogSelect();
 }
-
-function toast(msg){
-  const el=document.getElementById('toast');el.textContent=msg;
-  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200);
-}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200);}
 
 // ── INIT ───────────────────────────────────────────────────
 (async()=>{
-  const cached=getCachedTemp();if(cached)currentTempHigh=cached;
+  const cached=getCachedWeather();if(cached)currentWeather=cached;
   await loadFromCloud();
-  const fresh=await fetchGilbertTemp();
-  if(fresh){currentTempHigh=fresh;localStorage.setItem('dlt_temp',JSON.stringify({temp:fresh,date:new Date().toDateString()}));renderDashboard();}
+  applySettingsUI();
+  const {lat,lon,timezone}=settings.city;
+  const fresh=await fetchWeather(lat,lon,timezone).catch(()=>null);
+  if(fresh){
+    const todayHigh=Math.round(fresh.daily.temperature_2m_max[0]);
+    const todayLow=Math.round(fresh.daily.temperature_2m_min[0]);
+    const humidity=Math.round(fresh.daily.relative_humidity_2m_mean[0]||20);
+    const precipMM=fresh.daily.precipitation_sum[0]||0;
+    currentWeather={todayHigh,todayLow,humidity,precipMM,daily:fresh.daily};
+    localStorage.setItem('dlt_weather',JSON.stringify({...currentWeather,date:new Date().toDateString()}));
+    renderDashboard();
+  }
 })();
 </script>
 </body>
