@@ -600,7 +600,7 @@ function estimateSoilMoisture(plant, weather){
 
   const soilLabel = SOIL_PROPS[settings.soil]?.label||'loam';
   const mulchNote = settings.mulch ? ', mulched' : '';
-  const modelBasis = `ET₀ model · ${soilLabel}${mulchNote} · ${kc.kc} Kc`;
+  const modelBasis = `ET₀ Hargreaves-Samani · ${soilLabel}${mulchNote} · Kc ${kc.kc}`;
 
   return {moisturePct:Math.max(0,Math.min(100,currentMoisturePct)),
     nextWaterDate:nextDate, daysUntil, modelBasis};
@@ -664,18 +664,39 @@ async function loadFromCloud(){
   setSyncStatus('syncing','Loading...');
   try{
     const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':API_KEY,'X-Bin-Meta':'false'}});
-    if(!r.ok)throw new Error();
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const data=await r.json();
-    if(data&&Array.isArray(data.plants)){
+    if(data&&Array.isArray(data.plants)&&data.plants.length>0){
+      // Normal case: bin has real data — always use it, never overwrite
       plants=data.plants;logs=data.logs||[];
       if(data.settings)Object.assign(settings,data.settings);
-    } else {plants=SEED_PLANTS.map(p=>({...p}));logs=[];await saveToCloud();}
-    setSyncStatus('ok','Synced');applySettingsUI();renderDashboard();
+      setSyncStatus('ok','Synced');
+    }else if(data&&Array.isArray(data.plants)&&data.plants.length===0){
+      // User has intentionally cleared their plants — respect that
+      plants=[];logs=data.logs||[];
+      if(data.settings)Object.assign(settings,data.settings);
+      setSyncStatus('ok','Synced');
+    }else{
+      // Truly blank/new bin — seed once and save
+      plants=SEED_PLANTS.map(p=>({...p}));logs=[];
+      setSyncStatus('ok','New account seeded');
+      await saveToCloud();
+    }
+    applySettingsUI();renderDashboard();
   }catch(e){
-    setSyncStatus('err','Offline — local data');
+    // Network error — fall back to local cache. NEVER seed from here.
+    setSyncStatus('err','Offline — cached data');
     const local=localStorage.getItem('dlt_local');
-    if(local){const d=JSON.parse(local);plants=d.plants||SEED_PLANTS.map(p=>({...p}));logs=d.logs||[];if(d.settings)Object.assign(settings,d.settings);}
-    else{plants=SEED_PLANTS.map(p=>({...p}));logs=[];}
+    if(local){
+      try{
+        const d=JSON.parse(local);
+        if(Array.isArray(d.plants)){
+          plants=d.plants;logs=d.logs||[];
+          if(d.settings)Object.assign(settings,d.settings);
+        }
+      }catch(pe){/*cache corrupted — keep whatever is in memory*/}
+    }
+    // If nothing loaded, show empty — do NOT fall back to seed data
     applySettingsUI();renderDashboard();
   }
 }
@@ -837,38 +858,15 @@ function getFertStatus(plant){
 // ── UNIFIED PREDICTION ─────────────────────────────────────
 // Combines ET₀ soil model with historical interval fallback
 function getPrediction(plant){
-  const bucket=getTempBucket(currentWeather?.todayHigh||85);
-  const histInterval=getHistoricalInterval(plant,bucket);
-
-  // Try ET₀ soil model first
+  // Pure Hargreaves-Samani ET₀ soil moisture model.
+  // No historical blending — ET₀ gives an unbiased, physics-based result
+  // that accounts for temperature, humidity, precipitation, soil type,
+  // mulch, plant crop coefficient, and gallons applied at last watering.
   const sm=estimateSoilMoisture(plant,currentWeather);
-
-  // If we have enough historical data (3+ logs), blend with history
-  const waterLogs=logs.filter(l=>l.plantId===plant.id&&l.type==='water');
-  let nextDate, daysUntil, basis, moisturePct=sm.moisturePct;
-
   if(sm.noHistory){
-    nextDate=null;daysUntil=null;basis='Water now to establish baseline';
-    return{date:null,daysUntil:null,interval:null,basis,never:true,moisturePct:null};
+    return{date:null,daysUntil:null,basis:'Log first watering to start ET₀ tracking',never:true,moisturePct:null};
   }
-
-  if(histInterval && waterLogs.length>=3){
-    // Blend: ET model for trend, history for calibration
-    const histDate=addDays(getLastEvent(plant.id,'water'),histInterval);
-    const histDays=daysFromNow(histDate);
-    const etDays=sm.daysUntil;
-    // Weight: 60% history, 40% ET model if both available
-    const blendedDays=Math.round(histDays*0.60+etDays*0.40);
-    daysUntil=blendedDays;
-    nextDate=new Date();nextDate.setDate(nextDate.getDate()+Math.max(0,daysUntil));
-    basis=`✓ History + ET₀ model · ${sm.modelBasis}`;
-  } else {
-    daysUntil=sm.daysUntil;
-    nextDate=sm.nextWaterDate;
-    basis=sm.modelBasis;
-  }
-
-  return{date:nextDate,daysUntil,interval:null,basis,never:false,moisturePct};
+  return{date:sm.nextWaterDate,daysUntil:sm.daysUntil,basis:sm.modelBasis,never:false,moisturePct:sm.moisturePct};
 }
 
 function predBadge(du,never){if(never||du<=0)return'badge-due';if(du<=3)return'badge-soon';return'badge-ok';}
