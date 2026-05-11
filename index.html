@@ -270,7 +270,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       </div>
       <label style="margin-top:4px;">Default watering method</label>
       <select id="settings-method">
-        <option value="hose">Hose (moved around plant) — ~28" wetted radius</option>
+        <option value="hose">Hose (moved around plant) — ~12" wetted radius</option>
         <option value="drip">Single drip emitter — ~9" wetted radius</option>
         <option value="soaker">Soaker / multi-emitter — ~18" wetted radius</option>
       </select>
@@ -507,10 +507,10 @@ const MULCH_FACTORS={1:0.85, 2:0.70, 3:0.60};
 // Kc: multiplier on ET₀ for actual plant water use
 // stressAt: fraction of available water at which to recommend watering
 const PLANT_KC={
-  Cactus:    {kc:0.15, stressAt:0.15},
-  Succulent: {kc:0.20, stressAt:0.20},
-  Agave:     {kc:0.15, stressAt:0.15},
-  Yucca:     {kc:0.20, stressAt:0.20},
+  Cactus:    {kc:0.15, stressAt:0.20},
+  Succulent: {kc:0.20, stressAt:0.25},
+  Agave:     {kc:0.15, stressAt:0.20},
+  Yucca:     {kc:0.20, stressAt:0.25},
   Shrub:     {kc:0.40, stressAt:0.35},
   Tree:      {kc:0.50, stressAt:0.40},
   Flowering: {kc:0.70, stressAt:0.50},
@@ -574,7 +574,8 @@ function estimateSoilMoisture(plant,weather){
   const duration=parseFloat(lastWLog.duration)||0;
   // Soil moisture is a property of SOIL, not the plant.
   // Wetted area by method; Kc only affects daily depletion rate.
-  const wettedAreaIn2={hose:2463,drip:254,soaker:1018}[settings.wateringMethod||'hose']||2463;
+  // Wetted areas: hose hand-watered ~12" radius, drip emitter ~9", soaker ~18"
+  const wettedAreaIn2={hose:452,drip:254,soaker:1018}[settings.wateringMethod||'hose']||452;
   const soilDepthIn=24;
   let effectiveGallons=gallons;
   if(effectiveGallons===0&&duration>0)effectiveGallons=duration*(settings.flowRate||0.8);
@@ -587,7 +588,9 @@ function estimateSoilMoisture(plant,weather){
     moisture=soil.fieldCap;
   }
   const today=new Date();today.setHours(0,0,0,0);
-  let d=new Date(lastWLog.date);d.setHours(0,0,0,0);
+  // Fix: parse date as local midnight to avoid UTC timezone offset bug
+  const lastDateStr=lastWLog.date.replace(/-/g,'/');
+  let d=new Date(lastDateStr);d.setHours(0,0,0,0);
   const cityData=(garden?.city)||settings.city;
   const lat=cityData?.lat||33.35;
   const precipMap={};
