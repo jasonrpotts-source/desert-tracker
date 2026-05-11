@@ -237,7 +237,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 
   <!-- SETTINGS -->
   <div id="s-settings" class="section">
-    <div class="section-title">Settings</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:0;" id="settings-garden-title">Garden Settings</div>
+      <span style="font-size:12px;color:var(--text2);" id="settings-garden-name"></span>
+    </div>
 
     <div class="card">
       <div style="font-size:14px;font-weight:600;margin-bottom:12px;"><i class="ti ti-map-pin"></i> Location</div>
@@ -250,7 +253,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <label>Soil type</label>
       <select id="settings-soil">
         <option value="clay">Clay (slow draining — stays moist longer)</option>
-        <option value="loam" selected>Loam (balanced — typical garden soil)</option>
+        <option value="loam">Loam (balanced — typical garden soil)</option>
         <option value="sandy">Sandy (fast draining — dries quickly)</option>
         <option value="caliche">Caliche / hardpan (very slow draining)</option>
         <option value="rocky">Rocky / decomposed granite</option>
@@ -263,37 +266,33 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <div id="mulch-depth-row" style="display:none;">
         <label>Mulch depth</label>
         <select id="settings-mulch-depth">
-          <option value="1">Thin (~1 inch) — ~15% moisture retention boost</option>
-          <option value="2" selected>Medium (~2-3 inches) — ~30% boost</option>
+          <option value="1">Thin (~1 inch) — ~15% boost</option>
+          <option value="2">Medium (~2-3 inches) — ~30% boost</option>
           <option value="3">Thick (~4+ inches) — ~40% boost</option>
         </select>
       </div>
-      <label style="margin-top:4px;">Default watering method</label>
-      <select id="settings-method">
+
+      <label style="margin-top:4px;">Watering method for this garden</label>
+      <select id="settings-method" onchange="toggleFlowRate()">
         <option value="hose">Hose (moved around plant) — ~12" wetted radius</option>
         <option value="drip">Single drip emitter — ~9" wetted radius</option>
         <option value="soaker">Soaker / multi-emitter — ~18" wetted radius</option>
+        <option value="sub">Sub-irrigated (wicking / reservoir) — tracking only</option>
       </select>
-      <label>Flow rate (gallons per minute)</label>
-      <input type="number" id="settings-flow" placeholder="e.g. 0.8" step="0.1" min="0.1" inputmode="decimal" style="margin-bottom:4px;"/>
-      <div class="hint">Your hose at 0.8 gal/min means logging "15 min" auto-calculates 12 gallons. Gallons override duration if both entered.</div>
-      <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;padding:12px;margin-top:4px;">Save settings</button>
+      <div id="flow-rate-row">
+        <label>Flow rate (gallons per minute)</label>
+        <input type="number" id="settings-flow" placeholder="e.g. 0.8" step="0.1" min="0.1" inputmode="decimal" style="margin-bottom:4px;"/>
+        <div class="hint">Logging duration auto-calculates gallons. Gallons override duration if both entered.</div>
+      </div>
+      <div id="sub-irrigated-note" style="display:none;" class="hint">Sub-irrigated gardens track last watering date only. No ET₀ model prediction — just log when you refill the reservoir.</div>
+      <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;padding:12px;margin-top:4px;">Save garden settings</button>
     </div>
 
     <div class="card">
       <div style="font-size:14px;font-weight:600;margin-bottom:8px;"><i class="ti ti-info-circle"></i> How watering dates are calculated</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.7;">
-        The app estimates <strong>soil moisture %</strong> from the day you last watered, depleting daily using a simplified <strong>Hargreaves-Samani evapotranspiration (ET₀)</strong> formula that accounts for:
-        <br><br>
-        <strong>• Temperature</strong> — higher temps = faster soil drying<br>
-        <strong>• Humidity</strong> — high humidity slows evaporation<br>
-        <strong>• Precipitation</strong> — rain events replenish soil moisture<br>
-        <strong>• Soil type</strong> — clay retains moisture; sandy drains fast<br>
-        <strong>• Mulch</strong> — reduces surface evaporation significantly<br>
-        <strong>• Gallons applied</strong> — more water = longer moisture window<br>
-        <strong>• Plant crop coefficient (Kc)</strong> — drought-adapted plants tolerate lower moisture before needing water
-        <br><br>
-        Watering is recommended when estimated soil moisture drops below the plant's threshold. Your logged history at similar temperatures is always used when available.
+        Uses <strong>Hargreaves-Samani ET₀</strong> to estimate daily soil moisture depletion from temperature, humidity, precipitation, soil type, mulch, and plant crop coefficient. Forward projection uses a 14-day weather forecast.<br><br>
+        <strong>Sub-irrigated gardens</strong> bypass this model entirely — only last fill date is tracked.
       </div>
     </div>
 
@@ -349,13 +348,27 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <input type="text" id="gm-city-search" placeholder="Search city..." oninput="debounceGardenCity()" style="margin-bottom:6px;"/>
     <div id="gm-city-results" style="display:none;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;"></div>
     <div id="gm-city-saved" style="font-size:12px;color:var(--green);margin-bottom:12px;"></div>
-    <label>Soil type (overrides default)</label>
+    <label>Soil type</label>
     <select id="gm-soil">
-      <option value="">Use default</option>
-      <option value="clay">Clay</option><option value="loam">Loam</option>
-      <option value="sandy">Sandy</option><option value="caliche">Caliche</option>
-      <option value="rocky">Rocky/DG</option><option value="amended">Amended</option>
+      <option value="clay">Clay (slow draining)</option>
+      <option value="loam">Loam (balanced)</option>
+      <option value="sandy">Sandy (fast draining)</option>
+      <option value="caliche">Caliche / hardpan</option>
+      <option value="rocky">Rocky / decomposed granite</option>
+      <option value="amended">Amended / raised bed</option>
     </select>
+    <label>Watering method</label>
+    <select id="gm-method" onchange="document.getElementById('gm-flow-row').style.display=this.value==='sub'?'none':'block';document.getElementById('gm-sub-note').style.display=this.value==='sub'?'block':'none';">
+      <option value="hose">Hose (moved around plant)</option>
+      <option value="drip">Single drip emitter</option>
+      <option value="soaker">Soaker / multi-emitter</option>
+      <option value="sub">Sub-irrigated (wicking / reservoir)</option>
+    </select>
+    <div id="gm-flow-row">
+      <label>Flow rate (gal/min)</label>
+      <input type="number" id="gm-flow" placeholder="e.g. 0.8" step="0.1" min="0.1" inputmode="decimal"/>
+    </div>
+    <div id="gm-sub-note" style="display:none;" class="hint">Sub-irrigated: no watering predictions — last fill date tracked only.</div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <label style="margin-bottom:0;font-size:14px;">Mulch in this garden?</label>
       <label class="toggle"><input type="checkbox" id="gm-mulch"/><span class="toggle-slider"></span></label>
@@ -481,12 +494,9 @@ let cityDebounce=null,gardenModalCityData=null;
 const GARDEN_EMOJIS=['🌵','🌿','🌳','🥦','🌸','🌴','🌻','🍅','🌾','🪴','🌱','🍋','🌺','🍇','🪨'];
 
 // settings (persisted to cloud with data)
-let settings={
-  city:{name:'Gilbert, AZ',lat:33.3528,lon:-111.7890,timezone:'America/Phoenix'},
-  soil:'clay', mulch:false, mulchDepth:2,
-  wateringMethod:'hose',
-  flowRate:0.8
-};
+// settings kept for backward compat / legacy migration only
+// All garden config now lives on the garden object itself
+let settings={};
 
 // ── SOIL MODEL CONSTANTS ───────────────────────────────────
 // Field capacity (FC) = moisture at which soil holds water after drainage
@@ -604,9 +614,17 @@ function estimateSoilMoisture(plant,weather){
   const rootVol=Math.PI*dims.radius*dims.radius*dims.depth; // in³
 
   // Wetted area by method (determines depth of water applied at surface)
-  const wettedAreaIn2={hose:452,drip:254,soaker:1018}[settings.wateringMethod||'hose']||452;
+  // Sub-irrigated gardens skip the ET₀ model entirely
+  if(isSubIrrigated(garden)){
+    const lastDate=lastWLog.date;
+    const daysSince=Math.floor((new Date()-new Date(lastDate.replace(/-/g,'/')))/86400000);
+    return{moisturePct:null,nextWaterDate:null,daysUntil:null,
+      modelBasis:`Sub-irrigated · last fill: ${lastDate} (${daysSince}d ago)`,
+      subIrrigated:true,daysSinceWater:daysSince};
+  }
+  const wettedAreaIn2={hose:452,drip:254,soaker:1018}[effectiveWateringMethod(garden)]||452;
   let effectiveGallons=gallons;
-  if(effectiveGallons===0&&duration>0)effectiveGallons=duration*(settings.flowRate||0.8);
+  if(effectiveGallons===0&&duration>0)effectiveGallons=duration*(effectiveFlowRate(garden));
 
   // Residual moisture before watering (assume ~30% of available = dry-ish pre-water)
   const residualMoisture=soil.wiltPt+0.30*availWater;
@@ -623,7 +641,7 @@ function estimateSoilMoisture(plant,weather){
   // Fix: parse date as local midnight to avoid UTC timezone offset bug
   const lastDateStr=lastWLog.date.replace(/-/g,'/');
   let d=new Date(lastDateStr);d.setHours(0,0,0,0);
-  const cityData=(garden?.city)||settings.city;
+  const cityData=gardenCity(garden);
   const lat=cityData?.lat||33.35;
   const precipMap={};
   if(weather?.daily)weather.daily.time.forEach((t,i)=>{precipMap[t]=(weather.daily.precipitation_sum[i]||0);});
@@ -760,6 +778,17 @@ async function loadFromCloud(){
         plants.forEach(p=>{if(!p.gardenId)p.gardenId='garden_default';});
       }
       if(!currentGardenId||!gardens.find(g=>g.id===currentGardenId))currentGardenId=gardens[0].id;
+      // Migrate: if any garden missing city/soil, copy from legacy global settings
+      if(data.settings){
+        gardens.forEach(g=>{
+          if(!g.city&&data.settings.city)g.city=data.settings.city;
+          if(!g.soil&&data.settings.soil)g.soil=data.settings.soil;
+          if(g.mulch==null&&data.settings.mulch!=null)g.mulch=data.settings.mulch;
+          if(!g.mulchDepth&&data.settings.mulchDepth)g.mulchDepth=data.settings.mulchDepth;
+          if(!g.wateringMethod&&data.settings.wateringMethod)g.wateringMethod=data.settings.wateringMethod;
+          if(!g.flowRate&&data.settings.flowRate)g.flowRate=data.settings.flowRate;
+        });
+      }
       setSyncStatus('ok','Synced');
     }else if(data&&Array.isArray(data.plants)&&data.plants.length===0){
       plants=[];logs=data.logs||[];
@@ -806,12 +835,22 @@ function scheduleSave(){clearTimeout(syncTimeout);syncTimeout=setTimeout(saveToC
 
 function currentGarden(){return gardens.find(g=>g.id===currentGardenId)||gardens[0]||null;}
 function gardenPlants(gid){return plants.filter(p=>p.gardenId===(gid||currentGardenId));}
-function effectiveSoil(g){return g?.soil||settings.soil||'clay';}
-function effectiveMulch(g){return(g?.mulch!=null)?g.mulch:settings.mulch;}
-function effectiveMulchDepth(g){return g?.mulchDepth||settings.mulchDepth||2;}
-function gardenCity(g){return g?.city||settings.city;}
+function effectiveSoil(g){return g?.soil||'clay';}
+function effectiveMulch(g){return !!(g?.mulch);}
+function effectiveMulchDepth(g){return g?.mulchDepth||2;}
+function gardenCity(g){return g?.city||null;}
+function effectiveWateringMethod(g){return g?.wateringMethod||'hose';}
+function effectiveFlowRate(g){return g?.flowRate||0.8;}
+function isSubIrrigated(g){return effectiveWateringMethod(g)==='sub';}
 
-function switchGarden(id){currentGardenId=id;expandedCards={};renderGardenSelector();renderDashboard();}
+function switchGarden(id){
+  currentGardenId=id;expandedCards={};
+  renderGardenSelector();renderDashboard();
+  // If settings page is open, refresh it for the new garden
+  if(document.getElementById('s-settings')?.classList.contains('active'))applySettingsUI();
+  // Fetch fresh weather for new garden's city
+  currentWeather=null;refreshWeather();
+}
 function renderGardenSelector(){
   const sel=document.getElementById('garden-selector');if(!sel)return;
   sel.innerHTML=gardens.map(g=>`<option value="${g.id}"${g.id===currentGardenId?' selected':''}>${g.emoji||'🌿'} ${g.name}</option>`).join('');
@@ -848,7 +887,11 @@ function openGardenModal(id=null){
   document.getElementById('gm-name').value=g?.name||'';
   document.getElementById('gm-emoji').value=g?.emoji||'🌿';
   document.getElementById('gm-desc').value=g?.desc||'';
-  document.getElementById('gm-soil').value=g?.soil||'';
+  document.getElementById('gm-soil').value=g?.soil||'clay';
+  document.getElementById('gm-method').value=g?.wateringMethod||'hose';
+  document.getElementById('gm-flow').value=g?.flowRate||0.8;
+  document.getElementById('gm-flow-row').style.display=(g?.wateringMethod==='sub')?'none':'block';
+  document.getElementById('gm-sub-note').style.display=(g?.wateringMethod==='sub')?'block':'none';
   document.getElementById('gm-mulch').checked=!!(g?.mulch);
   document.getElementById('gm-mulch-depth').value=g?.mulchDepth||2;
   document.getElementById('gm-mulch-depth-row').style.display=(g?.mulch)?'block':'none';
@@ -862,7 +905,7 @@ function openGardenModal(id=null){
 function closeGardenModal(){document.getElementById('garden-modal').classList.remove('open');editingGardenId=null;}
 function saveGarden(){
   const name=document.getElementById('gm-name').value.trim();if(!name){toast('Garden name required');return;}
-  const g={id:editingGardenId||('g_'+Date.now()),name,emoji:document.getElementById('gm-emoji').value||'🌿',desc:document.getElementById('gm-desc').value.trim(),city:gardenModalCityData||null,soil:document.getElementById('gm-soil').value||null,mulch:document.getElementById('gm-mulch').checked,mulchDepth:parseInt(document.getElementById('gm-mulch-depth').value)||2,createdAt:editingGardenId?gardens.find(g=>g.id===editingGardenId)?.createdAt:new Date().toISOString()};
+  const g={id:editingGardenId||('g_'+Date.now()),name,emoji:document.getElementById('gm-emoji').value||'🌿',desc:document.getElementById('gm-desc').value.trim(),city:gardenModalCityData||null,soil:document.getElementById('gm-soil').value||'clay',mulch:document.getElementById('gm-mulch').checked,mulchDepth:parseInt(document.getElementById('gm-mulch-depth').value)||2,wateringMethod:document.getElementById('gm-method').value||'hose',flowRate:parseFloat(document.getElementById('gm-flow').value)||0.8,createdAt:editingGardenId?gardens.find(g=>g.id===editingGardenId)?.createdAt:new Date().toISOString()};
   if(editingGardenId){const i=gardens.findIndex(g=>g.id===editingGardenId);gardens[i]=g;}else{gardens.push(g);if(!currentGardenId)currentGardenId=g.id;}
   closeGardenModal();toast(editingGardenId?'Garden updated!':'Garden created!');scheduleSave();renderGardenSelector();renderGardensList();
 }
@@ -883,12 +926,13 @@ function renderGardensList(){
     const needW=gp.filter(p=>{const pr=getPrediction(p);return pr.never||pr.daysUntil<=0;}).length;
     const city=gardenCity(g);const soilLabel=SOIL_PROPS[effectiveSoil(g)]?.label||'';
     const mulchNote=effectiveMulch(g)?' + mulch':'';
+    const methodLabel={hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irrigated'}[effectiveWateringMethod(g)]||'';
     return`<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;">
         <div><div style="font-size:28px;margin-bottom:4px;">${g.emoji||'🌿'}</div>
           <div style="font-weight:600;font-size:16px;">${g.name}</div>
           ${g.desc?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${g.desc}</div>`:''}
-          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${city?.name||'Default location'} · ${soilLabel}${mulchNote}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${city?.name||'No location set'} · ${soilLabel}${mulchNote} · ${methodLabel}</div>
         </div>
         ${g.id===currentGardenId?'<span style="font-size:11px;background:var(--blue-bg);color:var(--blue-text);border:0.5px solid var(--blue);padding:2px 8px;border-radius:10px;font-weight:500;">Active</span>':''}
       </div>
@@ -907,26 +951,51 @@ function renderGardensList(){
 
 // ── SETTINGS ───────────────────────────────────────────────
 function applySettingsUI(){
-  document.getElementById('settings-soil').value=settings.soil||'clay';
-  document.getElementById('settings-mulch').checked=!!settings.mulch;
-  document.getElementById('settings-mulch-depth').value=settings.mulchDepth||2;
-  document.getElementById('mulch-depth-row').style.display=settings.mulch?'block':'none';
-  const sm=document.getElementById('settings-method');if(sm)sm.value=settings.wateringMethod||'hose';
-  const sf=document.getElementById('settings-flow');if(sf)sf.value=settings.flowRate||0.8;
-  document.getElementById('city-display').textContent=settings.city?.name||'—';
-  document.getElementById('temp-city-label').textContent="Today's high · "+(settings.city?.name||'—');
-  if(settings.city?.name)document.getElementById('city-saved').textContent='✓ '+settings.city.name;
+  const g=currentGarden();
+  if(!g)return;
+  // Show which garden's settings we're editing
+  const titleEl=document.getElementById('settings-garden-title');
+  const nameEl=document.getElementById('settings-garden-name');
+  if(titleEl)titleEl.textContent=(g.emoji||'🌿')+' '+g.name+' — Settings';
+  if(nameEl)nameEl.textContent='';
+  // Populate from garden fields
+  document.getElementById('settings-soil').value=g.soil||'clay';
+  document.getElementById('settings-mulch').checked=!!g.mulch;
+  document.getElementById('settings-mulch-depth').value=g.mulchDepth||2;
+  document.getElementById('mulch-depth-row').style.display=g.mulch?'block':'none';
+  const sm=document.getElementById('settings-method');
+  if(sm)sm.value=g.wateringMethod||'hose';
+  const sf=document.getElementById('settings-flow');
+  if(sf)sf.value=g.flowRate||0.8;
+  toggleFlowRate();
+  // City
+  const city=g.city;
+  const cd=document.getElementById('city-display');if(cd)cd.textContent=city?.name||'—';
+  const tl=document.getElementById('temp-city-label');if(tl)tl.textContent="Today's high · "+(city?.name||'—');
+  const cs=document.getElementById('city-saved');
+  if(cs)cs.textContent=city?.name?'✓ '+city.name:'No city set — search above';
+}
+function toggleFlowRate(){
+  const method=document.getElementById('settings-method')?.value||'hose';
+  const isSub=method==='sub';
+  const fr=document.getElementById('flow-rate-row');
+  const sn=document.getElementById('sub-irrigated-note');
+  if(fr)fr.style.display=isSub?'none':'block';
+  if(sn)sn.style.display=isSub?'block':'none';
 }
 document.getElementById('settings-mulch').addEventListener('change',function(){
   document.getElementById('mulch-depth-row').style.display=this.checked?'block':'none';
 });
 function saveSettings(){
-  settings.soil=document.getElementById('settings-soil').value;
-  settings.mulch=document.getElementById('settings-mulch').checked;
-  settings.mulchDepth=parseInt(document.getElementById('settings-mulch-depth').value)||2;
-  settings.wateringMethod=document.getElementById('settings-method')?.value||'hose';
-  settings.flowRate=parseFloat(document.getElementById('settings-flow')?.value)||0.8;
-  scheduleSave();toast('Settings saved!');renderDashboard();
+  const g=currentGarden();if(!g)return;
+  g.soil=document.getElementById('settings-soil').value;
+  g.mulch=document.getElementById('settings-mulch').checked;
+  g.mulchDepth=parseInt(document.getElementById('settings-mulch-depth').value)||2;
+  g.wateringMethod=document.getElementById('settings-method')?.value||'hose';
+  g.flowRate=parseFloat(document.getElementById('settings-flow')?.value)||0.8;
+  // City was already saved directly to garden by selectCity()
+  scheduleSave();toast((g.emoji||'🌿')+' '+g.name+' settings saved!');
+  renderGardenSelector();renderDashboard();
 }
 
 // ── CITY SEARCH ────────────────────────────────────────────
@@ -947,12 +1016,13 @@ async function searchCity(){
   }catch(e){document.getElementById('city-results').style.display='none';}
 }
 function selectCity(lat,lon,name,tz){
-  settings.city={lat,lon,name,timezone:tz};
+  const g=currentGarden();if(!g)return;
+  g.city={lat,lon,name,timezone:tz};
   document.getElementById('city-results').style.display='none';
   document.getElementById('city-search-input').value='';
   document.getElementById('city-saved').textContent='✓ '+name;
   document.getElementById('city-display').textContent=name;
-  document.getElementById('temp-city-label').textContent='Today\'s high · '+name;
+  document.getElementById('temp-city-label').textContent="Today's high · "+name;
   currentWeather=null;
   scheduleSave();
   refreshWeather();
@@ -972,8 +1042,10 @@ function getCachedWeather(){
 }
 async function refreshWeather(){
   document.getElementById('temp-display').textContent='...';
+  const activeCity=gardenCity(currentGarden());
+  if(!activeCity){document.getElementById('temp-display').textContent='--°';document.getElementById('temp-desc').textContent='No city set — open Settings';return;}
   try{
-    const {lat,lon,timezone}=settings.city;
+    const {lat,lon,timezone}=activeCity;
     const data=await fetchWeather(lat,lon,timezone);
     const todayHigh=Math.round(data.daily.temperature_2m_max[0]);
     const todayLow=Math.round(data.daily.temperature_2m_min[0]);
@@ -1055,19 +1127,22 @@ function getFertStatus(plant){
 // ── UNIFIED PREDICTION ─────────────────────────────────────
 // Combines ET₀ soil model with historical interval fallback
 function getPrediction(plant){
-  // Pure Hargreaves-Samani ET₀ soil moisture model.
-  // No historical blending — ET₀ gives an unbiased, physics-based result
-  // that accounts for temperature, humidity, precipitation, soil type,
-  // mulch, plant crop coefficient, and gallons applied at last watering.
   const sm=estimateSoilMoisture(plant,currentWeather);
+  if(sm.subIrrigated){
+    return{date:null,daysUntil:null,basis:sm.modelBasis,never:false,moisturePct:null,subIrrigated:true,daysSinceWater:sm.daysSinceWater};
+  }
   if(sm.noHistory){
     return{date:null,daysUntil:null,basis:'Log first watering to start ET₀ tracking',never:true,moisturePct:null};
   }
   return{date:sm.nextWaterDate,daysUntil:sm.daysUntil,basis:sm.modelBasis,never:false,moisturePct:sm.moisturePct};
 }
 
-function predBadge(du,never){if(never||du<=0)return'badge-due';if(du<=3)return'badge-soon';return'badge-ok';}
+function predBadge(du,never,sub){
+  if(sub)return'badge-ok';
+  if(never||du<=0)return'badge-due';if(du<=3)return'badge-soon';return'badge-ok';
+}
 function predLabel(pred){
+  if(pred.subIrrigated){const d=pred.daysSinceWater||0;return d===0?'Filled today':d===1?'Filled yesterday':`Filled ${d}d ago`;}
   if(pred.never)return'Never watered';
   if(pred.daysUntil<=0)return`Overdue ${Math.abs(pred.daysUntil)}d`;
   if(pred.daysUntil===1)return'Tomorrow';
@@ -1106,9 +1181,9 @@ function renderDashboard(){
   const el=document.getElementById('dash-list');
   if(!gPlants.length){el.innerHTML='<div class="empty">No plants in this garden yet.<br><br><button class="btn btn-primary" onclick="showSection(\'settings\')" style="margin-top:8px;"><i class="ti ti-plus"></i> Add first plant</button></div>';return;}
   el.innerHTML=sorted.map(({plant:p,pred})=>{
-    const badge=predBadge(pred.daysUntil,pred.never),lbl=predLabel(pred);
+    const badge=predBadge(pred.daysUntil,pred.never,pred.subIrrigated),lbl=predLabel(pred);
     const fs=getFertStatus(p),lastW=getLastEvent(p.id,'water');
-    const nextStr=pred.never?'Water now — log first watering to start':pred.daysUntil<=0?`Water today (${Math.abs(pred.daysUntil)}d overdue)`:`${fmtDate(pred.date)} · in ${pred.daysUntil}d`;
+    const nextStr=pred.subIrrigated?`Sub-irrigated · last filled ${getLastEvent(p.id,'water')||'never'}`:pred.never?'Water now — log first watering':pred.daysUntil<=0?`Water today (${Math.abs(pred.daysUntil)}d overdue)`:`${fmtDate(pred.date)} · in ${pred.daysUntil}d`;
     const age=plantAge(p.datePlanted);
     const lastWStr=lastW?`Last watered ${lastW}`:'Never watered';
     const nextShort=pred.never?'Water now':pred.daysUntil<=0?'Overdue':`Next: ${fmtDate(pred.date)}`;
@@ -1462,7 +1537,8 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
   const cached=getCachedWeather();if(cached)currentWeather=cached;
   await loadFromCloud();
   applySettingsUI();
-  const {lat,lon,timezone}=settings.city;
+  const initCity=gardenCity(currentGarden());if(!initCity){return;}
+  const {lat,lon,timezone}=initCity;
   const fresh=await fetchWeather(lat,lon,timezone).catch(()=>null);
   if(fresh){
     const todayHigh=Math.round(fresh.daily.temperature_2m_max[0]);
