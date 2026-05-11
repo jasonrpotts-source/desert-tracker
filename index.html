@@ -353,6 +353,244 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <div class="hint">Enter a scientific name and the app will auto-detect plant type, watering intervals, and care notes from the species database and GBIF taxonomy. Plant type is auto-detected — optional when a scientific name is provided.</div>
       <button class="btn btn-primary" onclick="addPlant()" style="width:100%;justify-content:center;padding:12px;">Add plant</button>
     </div>
+
+    <!-- SCIENCE EXPLANATION -->
+    <div class="card">
+      <div style="font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <i class="ti ti-flask" style="color:var(--blue);font-size:18px;"></i>
+        How watering dates &amp; soil moisture are calculated
+      </div>
+
+      <div style="background:var(--blue-bg);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;">
+        <div style="font-size:13px;color:var(--blue-text);font-weight:500;margin-bottom:4px;">The short version</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">Every day since you last watered, the app calculates how much water evaporated from the soil using a scientific formula called <strong>Hargreaves-Samani ET₀</strong>. It subtracts that from the moisture left by your last watering, factoring in your soil type, mulch, and the plant's drought tolerance. When estimated moisture drops below a threshold specific to your plant type, it recommends watering.</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">1</span>
+          Live weather from Open-Meteo
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          The app fetches a <strong>14-day weather forecast</strong> for your garden's city from Open-Meteo (free, no account needed). Four values are pulled for each day:
+          <ul style="margin:8px 0 0 16px;line-height:1.9;">
+            <li><strong>High temperature (°F)</strong> — primary driver of evaporation rate</li>
+            <li><strong>Low temperature (°F)</strong> — used to calculate temperature range, a proxy for solar radiation intensity</li>
+            <li><strong>Mean relative humidity (%)</strong> — higher humidity slows surface evaporation</li>
+            <li><strong>Precipitation (mm)</strong> — rain adds moisture back to the soil each day it falls</li>
+          </ul>
+          <div style="margin-top:8px;">The 14-day forecast is also used to project <em>forward</em> after today — predicting which future day soil moisture will drop to the stress threshold, giving you the "next water" recommendation date.</div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">2</span>
+          Hargreaves-Samani ET₀ formula
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          ET₀ stands for <strong>reference evapotranspiration</strong> — the amount of water that would evaporate from a standardized surface on a given day. It's the foundation of scientific irrigation scheduling used by agricultural universities and the FAO worldwide.
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-family:monospace;font-size:13px;line-height:1.9;">
+            ET₀ = 0.0023 × Ra × (Tmean + 17.8) × √(Tmax − Tmin)<br>
+            <span style="font-size:11px;font-family:inherit;color:var(--text3);">
+              Ra = extraterrestrial solar radiation (MJ/m²/day) — calculated from your latitude and day of year<br>
+              Tmean = (Tmax + Tmin) ÷ 2, converted to °C<br>
+              √(Tmax − Tmin) = temperature range, used as a proxy for solar radiation variability
+            </span>
+          </div>
+          A <strong>humidity correction</strong> is applied after:
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-family:monospace;font-size:13px;line-height:1.9;">
+            ET₀ × (1 − 0.14 × (RH% ÷ 100 − 0.45))<br>
+            <span style="font-size:11px;font-family:inherit;color:var(--text3);">
+              At 20% RH (dry Gilbert summer): multiplier ≈ 1.04 → slightly more evaporation<br>
+              At 70% RH (monsoon season): multiplier ≈ 0.97 → slightly less evaporation
+            </span>
+          </div>
+          <strong>Worked example — Gilbert, AZ: 100°F high, 75°F low, 20% humidity:</strong>
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-size:12px;line-height:1.9;">
+            Ra ≈ 40.4 MJ/m²/day (late spring, latitude 33.4°N)<br>
+            Tmean = (37.8°C + 23.9°C) ÷ 2 = 30.8°C<br>
+            √(37.8 − 23.9) = √13.9 ≈ 3.73<br>
+            ET₀ = 0.0023 × 40.4 × (30.8 + 17.8) × 3.73 ≈ 16.8 mm/day<br>
+            Humidity correction at 20% RH: × 1.04 ≈ <strong>17.5 mm/day = 0.69 inches/day</strong>
+          </div>
+          This means the reference surface loses <strong>0.69 inches of water per day</strong> in Gilbert summer conditions — before accounting for your specific soil, plant, and mulch.
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">3</span>
+          Crop coefficient (Kc) — plant water demand
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          Not all plants pull water from soil at the same rate. The <strong>crop coefficient (Kc)</strong> scales ET₀ to match the actual water demand of each plant type. It represents how aggressively a plant draws on soil moisture relative to the reference surface. The <strong>stress threshold</strong> is the fraction of available water at which watering is recommended — lower means the plant can tolerate drier soil.
+          <div style="margin-top:10px;overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead><tr style="background:var(--bg2);">
+                <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Plant type</th>
+                <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);">Kc</th>
+                <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);">Stress at</th>
+                <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Character</th>
+              </tr></thead>
+              <tbody>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">🌵 Cactus / Agave</td><td style="padding:7px 10px;text-align:center;">0.20</td><td style="padding:7px 10px;text-align:center;">20%</td><td style="padding:7px 10px;color:var(--text3);">Extreme drought tolerance; very slow water use</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">🌾 Yucca</td><td style="padding:7px 10px;text-align:center;">0.25</td><td style="padding:7px 10px;text-align:center;">20%</td><td style="padding:7px 10px;color:var(--text3);">Very drought tolerant; slightly more than cactus</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">🌿 Shrub / 🪴 Succulent</td><td style="padding:7px 10px;text-align:center;">0.30</td><td style="padding:7px 10px;text-align:center;">25%</td><td style="padding:7px 10px;color:var(--text3);">Moderate drought tolerance</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">🌳 Tree</td><td style="padding:7px 10px;text-align:center;">0.40</td><td style="padding:7px 10px;text-align:center;">25%</td><td style="padding:7px 10px;color:var(--text3);">Established trees; deep roots buffer drought</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">🌾 Grass (bunchgrass)</td><td style="padding:7px 10px;text-align:center;">0.50</td><td style="padding:7px 10px;text-align:center;">30%</td><td style="padding:7px 10px;color:var(--text3);">Warm-season ornamental grass; moderate demand</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">🌸 Flowering</td><td style="padding:7px 10px;text-align:center;">0.70</td><td style="padding:7px 10px;text-align:center;">40%</td><td style="padding:7px 10px;color:var(--text3);">Higher demand; more sensitive to dry soil</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">🌴 Tropical</td><td style="padding:7px 10px;text-align:center;">0.80</td><td style="padding:7px 10px;text-align:center;">45%</td><td style="padding:7px 10px;color:var(--text3);">High moisture demand; wilts quickly when dry</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">🌱 Herb</td><td style="padding:7px 10px;text-align:center;">0.85</td><td style="padding:7px 10px;text-align:center;">50%</td><td style="padding:7px 10px;color:var(--text3);">Frequent watering needed; shallow roots</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">🥦 Vegetable</td><td style="padding:7px 10px;text-align:center;">0.90</td><td style="padding:7px 10px;text-align:center;">55%</td><td style="padding:7px 10px;color:var(--text3);">Highest demand; water before soil is half dry</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">4</span>
+          Root zone — how much water the plant can store
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          Each plant type has a modeled <strong>root depth and lateral radius</strong> based on botanical research for established plants. These determine the total soil volume the roots access — their water reservoir. A larger root zone means slower moisture depletion after watering.
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-family:monospace;font-size:13px;line-height:1.9;">
+            Root zone volume = π × radius² × depth<br>
+            <span style="font-size:11px;font-family:inherit;color:var(--text3);">Example — established Agave: 18" radius × 18" depth → 18,322 in³ of soil volume</span>
+          </div>
+          The <strong>daily VWC depletion formula</strong> divides ET₀ by root depth to convert inches/day into a dimensionless moisture fraction:
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-family:monospace;font-size:13px;line-height:1.9;">
+            Daily VWC loss = (ET₀ × Kc × mulch factor) ÷ root depth<br>
+            <span style="font-size:11px;font-family:inherit;color:var(--text3);">
+              Mulch factor: none = 1.0 · thin (~1") = 0.85 · medium (~2-3") = 0.70 · thick (4"+) = 0.60<br>
+              Dividing by root depth (inches) converts ET₀ inches/day → VWC fraction/day
+            </span>
+          </div>
+          <strong>Example — Red Panic Grass, 100°F day, medium mulch:</strong>
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-size:12px;line-height:1.9;">
+            ET₀ = 0.69 in/day · Kc = 0.50 · mulch = 0.70 · root depth = 18"<br>
+            Daily VWC loss = (0.69 × 0.50 × 0.70) ÷ 18 = <strong>0.0134 per day</strong><br>
+            From field capacity to stress threshold (30%): 0.70 ÷ 0.0134 = <strong>~52 days maximum</strong> if never watered
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">5</span>
+          Soil type — how much water each soil holds
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          Soil type determines two critical values from published agricultural science (USDA / FAO-56):
+          <ul style="margin:8px 0 0 16px;line-height:1.9;">
+            <li><strong>Field capacity (FC)</strong> — max VWC after excess water drains (how full the tank can get)</li>
+            <li><strong>Wilting point (WP)</strong> — VWC at which plants can no longer extract water (the empty point)</li>
+            <li><strong>Available water</strong> = FC − WP (the usable range plants can actually drink)</li>
+          </ul>
+          <div style="margin-top:10px;overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead><tr style="background:var(--bg2);">
+                <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Soil type</th>
+                <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);">Field cap.</th>
+                <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);">Wilting pt.</th>
+                <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);">Available</th>
+                <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Character</th>
+              </tr></thead>
+              <tbody>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">Clay</td><td style="padding:7px 10px;text-align:center;">42%</td><td style="padding:7px 10px;text-align:center;">22%</td><td style="padding:7px 10px;text-align:center;font-weight:600;">20%</td><td style="padding:7px 10px;color:var(--text3);">Stays moist longest; slow to absorb rain</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">Caliche</td><td style="padding:7px 10px;text-align:center;">48%</td><td style="padding:7px 10px;text-align:center;">25%</td><td style="padding:7px 10px;text-align:center;font-weight:600;">23%</td><td style="padding:7px 10px;color:var(--text3);">Hardpan layer; very slow drainage</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">Loam</td><td style="padding:7px 10px;text-align:center;">31%</td><td style="padding:7px 10px;text-align:center;">14%</td><td style="padding:7px 10px;text-align:center;font-weight:600;">17%</td><td style="padding:7px 10px;color:var(--text3);">Balanced; ideal garden soil</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">Sandy</td><td style="padding:7px 10px;text-align:center;">18%</td><td style="padding:7px 10px;text-align:center;">8%</td><td style="padding:7px 10px;text-align:center;font-weight:600;">10%</td><td style="padding:7px 10px;color:var(--text3);">Drains fast; dries out quickly</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:7px 10px;">Rocky / DG</td><td style="padding:7px 10px;text-align:center;">20%</td><td style="padding:7px 10px;text-align:center;">9%</td><td style="padding:7px 10px;text-align:center;font-weight:600;">11%</td><td style="padding:7px 10px;color:var(--text3);">Low retention; common in AZ landscape</td></tr>
+                <tr style="border-bottom:0.5px solid var(--border);background:var(--bg2);"><td style="padding:7px 10px;">Amended / raised bed</td><td style="padding:7px 10px;text-align:center;">28%</td><td style="padding:7px 10px;text-align:center;">10%</td><td style="padding:7px 10px;text-align:center;font-weight:600;">18%</td><td style="padding:7px 10px;color:var(--text3);">Good structure; drains well</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:10px;">Gilbert's native <strong>clay soil</strong> holds the most available water of any soil type. After a deep watering it stays moist longer than sandy or rocky soils — which is why desert plants adapted to clay can go so long between waterings. Clay also absorbs rainfall slowly; the model accounts for this with a 50% infiltration rate on rain days (vs 80% for sandy soils).</div>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">6</span>
+          Converting gallons to soil moisture
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          When you log a watering, gallons are converted to a VWC increase using the wetted surface area created by your watering method:
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-family:monospace;font-size:13px;line-height:1.9;">
+            Water depth (in) = gallons × 231 in³ ÷ wetted area (in²)<br>
+            VWC added = water depth ÷ root depth<br>
+            <span style="font-size:11px;font-family:inherit;color:var(--text3);">
+              Hose (~12" radius) = 452 in² · Drip emitter (~9" radius) = 254 in² · Soaker (~18" radius) = 1,018 in²<br>
+              1 gallon = 231 cubic inches of water
+            </span>
+          </div>
+          <strong>Example — 20 gallons via hose on Red Panic Grass (18" root depth):</strong>
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-size:12px;line-height:1.9;">
+            Water depth = (20 × 231) ÷ 452 = 10.2 inches of water applied at surface<br>
+            VWC added = 10.2 ÷ 18 = 0.567 — this exceeds available water (0.20 for clay)<br>
+            So VWC is capped at field capacity: <strong>soil reaches 100% moisture</strong><br>
+            Starting residual assumed at ~30% available → watering brings soil to full saturation
+          </div>
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-size:12px;line-height:1.7;color:var(--text2);">
+            <strong>If no gallons logged:</strong> assumes full watering → starts at field capacity<br>
+            <strong>If only duration logged:</strong> gallons = duration × flow rate (set in garden settings; default 0.8 gal/min)<br>
+            <strong>If both:</strong> gallons override duration
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 7 -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">7</span>
+          Day-by-day moisture simulation
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          Starting from VWC at time of last watering, the app runs a loop — one iteration per day — from the watering date to today, then continues forward using the forecast:
+          <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;margin:10px 0;font-family:monospace;font-size:12px;line-height:1.9;">
+            For each day from last watering → today:<br>
+            &nbsp;&nbsp;1. Calculate ET₀ from that day's high, low, humidity<br>
+            &nbsp;&nbsp;2. Subtract: VWC loss = (ET₀ × Kc × mulch factor) ÷ root depth<br>
+            &nbsp;&nbsp;3. Add: rain infiltration × soil absorption rate<br>
+            &nbsp;&nbsp;4. Clamp result between [wilting point × 0.5] and [field capacity]<br><br>
+            For each forecast day → until stress threshold crossed:<br>
+            &nbsp;&nbsp;Same calculation using forecast temps, humidity, precip<br>
+            &nbsp;&nbsp;First day moisture &lt; stress threshold = <strong>next water date</strong>
+          </div>
+          The date that moisture first drops below the stress threshold is shown as your <strong>next watering recommendation</strong>. The moisture % shown right now on the bar is the result after simulating every day since your last logged watering.
+        </div>
+      </div>
+
+      <!-- Step 8 -->
+      <div style="margin-bottom:4px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">8</span>
+          Reading the soil moisture bar
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-left:26px;">
+          The % shown is the <strong>fraction of available water remaining</strong> — between wilting point and field capacity. It is not total soil water content.
+          <div style="margin-top:10px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:12px;height:12px;border-radius:50%;background:#378ADD;flex-shrink:0;"></div><span><strong>Blue (70–100%)</strong> — Moist. Soil has ample water. No action needed.</span></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:12px;height:12px;border-radius:50%;background:#52b052;flex-shrink:0;"></div><span><strong>Green (40–70%)</strong> — Adequate. Plant is comfortable. Watering not yet needed.</span></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:12px;height:12px;border-radius:50%;background:#854F0B;flex-shrink:0;"></div><span><strong>Amber (20–40%)</strong> — Getting dry. Monitor closely; watering approaching.</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:#A32D2D;flex-shrink:0;"></div><span><strong>Red (0–20%)</strong> — Dry. At or below stress threshold — water now or soon.</span></div>
+          </div>
+          <div style="margin-top:14px;background:var(--amber-bg);border-radius:var(--radius-sm);padding:12px 14px;font-size:12px;color:var(--amber);line-height:1.6;">
+            <strong>⚠️ Important:</strong> This is a model, not a sensor. It estimates moisture from what you log and weather data — it cannot account for drainage variations, shading, wind, or localized soil conditions. The most reliable check is always physical: push a finger 2–3 inches into the soil near the root zone. Damp = hold off. Dry and crumbly = water now.
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <nav class="nav">
