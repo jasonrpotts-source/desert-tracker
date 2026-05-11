@@ -506,22 +506,26 @@ const MULCH_FACTORS={1:0.85, 2:0.70, 3:0.60};
 // Plant crop coefficient (Kc) and stress threshold (0–1, lower = more drought tolerant)
 // Kc: multiplier on ET₀ for actual plant water use
 // stressAt: fraction of available water at which to recommend watering
+// Kc (crop coefficient) × mulch ÷ rootDepth drives VWC depletion rate.
+// Values calibrated to produce realistic watering intervals for Gilbert AZ
+// at summer ET₀ ~0.63 in/day. stressAt = fraction of available water at which
+// to recommend watering (lower = more drought tolerant).
 const PLANT_KC={
-  Cactus:    {kc:0.15, stressAt:0.20},
-  Succulent: {kc:0.20, stressAt:0.25},
-  Agave:     {kc:0.15, stressAt:0.20},
-  Yucca:     {kc:0.20, stressAt:0.25},
-  Shrub:     {kc:0.40, stressAt:0.35},
-  Tree:      {kc:0.50, stressAt:0.40},
-  Flowering: {kc:0.70, stressAt:0.50},
-  Tropical:  {kc:0.80, stressAt:0.55},
-  Herb:      {kc:0.85, stressAt:0.55},
-  Vegetable: {kc:0.90, stressAt:0.60},
-  Grass:     {kc:0.30, stressAt:0.20},  // Warm-season/ornamental bunchgrasses (NOT turf — see Herb for turf)
-  Vine:      {kc:0.70, stressAt:0.50},
-  Bulb:      {kc:0.60, stressAt:0.45},
-  Fern:      {kc:0.80, stressAt:0.55},
-  Other:     {kc:0.55, stressAt:0.40},
+  Cactus:    {kc:0.20, stressAt:0.20}, // 21-28d on 10gal
+  Succulent: {kc:0.30, stressAt:0.25}, // 14-21d
+  Agave:     {kc:0.20, stressAt:0.20}, // 21-28d on 10gal
+  Yucca:     {kc:0.25, stressAt:0.20}, // 18-25d
+  Shrub:     {kc:0.30, stressAt:0.25}, // 14-20d on 10gal
+  Tree:      {kc:0.40, stressAt:0.25}, // 15-22d on 10gal
+  Flowering: {kc:0.70, stressAt:0.40}, // 5-8d
+  Tropical:  {kc:0.80, stressAt:0.45}, // 4-6d
+  Herb:      {kc:0.85, stressAt:0.50}, // 3-5d
+  Vegetable: {kc:0.90, stressAt:0.55}, // 2-4d
+  Grass:     {kc:0.50, stressAt:0.30}, // 7-10d on 20gal — warm-season bunchgrass
+  Vine:      {kc:0.60, stressAt:0.40}, // 7-10d
+  Bulb:      {kc:0.55, stressAt:0.35}, // 8-12d
+  Fern:      {kc:0.75, stressAt:0.50}, // 4-7d
+  Other:     {kc:0.40, stressAt:0.30}, // 12-18d
 };
 
 // ── HARGREAVES-SAMANI ET₀ ─────────────────────────────────
@@ -577,22 +581,24 @@ function estimateSoilMoisture(plant,weather){
   // Root zone volume (π × r² × depth) determines total water storage.
   // Deeper/wider roots = larger reservoir = slower moisture depletion.
   // Kc drives daily depletion RATE. Soil type drives drainage rate.
+  // Root dimensions used to convert ET₀ (inches/day) → VWC fraction/day.
+  // Depth calibrated to produce realistic watering intervals for each type.
   const ROOT_DIMS={
-    Cactus:   {depth:60,radius:24},
-    Agave:    {depth:48,radius:20},
-    Yucca:    {depth:36,radius:18},
-    Tree:     {depth:48,radius:24},
-    Shrub:    {depth:24,radius:18},
+    Cactus:   {depth:36,radius:24}, // deep but model depth kept moderate for calibration
+    Agave:    {depth:18,radius:18},
+    Yucca:    {depth:18,radius:18},
+    Tree:     {depth:24,radius:24},
+    Shrub:    {depth:18,radius:18},
     Succulent:{depth:12,radius:12},
-    Grass:    {depth:48,radius:18}, // warm-season bunchgrass; deep rooted, drought tolerant
-    Flowering:{depth:18,radius:12},
-    Tropical: {depth:18,radius:12},
-    Herb:     {depth:12,radius:10},
-    Vegetable:{depth:18,radius:12},
-    Vine:     {depth:24,radius:15},
-    Bulb:     {depth:18,radius:12},
-    Fern:     {depth:12,radius:10},
-    Other:    {depth:24,radius:15},
+    Grass:    {depth:18,radius:18}, // warm-season bunchgrass — Kc carries drought tolerance
+    Flowering:{depth:12,radius:12},
+    Tropical: {depth:12,radius:12},
+    Herb:     {depth:10,radius:10},
+    Vegetable:{depth:12,radius:12},
+    Vine:     {depth:18,radius:15},
+    Bulb:     {depth:12,radius:12},
+    Fern:     {depth:10,radius:10},
+    Other:    {depth:18,radius:15},
   };
   const dims=ROOT_DIMS[plant.type]||ROOT_DIMS.Other;
   const rootVol=Math.PI*dims.radius*dims.radius*dims.depth; // in³
@@ -606,9 +612,10 @@ function estimateSoilMoisture(plant,weather){
   const residualMoisture=soil.wiltPt+0.30*availWater;
   let moisture;
   if(effectiveGallons>0){
-    // Fraction of root zone volume filled by gallons applied
-    const waterFrac=(effectiveGallons*231)/rootVol;
-    moisture=Math.min(soil.fieldCap,residualMoisture+waterFrac);
+    // inches of water applied at surface ÷ root depth = VWC fraction added
+    const waterAppliedIn=(effectiveGallons*231)/wettedAreaIn2;
+    const vcAdded=Math.min(waterAppliedIn/dims.depth, availWater);
+    moisture=Math.min(soil.fieldCap,residualMoisture+vcAdded);
   }else{
     moisture=soil.fieldCap;
   }
@@ -627,7 +634,8 @@ function estimateSoilMoisture(plant,weather){
     const precip=(precipMap[ds]||0)*0.0394;
     const et0=calcET0(tmax,tmin,rh,ds,lat);
     // Divide by root depth to convert ET₀ (in/day) → volumetric fraction depletion
-    const dailyLoss=(et0*kc.kc*mulchFactor*soil.drainFactor)/dims.depth;
+    // VWC model: ET₀(in/day) × Kc × mulch ÷ rootDepth = fraction/day depletion
+    const dailyLoss=(et0*kc.kc*mulchFactor)/dims.depth;
     const infiltration=precip*(isClay?0.5:0.8);
     moisture=Math.min(soil.fieldCap,Math.max(soil.wiltPt*0.5,moisture+infiltration-dailyLoss));
     d.setDate(d.getDate()+1);
@@ -646,7 +654,7 @@ function estimateSoilMoisture(plant,weather){
     const fRH=fi>=0?(fRHs[fi]||20):(currentWeather?.humidity||20);
     const fPrec=fi>=0?(fPrecips[fi]||0)*0.0394:0;
     const fet0=calcET0(ftmax,ftmax-25,fRH,fds,lat);
-    const fLoss=(fet0*kc.kc*mulchFactor*soil.drainFactor)/dims.depth;
+    const fLoss=(fet0*kc.kc*mulchFactor)/dims.depth;
     const fInf=fPrec*(isClay?0.5:0.8);
     projMoisture=Math.min(soil.fieldCap,Math.max(soil.wiltPt*0.5,projMoisture+fInf-fLoss));
   }
