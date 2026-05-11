@@ -1090,7 +1090,7 @@ async function loadFromCloud(){
       setSyncStatus('ok','New account seeded');
       await saveToCloud();
     }
-    applySettingsUI();renderGardenSelector();renderDashboard();
+    try{applySettingsUI();renderGardenSelector();renderDashboard();}catch(re){console.warn('Render error after cloud load:',re);}
   }catch(e){
     // Network error — fall back to local cache. NEVER seed from here.
     setSyncStatus('err','Offline — cached data');
@@ -1105,7 +1105,8 @@ async function loadFromCloud(){
       }catch(pe){/*cache corrupted — keep whatever is in memory*/}
     }
     // If nothing loaded, show empty — do NOT fall back to seed data
-    applySettingsUI();renderDashboard();
+    if(!currentGardenId&&gardens.length>0)currentGardenId=gardens[0].id;
+    try{applySettingsUI();renderGardenSelector();renderDashboard();}catch(re){console.warn('Render error in catch:',re);}
   }
 }
 async function saveToCloud(){
@@ -1245,9 +1246,7 @@ function applySettingsUI(){
   document.getElementById('settings-mulch').checked=!!g.mulch;
   document.getElementById('settings-mulch-depth').value=g.mulchDepth||2;
   document.getElementById('mulch-depth-row').style.display=g.mulch?'block':'none';
-  const sm=document.getElementById('settings-method');
-  if(sm)sm.value=g.wateringMethod||'hose';
-  if(sf)sf.value=g.flowRate||0.8;
+
   // City
   const city=g.city;
   const cd=document.getElementById('city-display');if(cd)cd.textContent=city?.name||'—';
@@ -1946,14 +1945,42 @@ function showSection(id){
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200);}
 
 // ── INIT ───────────────────────────────────────────────────
+// Robust init: render immediately with cached data, then load cloud data
+// and re-render, then update weather in background.
+function safeRender(){
+  try{applySettingsUI();}catch(e){console.warn('applySettingsUI error:',e);}
+  try{renderGardenSelector();}catch(e){console.warn('renderGardenSelector error:',e);}
+  try{renderDashboard();}catch(e){console.warn('renderDashboard error:',e);}
+}
+
 (async()=>{
-  const cached=getCachedWeather();if(cached)currentWeather=cached;
+  // Step 1: Show cached data immediately (instant paint)
+  const cached=getCachedWeather();
+  if(cached)currentWeather=cached;
+  const localData=localStorage.getItem('dlt_local');
+  if(localData){
+    try{
+      const d=JSON.parse(localData);
+      if(Array.isArray(d.plants)&&d.plants.length>0){
+        plants=d.plants;logs=d.logs||[];
+        if(d.gardens&&d.gardens.length>0){
+          gardens=d.gardens;
+        } else {
+          gardens=[{id:'garden_default',name:'My Garden',emoji:'🌿',desc:'',city:null,soil:'clay',mulch:false,mulchDepth:2,createdAt:new Date().toISOString()}];
+          plants.forEach(p=>{if(!p.gardenId)p.gardenId='garden_default';});
+        }
+        if(!currentGardenId||!gardens.find(g=>g.id===currentGardenId))
+          currentGardenId=gardens[0].id;
+        safeRender();
+      }
+    }catch(e){console.warn('Local cache parse error:',e);}
+  }
+
+  // Step 2: Load from cloud (authoritative data)
   await loadFromCloud();
-  // Always render immediately after load — never gate on weather or city
-  applySettingsUI();
-  renderGardenSelector();
-  renderDashboard();
-  // Then fetch fresh weather in the background — re-render if it arrives
+  safeRender();
+
+  // Step 3: Fetch fresh weather in background — never blocks rendering
   try{
     const initCity=gardenCity(currentGarden());
     if(initCity){
