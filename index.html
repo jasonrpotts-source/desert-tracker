@@ -1950,19 +1950,29 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
 (async()=>{
   const cached=getCachedWeather();if(cached)currentWeather=cached;
   await loadFromCloud();
+  // Always render immediately after load — never gate on weather or city
   applySettingsUI();
-  const initCity=gardenCity(currentGarden());if(!initCity){return;}
-  const {lat,lon,timezone}=initCity;
-  const fresh=await fetchWeather(lat,lon,timezone).catch(()=>null);
-  if(fresh){
-    const todayHigh=Math.round(fresh.daily.temperature_2m_max[0]);
-    const todayLow=Math.round(fresh.daily.temperature_2m_min[0]);
-    const humidity=Math.round(fresh.daily.relative_humidity_2m_mean[0]||20);
-    const precipMM=fresh.daily.precipitation_sum[0]||0;
-    currentWeather={todayHigh,todayLow,humidity,precipMM,daily:fresh.daily};
-    localStorage.setItem('dlt_weather',JSON.stringify({...currentWeather,date:new Date().toDateString()}));
-    renderDashboard();
-  }
+  renderGardenSelector();
+  renderDashboard();
+  // Then fetch fresh weather in the background — re-render if it arrives
+  try{
+    const initCity=gardenCity(currentGarden());
+    if(initCity){
+      const fresh=await fetchWeather(initCity.lat,initCity.lon,initCity.timezone);
+      if(fresh&&fresh.daily){
+        currentWeather={
+          todayHigh:Math.round(fresh.daily.temperature_2m_max[0]),
+          todayLow:Math.round(fresh.daily.temperature_2m_min[0]),
+          humidity:Math.round(fresh.daily.relative_humidity_2m_mean[0]||20),
+          precipMM:fresh.daily.precipitation_sum[0]||0,
+          daily:fresh.daily
+        };
+        localStorage.setItem('dlt_weather',JSON.stringify({...currentWeather,date:new Date().toDateString()}));
+        updateWeatherUI();
+        renderDashboard();
+      }
+    }
+  }catch(e){console.warn('Weather fetch failed:',e);}
 })();
 </script>
 </body>
