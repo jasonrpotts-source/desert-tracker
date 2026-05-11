@@ -1528,8 +1528,7 @@ function renderPlantDetail(id){
   }
   const soilLabel=SOIL_PROPS[effectiveSoil(gardens.find(g=>g.id===p.gardenId)||currentGarden())]?.label||'Clay';
   const gardenForPlant=gardens.find(g=>g.id===p.gardenId)||currentGarden();
-  const mulchNote=effectiveMulch(gardenForPlant)?` + mulch`:''
-  const mulchNote=effectiveMulch(gardenForPlant)?` + mulch (${['','thin','medium','thick'][effectiveMulchDepth(gardenForPlant)]||'medium'})`:''
+  const mulchNote=effectiveMulch(gardenForPlant)?` + mulch (${['','thin','medium','thick'][effectiveMulchDepth(gardenForPlant)]||'medium'})`:'';
   document.getElementById('detail-content').innerHTML=`
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
