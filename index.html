@@ -50,8 +50,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .btn{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:5px;}
 .btn:active{opacity:0.7;}.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:500;}.btn-danger{color:var(--red);border-color:var(--red);}
 .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
-.metric{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
-.metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;}.metric-value{font-size:24px;font-weight:600;}
+.metric{background:var(--bg);border-radius:var(--radius-sm);padding:12px;transition:opacity 0.15s;}
+.metric.clickable{cursor:pointer;}
+.metric.clickable:active{opacity:0.7;}
+.metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.metric-value{font-size:24px;font-weight:600;}
+.metric-tap-hint{font-size:10px;color:var(--text3);margin-top:2px;}
+/* Action sheet */
+.action-sheet-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:250;align-items:flex-end;justify-content:center;}
+.action-sheet-overlay.open{display:flex;}
+.action-sheet{background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px 32px;width:100%;max-width:600px;max-height:80vh;overflow-y:auto;}
+.action-sheet-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.action-sheet-title{font-size:16px;font-weight:600;}
+.action-sheet-close{background:none;border:none;font-size:20px;color:var(--text2);cursor:pointer;padding:4px;}
+.action-sheet-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.action-sheet-item:last-child{border-bottom:none;}
+.action-sheet-plant{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.action-sheet-plant-name{font-weight:500;font-size:14px;}
+.action-sheet-plant-meta{font-size:12px;color:var(--text2);margin-top:1px;}
+.action-sheet-actions{display:flex;gap:6px;flex-shrink:0;}
 .temp-bar{background:var(--bg);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
 .temp-big{font-size:26px;font-weight:700;color:var(--coral);}
 .temp-info{flex:1;}.temp-info .tlabel{font-size:11px;color:var(--text2);}.temp-info .tdesc{font-size:12px;color:var(--text);margin-top:2px;}
@@ -154,9 +171,21 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <div class="season-banner" id="season-banner"></div>
     <div class="metrics">
       <div class="metric"><div class="metric-label">Total plants</div><div class="metric-value" id="m-total">0</div></div>
-      <div class="metric"><div class="metric-label">Water today</div><div class="metric-value" id="m-today" style="color:var(--coral)">0</div></div>
-      <div class="metric"><div class="metric-label">This week</div><div class="metric-value" id="m-week" style="color:var(--blue)">0</div></div>
-      <div class="metric"><div class="metric-label">Need fert</div><div class="metric-value" id="m-fert" style="color:var(--green)">0</div></div>
+      <div class="metric clickable" onclick="openActionSheet('today')" id="tile-today">
+        <div class="metric-label">Water today <i class="ti ti-chevron-right" style="font-size:10px;"></i></div>
+        <div class="metric-value" id="m-today" style="color:var(--coral)">0</div>
+        <div class="metric-tap-hint">Tap to see plants</div>
+      </div>
+      <div class="metric clickable" onclick="openActionSheet('week')" id="tile-week">
+        <div class="metric-label">This week <i class="ti ti-chevron-right" style="font-size:10px;"></i></div>
+        <div class="metric-value" id="m-week" style="color:var(--blue)">0</div>
+        <div class="metric-tap-hint">Tap to see plants</div>
+      </div>
+      <div class="metric clickable" onclick="openActionSheet('fert')" id="tile-fert">
+        <div class="metric-label">Need fert <i class="ti ti-chevron-right" style="font-size:10px;"></i></div>
+        <div class="metric-value" id="m-fert" style="color:var(--green)">0</div>
+        <div class="metric-tap-hint">Tap to see plants</div>
+      </div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
       <div class="section-title" style="margin-bottom:0;" id="dash-garden-title">Watering schedule</div>
@@ -381,6 +410,22 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <button class="btn" onclick="closeGardenModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveGarden()">Save</button>
     </div>
+  </div>
+</div>
+
+<!-- ACTION SHEET -->
+<div class="action-sheet-overlay" id="action-sheet-overlay" onclick="closeActionSheet(event)">
+  <div class="action-sheet">
+    <div class="action-sheet-header">
+      <div class="action-sheet-title" id="action-sheet-title">Plants</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn btn-primary" id="action-sheet-log-all" style="font-size:12px;padding:5px 12px;display:none;" onclick="logAllFromSheet()">
+          <i class="ti ti-droplet"></i> Log all
+        </button>
+        <button class="action-sheet-close" onclick="closeActionSheet()">✕</button>
+      </div>
+    </div>
+    <div id="action-sheet-body"></div>
   </div>
 </div>
 
@@ -1511,6 +1556,103 @@ function exportCSV(){
   const rows=filtered.map(l=>{const p=plants.find(p=>p.id===l.plantId);return[l.date,p?.name||'',p?.latin||'',l.type==='water'?'Watering':'Fertilizer',l.gallons||'',l.duration||'',l.fertType||'',l.fertAmount||'',l.tempHigh||'',(l.notes||'').replace(/,/g,' ')].map(v=>`"${v}"`).join(',');});
   const url=URL.createObjectURL(new Blob([[headers.join(','),...rows].join('\n')],{type:'text/csv'}));
   const a=document.createElement('a');a.href=url;a.download=`plant-tracker-${new Date().toISOString().split('T')[0]}.csv`;a.click();URL.revokeObjectURL(url);toast('CSV downloaded!');
+}
+
+// ── ACTION SHEET ─────────────────────────────────────────────
+let actionSheetMode=null;
+let actionSheetPreds=[];
+
+function openActionSheet(mode){
+  actionSheetMode=mode;
+  const gPlants=gardenPlants();
+  const preds=gPlants.map(p=>({plant:p,pred:getPrediction(p)}));
+  let items=[],title='',showLogAll=false,logAllType='water';
+  if(mode==='today'){
+    items=preds.filter(x=>!x.pred.subIrrigated&&(x.pred.never||x.pred.daysUntil<=0));
+    title=`Water today (${items.length} plant${items.length!==1?'s':''})`;
+    showLogAll=items.length>1;logAllType='water';
+  }else if(mode==='week'){
+    items=preds.filter(x=>!x.pred.subIrrigated&&!x.pred.never&&x.pred.daysUntil>0&&x.pred.daysUntil<=7);
+    title=`Water this week (${items.length} plant${items.length!==1?'s':''})`;
+    showLogAll=false;
+  }else if(mode==='fert'){
+    items=preds.filter(x=>['badge-due','badge-soon'].includes(getFertStatus(x.plant).badge));
+    title=`Need fertilizer (${items.length} plant${items.length!==1?'s':''})`;
+    showLogAll=items.length>1;logAllType='fertilizer';
+  }
+  actionSheetPreds=items;
+  document.getElementById('action-sheet-title').textContent=title;
+  const logAllBtn=document.getElementById('action-sheet-log-all');
+  logAllBtn.style.display=showLogAll?'flex':'none';
+  logAllBtn.innerHTML=logAllType==='water'
+    ?'<i class="ti ti-droplet"></i> Log all water'
+    :'<i class="ti ti-leaf"></i> Log all fert';
+  if(!items.length){
+    document.getElementById('action-sheet-body').innerHTML=
+      '<div style="text-align:center;padding:2rem;color:var(--text2);font-size:14px;">No plants in this category</div>';
+  }else{
+    document.getElementById('action-sheet-body').innerHTML=items.map(({plant:p,pred})=>{
+      const fs=getFertStatus(p);
+      const lastW=getLastEvent(p.id,'water');
+      const lastF=getLastEvent(p.id,'fertilizer');
+      let statusLine='',logBtn='';
+      if(mode==='today'){
+        statusLine=pred.never?'Never watered':`Overdue ${Math.abs(pred.daysUntil)}d · last watered ${lastW||'never'}`;
+        logBtn=`<button class="btn btn-primary" onclick="sheetQuickLog('${p.id}','water')" style="font-size:12px;padding:5px 11px;"><i class="ti ti-droplet"></i> Log</button>`;
+      }else if(mode==='week'){
+        statusLine=`Due ${fmtDate(pred.date)} · in ${pred.daysUntil}d`;
+        logBtn=`<button class="btn" onclick="sheetQuickLog('${p.id}','water')" style="font-size:12px;padding:5px 11px;"><i class="ti ti-droplet"></i> Log</button>`;
+      }else if(mode==='fert'){
+        statusLine=fs.label+(lastF?` · last ${lastF}`:'');
+        logBtn=`<button class="btn btn-primary" onclick="sheetQuickLog('${p.id}','fertilizer')" style="font-size:12px;padding:5px 11px;"><i class="ti ti-leaf"></i> Log</button>`;
+      }
+      return`<div class="action-sheet-item">
+        <div class="action-sheet-plant">
+          <span style="font-size:20px;">${TYPE_ICONS[p.type]||'🪴'}</span>
+          <div style="min-width:0;">
+            <div class="action-sheet-plant-name">${p.name}</div>
+            <div class="action-sheet-plant-meta">${statusLine}</div>
+          </div>
+        </div>
+        <div class="action-sheet-actions">
+          ${logBtn}
+          <button class="btn" onclick="closeActionSheet();openPlantDetail('${p.id}')" style="font-size:12px;padding:5px 11px;"><i class="ti ti-info-circle"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('action-sheet-overlay').classList.add('open');
+}
+
+function closeActionSheet(e){
+  if(e&&e.target!==document.getElementById('action-sheet-overlay'))return;
+  document.getElementById('action-sheet-overlay').classList.remove('open');
+  actionSheetMode=null;
+}
+
+function sheetQuickLog(plantId,type){
+  const today=new Date().toISOString().split('T')[0];
+  logs.push({id:Date.now().toString(),plantId,type,date:today,gallons:'',duration:'',notes:'',tempHigh:currentWeather?.todayHigh||null});
+  scheduleSave();
+  toast(`${type==='water'?'💧':'🌱'} Logged for ${plants.find(p=>p.id===plantId)?.name||'plant'}!`);
+  openActionSheet(actionSheetMode);
+  renderDashboard();
+}
+
+async function logAllFromSheet(){
+  if(!actionSheetPreds.length)return;
+  const type=actionSheetMode==='fert'?'fertilizer':'water';
+  const names=actionSheetPreds.map(x=>x.plant.name).join(', ');
+  const ok=await showConfirm(`Log ${type} for all?`,`Log today's ${type} for: ${names}`);
+  if(!ok)return;
+  const today=new Date().toISOString().split('T')[0];
+  actionSheetPreds.forEach(({plant:p},i)=>{
+    logs.push({id:Date.now().toString()+'_'+i,plantId:p.id,type,date:today,gallons:'',duration:'',notes:'Batch logged',tempHigh:currentWeather?.todayHigh||null});
+  });
+  scheduleSave();
+  toast(`${type==='water'?'💧':'🌱'} Logged ${type} for ${actionSheetPreds.length} plants!`);
+  closeActionSheet();
+  renderDashboard();
 }
 
 // ── NAV ────────────────────────────────────────────────────
