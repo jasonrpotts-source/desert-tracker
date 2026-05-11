@@ -517,7 +517,7 @@ const PLANT_KC={
   Tropical:  {kc:0.80, stressAt:0.55},
   Herb:      {kc:0.85, stressAt:0.55},
   Vegetable: {kc:0.90, stressAt:0.60},
-  Grass:     {kc:0.55, stressAt:0.45},  // Ornamental/warm-season grasses; turf needs custom override
+  Grass:     {kc:0.30, stressAt:0.20},  // Warm-season/ornamental bunchgrasses (NOT turf — see Herb for turf)
   Vine:      {kc:0.70, stressAt:0.50},
   Bulb:      {kc:0.60, stressAt:0.45},
   Fern:      {kc:0.80, stressAt:0.55},
@@ -572,18 +572,43 @@ function estimateSoilMoisture(plant,weather){
   if(!lastWLog)return{moisturePct:null,nextWaterDate:null,daysUntil:null,modelBasis:'Log first watering to start ET\u2080 tracking',noHistory:true};
   const gallons=parseFloat(lastWLog.gallons)||0;
   const duration=parseFloat(lastWLog.duration)||0;
-  // Soil moisture is a property of SOIL, not the plant.
-  // Wetted area by method; Kc only affects daily depletion rate.
-  // Wetted areas: hose hand-watered ~12" radius, drip emitter ~9", soaker ~18"
+  // ── ROOT ZONE VOLUME MODEL ───────────────────────────────────────────────────
+  // Moisture is tracked as volumetric fraction of the plant's root zone.
+  // Root zone volume (π × r² × depth) determines total water storage.
+  // Deeper/wider roots = larger reservoir = slower moisture depletion.
+  // Kc drives daily depletion RATE. Soil type drives drainage rate.
+  const ROOT_DIMS={
+    Cactus:   {depth:60,radius:24},
+    Agave:    {depth:48,radius:20},
+    Yucca:    {depth:36,radius:18},
+    Tree:     {depth:48,radius:24},
+    Shrub:    {depth:24,radius:18},
+    Succulent:{depth:12,radius:12},
+    Grass:    {depth:48,radius:18}, // warm-season bunchgrass; deep rooted, drought tolerant
+    Flowering:{depth:18,radius:12},
+    Tropical: {depth:18,radius:12},
+    Herb:     {depth:12,radius:10},
+    Vegetable:{depth:18,radius:12},
+    Vine:     {depth:24,radius:15},
+    Bulb:     {depth:18,radius:12},
+    Fern:     {depth:12,radius:10},
+    Other:    {depth:24,radius:15},
+  };
+  const dims=ROOT_DIMS[plant.type]||ROOT_DIMS.Other;
+  const rootVol=Math.PI*dims.radius*dims.radius*dims.depth; // in³
+
+  // Wetted area by method (determines depth of water applied at surface)
   const wettedAreaIn2={hose:452,drip:254,soaker:1018}[settings.wateringMethod||'hose']||452;
-  const soilDepthIn=24;
   let effectiveGallons=gallons;
   if(effectiveGallons===0&&duration>0)effectiveGallons=duration*(settings.flowRate||0.8);
+
+  // Residual moisture before watering (assume ~30% of available = dry-ish pre-water)
+  const residualMoisture=soil.wiltPt+0.30*availWater;
   let moisture;
   if(effectiveGallons>0){
-    const waterInches=(effectiveGallons*231)/wettedAreaIn2;
-    const vcAdded=Math.min(waterInches/soilDepthIn,availWater);
-    moisture=Math.min(soil.fieldCap,soil.wiltPt+vcAdded+availWater*0.15);
+    // Fraction of root zone volume filled by gallons applied
+    const waterFrac=(effectiveGallons*231)/rootVol;
+    moisture=Math.min(soil.fieldCap,residualMoisture+waterFrac);
   }else{
     moisture=soil.fieldCap;
   }
@@ -601,7 +626,8 @@ function estimateSoilMoisture(plant,weather){
     const tmax=currentWeather?.todayHigh||95,tmin=tmax-25,rh=currentWeather?.humidity||20;
     const precip=(precipMap[ds]||0)*0.0394;
     const et0=calcET0(tmax,tmin,rh,ds,lat);
-    const dailyLoss=et0*kc.kc*mulchFactor*soil.drainFactor;
+    // Divide by root depth to convert ET₀ (in/day) → volumetric fraction depletion
+    const dailyLoss=(et0*kc.kc*mulchFactor*soil.drainFactor)/dims.depth;
     const infiltration=precip*(isClay?0.5:0.8);
     moisture=Math.min(soil.fieldCap,Math.max(soil.wiltPt*0.5,moisture+infiltration-dailyLoss));
     d.setDate(d.getDate()+1);
@@ -620,7 +646,7 @@ function estimateSoilMoisture(plant,weather){
     const fRH=fi>=0?(fRHs[fi]||20):(currentWeather?.humidity||20);
     const fPrec=fi>=0?(fPrecips[fi]||0)*0.0394:0;
     const fet0=calcET0(ftmax,ftmax-25,fRH,fds,lat);
-    const fLoss=fet0*kc.kc*mulchFactor*soil.drainFactor;
+    const fLoss=(fet0*kc.kc*mulchFactor*soil.drainFactor)/dims.depth;
     const fInf=fPrec*(isClay?0.5:0.8);
     projMoisture=Math.min(soil.fieldCap,Math.max(soil.wiltPt*0.5,projMoisture+fInf-fLoss));
   }
