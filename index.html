@@ -228,8 +228,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
         <button class="tab" onclick="setLogType('fertilizer',this)"><i class="ti ti-leaf"></i> Fertilizer</button>
       </div>
       <div id="water-fields">
-        <label>Gallons</label><input type="number" id="log-gallons" placeholder="e.g. 2" step="0.5" min="0" inputmode="decimal"/>
-        <label>Duration (minutes)</label><input type="number" id="log-duration" placeholder="e.g. 15" min="0" inputmode="numeric"/>
+        <label>Watering method</label>
+        <select id="log-method" onchange="toggleLogMethodFields()">
+          <option value="hose">Hose (moved around plant)</option>
+          <option value="drip">Single drip emitter</option>
+          <option value="soaker">Soaker / multi-emitter</option>
+          <option value="sub">Sub-irrigated (reservoir fill)</option>
+        </select>
+        <div id="log-quantity-fields">
+          <label>Gallons</label><input type="number" id="log-gallons" placeholder="e.g. 2" step="0.5" min="0" inputmode="decimal"/>
+          <label>Duration (minutes)</label><input type="number" id="log-duration" placeholder="e.g. 15" min="0" inputmode="numeric"/>
+        </div>
+        <div id="log-sub-note" style="display:none;" class="hint">Sub-irrigated: only the date is recorded. The app tracks days since last reservoir fill — no ET₀ model prediction.</div>
       </div>
       <div id="fert-fields" style="display:none">
         <label>Fertilizer type</label><input type="text" id="log-fert-type" placeholder="e.g. 10-10-10"/>
@@ -301,19 +311,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
         </select>
       </div>
 
-      <label style="margin-top:4px;">Watering method for this garden</label>
-      <select id="settings-method" onchange="toggleFlowRate()">
-        <option value="hose">Hose (moved around plant) — ~12" wetted radius</option>
-        <option value="drip">Single drip emitter — ~9" wetted radius</option>
-        <option value="soaker">Soaker / multi-emitter — ~18" wetted radius</option>
-        <option value="sub">Sub-irrigated (wicking / reservoir) — tracking only</option>
-      </select>
-      <div id="flow-rate-row">
-        <label>Flow rate (gallons per minute)</label>
-        <input type="number" id="settings-flow" placeholder="e.g. 0.8" step="0.1" min="0.1" inputmode="decimal" style="margin-bottom:4px;"/>
-        <div class="hint">Logging duration auto-calculates gallons. Gallons override duration if both entered.</div>
-      </div>
-      <div id="sub-irrigated-note" style="display:none;" class="hint">Sub-irrigated gardens track last watering date only. No ET₀ model prediction — just log when you refill the reservoir.</div>
+      <div class="hint" style="margin-top:4px;">Watering method is now selected at each log event. This lets different plants in the same garden use different methods.</div>
       <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;padding:12px;margin-top:4px;">Save garden settings</button>
     </div>
 
@@ -624,18 +622,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <option value="rocky">Rocky / decomposed granite</option>
       <option value="amended">Amended / raised bed</option>
     </select>
-    <label>Watering method</label>
-    <select id="gm-method" onchange="document.getElementById('gm-flow-row').style.display=this.value==='sub'?'none':'block';document.getElementById('gm-sub-note').style.display=this.value==='sub'?'block':'none';">
-      <option value="hose">Hose (moved around plant)</option>
-      <option value="drip">Single drip emitter</option>
-      <option value="soaker">Soaker / multi-emitter</option>
-      <option value="sub">Sub-irrigated (wicking / reservoir)</option>
-    </select>
-    <div id="gm-flow-row">
-      <label>Flow rate (gal/min)</label>
-      <input type="number" id="gm-flow" placeholder="e.g. 0.8" step="0.1" min="0.1" inputmode="decimal"/>
-    </div>
-    <div id="gm-sub-note" style="display:none;" class="hint">Sub-irrigated: no watering predictions — last fill date tracked only.</div>
+
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <label style="margin-bottom:0;font-size:14px;">Mulch in this garden?</label>
       <label class="toggle"><input type="checkbox" id="gm-mulch"/><span class="toggle-slider"></span></label>
@@ -721,6 +708,13 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <option value="water">Watering</option><option value="fertilizer">Fertilizer</option>
     </select>
     <div id="el-water">
+      <label>Watering method</label>
+      <select id="el-method">
+        <option value="hose">Hose (moved around plant)</option>
+        <option value="drip">Single drip emitter</option>
+        <option value="soaker">Soaker / multi-emitter</option>
+        <option value="sub">Sub-irrigated (reservoir fill)</option>
+      </select>
       <label>Gallons</label><input type="number" id="el-gallons" step="0.5" inputmode="decimal"/>
       <label>Duration (min)</label><input type="number" id="el-duration" inputmode="numeric"/>
     </div>
@@ -747,8 +741,18 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <option value="water">Watering</option><option value="fertilizer">Fertilizer</option>
     </select>
     <div id="modal-water">
-      <label>Gallons</label><input type="number" id="modal-gallons" step="0.5" inputmode="decimal"/>
-      <label>Minutes</label><input type="number" id="modal-duration" inputmode="numeric"/>
+      <label>Watering method</label>
+      <select id="modal-method" onchange="toggleModalMethodFields()">
+        <option value="hose">Hose (moved around plant)</option>
+        <option value="drip">Single drip emitter</option>
+        <option value="soaker">Soaker / multi-emitter</option>
+        <option value="sub">Sub-irrigated (reservoir fill)</option>
+      </select>
+      <div id="modal-quantity-fields">
+        <label>Gallons</label><input type="number" id="modal-gallons" step="0.5" inputmode="decimal"/>
+        <label>Minutes</label><input type="number" id="modal-duration" inputmode="numeric"/>
+      </div>
+      <div id="modal-sub-note" style="display:none;" class="hint">Sub-irrigated: only the date is recorded for reservoir fill tracking.</div>
     </div>
     <label>Notes (optional)</label><input type="text" id="modal-notes"/>
     <div class="modal-actions">
@@ -897,17 +901,18 @@ function estimateSoilMoisture(plant,weather){
   const rootVol=Math.PI*dims.radius*dims.radius*dims.depth; // in³
 
   // Wetted area by method (determines depth of water applied at surface)
-  // Sub-irrigated gardens skip the ET₀ model entirely
-  if(isSubIrrigated(garden)){
+  // Sub-irrigated: check the log entry's wateringMethod, not the garden setting
+  if(isSubIrrLog(lastWLog)){
     const lastDate=lastWLog.date;
     const daysSince=Math.floor((new Date()-new Date(lastDate.replace(/-/g,'/')))/86400000);
     return{moisturePct:null,nextWaterDate:null,daysUntil:null,
       modelBasis:`Sub-irrigated · last fill: ${lastDate} (${daysSince}d ago)`,
       subIrrigated:true,daysSinceWater:daysSince};
   }
-  const wettedAreaIn2={hose:452,drip:254,soaker:1018}[effectiveWateringMethod(garden)]||452;
+  // Wetted area comes from the log entry's watering method
+  const logMethod=lastWLog.wateringMethod||'hose';
+  const wettedAreaIn2={hose:452,drip:254,soaker:1018}[logMethod]||452;
   let effectiveGallons=gallons;
-  if(effectiveGallons===0&&duration>0)effectiveGallons=duration*(effectiveFlowRate(garden));
 
   // Residual moisture before watering (assume ~30% of available = dry-ish pre-water)
   const residualMoisture=soil.wiltPt+0.30*availWater;
@@ -1068,8 +1073,7 @@ async function loadFromCloud(){
           if(!g.soil&&data.settings.soil)g.soil=data.settings.soil;
           if(g.mulch==null&&data.settings.mulch!=null)g.mulch=data.settings.mulch;
           if(!g.mulchDepth&&data.settings.mulchDepth)g.mulchDepth=data.settings.mulchDepth;
-          if(!g.wateringMethod&&data.settings.wateringMethod)g.wateringMethod=data.settings.wateringMethod;
-          if(!g.flowRate&&data.settings.flowRate)g.flowRate=data.settings.flowRate;
+
         });
       }
       setSyncStatus('ok','Synced');
@@ -1122,9 +1126,7 @@ function effectiveSoil(g){return g?.soil||'clay';}
 function effectiveMulch(g){return !!(g?.mulch);}
 function effectiveMulchDepth(g){return g?.mulchDepth||2;}
 function gardenCity(g){return g?.city||null;}
-function effectiveWateringMethod(g){return g?.wateringMethod||'hose';}
-function effectiveFlowRate(g){return g?.flowRate||0.8;}
-function isSubIrrigated(g){return effectiveWateringMethod(g)==='sub';}
+function isSubIrrLog(log){return log?.wateringMethod==='sub';}
 
 function switchGarden(id){
   currentGardenId=id;expandedCards={};
@@ -1171,10 +1173,7 @@ function openGardenModal(id=null){
   document.getElementById('gm-emoji').value=g?.emoji||'🌿';
   document.getElementById('gm-desc').value=g?.desc||'';
   document.getElementById('gm-soil').value=g?.soil||'clay';
-  document.getElementById('gm-method').value=g?.wateringMethod||'hose';
-  document.getElementById('gm-flow').value=g?.flowRate||0.8;
-  document.getElementById('gm-flow-row').style.display=(g?.wateringMethod==='sub')?'none':'block';
-  document.getElementById('gm-sub-note').style.display=(g?.wateringMethod==='sub')?'block':'none';
+
   document.getElementById('gm-mulch').checked=!!(g?.mulch);
   document.getElementById('gm-mulch-depth').value=g?.mulchDepth||2;
   document.getElementById('gm-mulch-depth-row').style.display=(g?.mulch)?'block':'none';
@@ -1188,7 +1187,7 @@ function openGardenModal(id=null){
 function closeGardenModal(){document.getElementById('garden-modal').classList.remove('open');editingGardenId=null;}
 function saveGarden(){
   const name=document.getElementById('gm-name').value.trim();if(!name){toast('Garden name required');return;}
-  const g={id:editingGardenId||('g_'+Date.now()),name,emoji:document.getElementById('gm-emoji').value||'🌿',desc:document.getElementById('gm-desc').value.trim(),city:gardenModalCityData||null,soil:document.getElementById('gm-soil').value||'clay',mulch:document.getElementById('gm-mulch').checked,mulchDepth:parseInt(document.getElementById('gm-mulch-depth').value)||2,wateringMethod:document.getElementById('gm-method').value||'hose',flowRate:parseFloat(document.getElementById('gm-flow').value)||0.8,createdAt:editingGardenId?gardens.find(g=>g.id===editingGardenId)?.createdAt:new Date().toISOString()};
+  const g={id:editingGardenId||('g_'+Date.now()),name,emoji:document.getElementById('gm-emoji').value||'🌿',desc:document.getElementById('gm-desc').value.trim(),city:gardenModalCityData||null,soil:document.getElementById('gm-soil').value||'clay',mulch:document.getElementById('gm-mulch').checked,mulchDepth:parseInt(document.getElementById('gm-mulch-depth').value)||2,createdAt:editingGardenId?gardens.find(g=>g.id===editingGardenId)?.createdAt:new Date().toISOString()};
   if(editingGardenId){const i=gardens.findIndex(g=>g.id===editingGardenId);gardens[i]=g;}else{gardens.push(g);if(!currentGardenId)currentGardenId=g.id;}
   closeGardenModal();toast(editingGardenId?'Garden updated!':'Garden created!');scheduleSave();renderGardenSelector();renderGardensList();
 }
@@ -1209,13 +1208,13 @@ function renderGardensList(){
     const needW=gp.filter(p=>{const pr=getPrediction(p);return pr.never||pr.daysUntil<=0;}).length;
     const city=gardenCity(g);const soilLabel=SOIL_PROPS[effectiveSoil(g)]?.label||'';
     const mulchNote=effectiveMulch(g)?' + mulch':'';
-    const methodLabel={hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irrigated'}[effectiveWateringMethod(g)]||'';
+
     return`<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;">
         <div><div style="font-size:28px;margin-bottom:4px;">${g.emoji||'🌿'}</div>
           <div style="font-weight:600;font-size:16px;">${g.name}</div>
           ${g.desc?`<div style="font-size:12px;color:var(--text2);margin-top:2px;">${g.desc}</div>`:''}
-          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${city?.name||'No location set'} · ${soilLabel}${mulchNote} · ${methodLabel}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${city?.name||'No location set'} · ${soilLabel}${mulchNote}</div>
         </div>
         ${g.id===currentGardenId?'<span style="font-size:11px;background:var(--blue-bg);color:var(--blue-text);border:0.5px solid var(--blue);padding:2px 8px;border-radius:10px;font-weight:500;">Active</span>':''}
       </div>
@@ -1258,14 +1257,7 @@ function applySettingsUI(){
   const cs=document.getElementById('city-saved');
   if(cs)cs.textContent=city?.name?'✓ '+city.name:'No city set — search above';
 }
-function toggleFlowRate(){
-  const method=document.getElementById('settings-method')?.value||'hose';
-  const isSub=method==='sub';
-  const fr=document.getElementById('flow-rate-row');
-  const sn=document.getElementById('sub-irrigated-note');
-  if(fr)fr.style.display=isSub?'none':'block';
-  if(sn)sn.style.display=isSub?'block':'none';
-}
+
 document.getElementById('settings-mulch').addEventListener('change',function(){
   document.getElementById('mulch-depth-row').style.display=this.checked?'block':'none';
 });
@@ -1274,8 +1266,6 @@ function saveSettings(){
   g.soil=document.getElementById('settings-soil').value;
   g.mulch=document.getElementById('settings-mulch').checked;
   g.mulchDepth=parseInt(document.getElementById('settings-mulch-depth').value)||2;
-  g.wateringMethod=document.getElementById('settings-method')?.value||'hose';
-  g.flowRate=parseFloat(document.getElementById('settings-flow')?.value)||0.8;
   // City was already saved directly to garden by selectCity()
   scheduleSave();toast((g.emoji||'🌿')+' '+g.name+' settings saved!');
   renderGardenSelector();renderDashboard();
@@ -1618,7 +1608,9 @@ async function deletePlantById(id){
 function openEditLogModal(id){
   const l=logs.find(l=>l.id===id);if(!l)return;editingLogId=id;
   document.getElementById('el-plant').innerHTML=plants.map(p=>`<option value="${p.id}"${p.id===l.plantId?' selected':''}>${p.name}</option>`).join('');
-  document.getElementById('el-type').value=l.type||'water';document.getElementById('el-gallons').value=l.gallons||'';document.getElementById('el-duration').value=l.duration||'';
+  document.getElementById('el-type').value=l.type||'water';
+  const elMethod=document.getElementById('el-method');if(elMethod)elMethod.value=l.wateringMethod||'hose';
+  document.getElementById('el-gallons').value=l.gallons||'';document.getElementById('el-duration').value=l.duration||'';
   document.getElementById('el-fert-type').value=l.fertType||'';document.getElementById('el-fert-amount').value=l.fertAmount||'';document.getElementById('el-date').value=l.date||'';
   document.getElementById('el-temp').value=l.tempHigh||'';document.getElementById('el-notes').value=l.notes||'';
   document.getElementById('el-water').style.display=l.type==='water'?'block':'none';document.getElementById('el-fert').style.display=l.type==='fertilizer'?'block':'none';
@@ -1628,6 +1620,7 @@ function closeEditLogModal(){document.getElementById('edit-log-modal').classList
 function saveEditLog(){
   const l=logs.find(l=>l.id===editingLogId);if(!l)return;
   l.plantId=document.getElementById('el-plant').value;l.type=document.getElementById('el-type').value;l.date=document.getElementById('el-date').value;
+  if(l.type==='water'){l.wateringMethod=document.getElementById('el-method')?.value||l.wateringMethod||'hose';}
   l.gallons=document.getElementById('el-gallons').value;l.duration=document.getElementById('el-duration').value;l.fertType=document.getElementById('el-fert-type').value;
   l.fertAmount=document.getElementById('el-fert-amount').value;l.tempHigh=document.getElementById('el-temp').value?parseFloat(document.getElementById('el-temp').value):null;l.notes=document.getElementById('el-notes').value;
   closeEditLogModal();toast('Event updated!');scheduleSave();
@@ -1697,6 +1690,22 @@ function addPlant(){
 
 
 // ── LOG EVENT ──────────────────────────────────────────────
+function toggleLogMethodFields(){
+  const method=document.getElementById('log-method')?.value;
+  const isSub=method==='sub';
+  const qf=document.getElementById('log-quantity-fields');
+  const sn=document.getElementById('log-sub-note');
+  if(qf)qf.style.display=isSub?'none':'block';
+  if(sn)sn.style.display=isSub?'block':'none';
+}
+function toggleModalMethodFields(){
+  const method=document.getElementById('modal-method')?.value;
+  const isSub=method==='sub';
+  const qf=document.getElementById('modal-quantity-fields');
+  const sn=document.getElementById('modal-sub-note');
+  if(qf)qf.style.display=isSub?'none':'block';
+  if(sn)sn.style.display=isSub?'block':'none';
+}
 function setLogType(type,btn){
   currentLogType=type;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
   document.getElementById('water-fields').style.display=type==='water'?'block':'none';document.getElementById('fert-fields').style.display=type==='fertilizer'?'block':'none';
@@ -1707,25 +1716,48 @@ function populateLogSelect(){
 }
 function saveLog(){
   const plantId=document.getElementById('log-plant').value;if(!plantId){toast('Please select a plant');return;}
-  logs.push({id:Date.now().toString(),plantId,type:currentLogType,date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
-    notes:document.getElementById('log-notes').value,gallons:document.getElementById('log-gallons').value,duration:document.getElementById('log-duration').value,
-    fertType:document.getElementById('log-fert-type').value,fertAmount:document.getElementById('log-fert-amount').value,tempHigh:currentWeather?.todayHigh||null});
+  const lMethod=document.getElementById('log-method')?.value||'hose';
+  const lIsSub=currentLogType==='water'&&lMethod==='sub';
+  logs.push({id:'l_'+Date.now(),plantId,type:currentLogType,
+    date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
+    notes:document.getElementById('log-notes').value,
+    gallons:lIsSub?'':document.getElementById('log-gallons').value,
+    duration:lIsSub?'':document.getElementById('log-duration').value,
+    wateringMethod:currentLogType==='water'?lMethod:null,
+    fertType:document.getElementById('log-fert-type').value,
+    fertAmount:document.getElementById('log-fert-amount').value,
+    tempHigh:currentWeather?.todayHigh||null});
   ['log-notes','log-gallons','log-duration','log-fert-type','log-fert-amount'].forEach(id=>document.getElementById(id).value='');
+  const lm=document.getElementById('log-method');if(lm)lm.value='hose';
+  toggleLogMethodFields();
   toast('Logged!');scheduleSave();showSection('dashboard');
 }
 function quickLog(plantId,type){
   modalPlantId=plantId;document.getElementById('modal-type').value=type;document.getElementById('modal-water').style.display=type==='water'?'block':'none';
   document.getElementById('modal-title').textContent=`Log ${type} — ${plants.find(p=>p.id===plantId)?.name}`;
   ['modal-notes','modal-gallons','modal-duration'].forEach(id=>document.getElementById(id).value='');
+  const mm=document.getElementById('modal-method');if(mm)mm.value='hose';
+  const mqf=document.getElementById('modal-quantity-fields');if(mqf)mqf.style.display='block';
+  const msn=document.getElementById('modal-sub-note');if(msn)msn.style.display='none';
   document.getElementById('log-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('log-modal').classList.remove('open');}
 function saveModalLog(){
-  logs.push({id:Date.now().toString(),plantId:modalPlantId,type:document.getElementById('modal-type').value,date:new Date().toISOString().split('T')[0],
-    notes:document.getElementById('modal-notes').value,gallons:document.getElementById('modal-gallons').value,duration:document.getElementById('modal-duration').value,tempHigh:currentWeather?.todayHigh||null});
+  const mType=document.getElementById('modal-type').value;
+  const mMethod=mType==='water'?(document.getElementById('modal-method')?.value||'hose'):null;
+  const mIsSub=mMethod==='sub';
+  logs.push({id:Date.now().toString(),plantId:modalPlantId,type:mType,
+    date:new Date().toISOString().split('T')[0],
+    notes:document.getElementById('modal-notes').value,
+    gallons:mIsSub?'':document.getElementById('modal-gallons').value,
+    duration:mIsSub?'':document.getElementById('modal-duration').value,
+    wateringMethod:mMethod,
+    tempHigh:currentWeather?.todayHigh||null});
   closeModal();toast('Logged!');scheduleSave();
   const active=document.querySelector('.section.active')?.id;
-  if(active==='s-detail')renderPlantDetail(detailPlantId);else renderDashboard();
+  if(active==='s-detail')renderPlantDetail(detailPlantId);
+  else if(active==='s-garden-detail')viewGardenDetail(currentGardenId);
+  else renderDashboard();
 }
 
 // ── HISTORY ────────────────────────────────────────────────
@@ -1869,12 +1901,9 @@ function closeActionSheet(e){
 }
 
 function sheetQuickLog(plantId,type){
-  const today=new Date().toISOString().split('T')[0];
-  logs.push({id:Date.now().toString(),plantId,type,date:today,gallons:'',duration:'',notes:'',tempHigh:currentWeather?.todayHigh||null});
-  scheduleSave();
-  toast(`${type==='water'?'💧':'🌱'} Logged for ${plants.find(p=>p.id===plantId)?.name||'plant'}!`);
-  openActionSheet(actionSheetMode);
-  renderDashboard();
+  // Open quick-log modal so user can select watering method
+  closeActionSheet();
+  quickLog(plantId,type);
 }
 
 async function logAllFromSheet(){
@@ -1884,13 +1913,16 @@ async function logAllFromSheet(){
   const ok=await showConfirm(`Log ${type} for all?`,`Log today's ${type} for: ${names}`);
   if(!ok)return;
   const today=new Date().toISOString().split('T')[0];
+  // For batch water logs default to hose — user can edit individual entries if needed
   actionSheetPreds.forEach(({plant:p},i)=>{
-    logs.push({id:Date.now().toString()+'_'+i,plantId:p.id,type,date:today,gallons:'',duration:'',notes:'Batch logged',tempHigh:currentWeather?.todayHigh||null});
+    logs.push({id:Date.now().toString()+'_'+i,plantId:p.id,type,date:today,
+      gallons:'',duration:'',notes:'Batch logged',
+      wateringMethod:type==='water'?'hose':null,
+      tempHigh:currentWeather?.todayHigh||null});
   });
   scheduleSave();
   toast(`${type==='water'?'💧':'🌱'} Logged ${type} for ${actionSheetPreds.length} plants!`);
-  closeActionSheet();
-  renderDashboard();
+  closeActionSheet();renderDashboard();
 }
 
 // ── NAV ────────────────────────────────────────────────────
@@ -1903,7 +1935,7 @@ function showSection(id){
   if(id==='dashboard')renderDashboard();
   if(id==='gardens')renderGardensList();
   if(id==='history')renderHistory();
-  if(id==='log')populateLogSelect();
+  if(id==='log'){populateLogSelect();const lm=document.getElementById('log-method');if(lm)lm.value='hose';toggleLogMethodFields();}
   if(id==='settings'){
     applySettingsUI();
     const ag=document.getElementById('ap-garden');
@@ -1932,4 +1964,5 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
 })();
 </script>
 </body>
-</html>
+</html>    const mLabel=isW?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):''
+    const det=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min',mLabel].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
