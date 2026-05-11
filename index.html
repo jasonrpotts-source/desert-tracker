@@ -301,7 +301,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
       <div style="font-size:14px;font-weight:600;margin-bottom:12px;"><i class="ti ti-plus"></i> Add a plant</div>
       <label>Add to garden</label><select id="ap-garden" style="margin-bottom:12px;"></select>
       <label>Name / nickname</label><input type="text" id="ap-name" placeholder="e.g. Back patio olive"/>
-      <label>Plant type</label>
+      <label>Plant type <span style="font-size:11px;color:var(--text3);">(auto-detected from scientific name)</span></label>
       <select id="ap-type">
         <option value="">Select type...</option>
         <option value="Cactus">🌵 Cactus</option><option value="Succulent">🪴 Succulent</option>
@@ -322,7 +322,7 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
         <div><label>Water every (days)</label><input type="number" id="ap-water-freq" placeholder="auto" min="1" inputmode="numeric"/></div>
         <div><label>Fertilize every (days)</label><input type="number" id="ap-fert-freq" placeholder="auto" min="1" inputmode="numeric"/></div>
       </div>
-      <div class="hint">Scientific name enables species-specific watering intervals. Leave water/fert blank to auto-calculate from soil moisture model.</div>
+      <div class="hint">Enter a scientific name and the app will auto-detect plant type, watering intervals, and care notes from the species database and GBIF taxonomy. Plant type is auto-detected — optional when a scientific name is provided.</div>
       <button class="btn btn-primary" onclick="addPlant()" style="width:100%;justify-content:center;padding:12px;">Add plant</button>
     </div>
   </div>
@@ -1305,19 +1305,36 @@ function saveEditPlant(){
 
 // ── ADD PLANT ──────────────────────────────────────────────
 function addPlant(){
-  const name=document.getElementById('ap-name').value.trim(),type=document.getElementById('ap-type').value;
-  if(!name||!type){toast('Name and type are required');return;}
+  const name=document.getElementById('ap-name').value.trim();
+  const latin=document.getElementById('ap-latin').value.trim();
+  let type=document.getElementById('ap-type').value;
+  // Type is required UNLESS a scientific name is provided (GBIF will auto-detect it)
+  if(!name){toast('Plant name is required');return;}
+  if(!type&&!latin){toast('Select a plant type or enter a scientific name — the app will auto-detect the type');return;}
+  // Default to Other temporarily if latin provided but type not yet selected
+  if(!type)type='Other';
   const def=TYPE_DEFAULTS[type]||TYPE_DEFAULTS.Other;
   const newId=Date.now().toString();
   const gardenId=document.getElementById('ap-garden')?.value||currentGardenId||gardens[0]?.id||'garden_default';
-  plants.push({id:newId,gardenId,name,type,species:document.getElementById('ap-species').value.trim(),latin:document.getElementById('ap-latin').value.trim(),
+  const newPlant={id:newId,gardenId,name,type,species:document.getElementById('ap-species').value.trim(),latin,
     location:document.getElementById('ap-location').value.trim(),datePlanted:document.getElementById('ap-planted').value,
     waterFreq:parseInt(document.getElementById('ap-water-freq').value)||def.water,fertFreq:parseInt(document.getElementById('ap-fert-freq').value)||def.fert,
-    tempIntervals:TYPE_TEMP[type]||TYPE_TEMP.Other,researchBasis:'',fact:'',aiLookupDone:false});
+    tempIntervals:TYPE_TEMP[type]||TYPE_TEMP.Other,researchBasis:'',fact:'',aiLookupDone:false};
+  plants.push(newPlant);
   expandedCards[newId]=false;
   ['ap-name','ap-species','ap-latin','ap-location','ap-planted','ap-water-freq','ap-fert-freq'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ap-type').value='';
-  toast(`"${name}" added!`);scheduleSave();showSection('dashboard');
+  scheduleSave();
+  // Trigger GBIF + species DB lookup immediately so type auto-sets before dashboard renders
+  if(latin){
+    toast(`"${name}" added — looking up species data...`);
+    lookupWateringIntervals(newPlant).then(()=>{
+      showSection('dashboard');
+    });
+  } else {
+    toast(`"${name}" added!`);
+    showSection('dashboard');
+  }
 }
 
 
