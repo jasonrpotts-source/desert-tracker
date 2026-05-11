@@ -862,11 +862,11 @@ function calcET0(tmaxF,tminF,rhPct,dateStr,latDeg){
 function estimateSoilMoisture(plant,weather){
   const lastWLog=logs.filter(l=>l.plantId===plant.id&&l.type==='water').sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
   const garden=gardens.find(g=>g.id===plant.gardenId)||currentGarden()||null;
-  const soilKey=(garden?.soil)||settings.soil||'clay';
+  const soilKey=(garden?.soil)||'clay';
   const soil=SOIL_PROPS[soilKey]||SOIL_PROPS.clay;
   const kc=PLANT_KC[plant.type]||PLANT_KC.Other;
-  const mulchOn=garden?(garden.mulch!=null?garden.mulch:settings.mulch):settings.mulch;
-  const mulchDepth=garden?(garden.mulchDepth||settings.mulchDepth||2):(settings.mulchDepth||2);
+  const mulchOn=garden?(garden?.mulch!=null?garden.mulch:false):false;
+  const mulchDepth=garden?.mulchDepth||2;
   const mulchFactor=mulchOn?(MULCH_FACTORS[mulchDepth]||0.70):1.0;
   const availWater=soil.fieldCap-soil.wiltPt;
   const stressAbsolute=soil.wiltPt+kc.stressAt*availWater;
@@ -969,7 +969,7 @@ function estimateSoilMoisture(plant,weather){
   const soilLabel=soil.label;
   const mulchNote=mulchOn?', mulched':'';
   const galNote=effectiveGallons>0?` \u00b7 ${effectiveGallons.toFixed(1)}gal`:' \u00b7 assumed full';
-  const methodNote={hose:'hose',drip:'drip',soaker:'soaker'}[settings.wateringMethod||'hose'];
+  const methodNote={hose:'hose',drip:'drip',soaker:'soaker'}[logMethod||'hose'];
   const modelBasis=`ET\u2080 H-S \u00b7 ${soilLabel}${mulchNote} \u00b7 ${methodNote}${galNote} \u00b7 Kc ${kc.kc}`;
   return{moisturePct:currentMoisturePct,nextWaterDate:nextDate,daysUntil,modelBasis};
 }
@@ -1247,9 +1247,7 @@ function applySettingsUI(){
   document.getElementById('mulch-depth-row').style.display=g.mulch?'block':'none';
   const sm=document.getElementById('settings-method');
   if(sm)sm.value=g.wateringMethod||'hose';
-  const sf=document.getElementById('settings-flow');
   if(sf)sf.value=g.flowRate||0.8;
-  toggleFlowRate();
   // City
   const city=g.city;
   const cd=document.getElementById('city-display');if(cd)cd.textContent=city?.name||'—';
@@ -1528,8 +1526,10 @@ function renderPlantDetail(id){
       </div>`;
     }).join('');
   }
-  const soilLabel=SOIL_PROPS[settings.soil]?.label||'Loam';
-  const mulchNote=settings.mulch?` + mulch (${['','thin','medium','thick'][settings.mulchDepth]||'medium'})`:'';
+  const soilLabel=SOIL_PROPS[effectiveSoil(gardens.find(g=>g.id===p.gardenId)||currentGarden())]?.label||'Clay';
+  const gardenForPlant=gardens.find(g=>g.id===p.gardenId)||currentGarden();
+  const mulchNote=effectiveMulch(gardenForPlant)?` + mulch`:''
+  const mulchNote=effectiveMulch(gardenForPlant)?` + mulch (${['','thin','medium','thick'][effectiveMulchDepth(gardenForPlant)]||'medium'})`:''
   document.getElementById('detail-content').innerHTML=`
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
