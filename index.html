@@ -1512,7 +1512,8 @@ function renderPlantDetail(id){
   function logRows(entries,isWater){
     if(!entries.length)return`<div style="color:var(--text2);font-size:13px;padding:8px 0;">No events logged yet</div>`;
     return entries.map(l=>{
-      const detail=isWater?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+      const mLbl=isWater?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):'';
+      const detail=isWater?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min',mLbl].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
       return`<div class="log-item">
         <div style="display:flex;align-items:flex-start;gap:8px;flex:1;">
           <span class="dot ${isWater?'dot-water':'dot-fert'}"></span>
@@ -1776,7 +1777,8 @@ function renderHistoryList(){
   if(!filtered.length){el.innerHTML='<div class="card"><div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px;">No events yet</div></div>';return;}
   el.innerHTML='<div class="card">'+filtered.map(l=>{
     const plant=plants.find(p=>p.id===l.plantId),isW=l.type==='water';
-    const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+    const mLabel=isW?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):'';
+    const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min',mLabel].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
     return`<div class="log-item">
       <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;">
         <span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:5px;"></span>
@@ -1964,5 +1966,4 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
 })();
 </script>
 </body>
-</html>    const mLabel=isW?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):''
-    const det=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min',mLabel].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+</html>
