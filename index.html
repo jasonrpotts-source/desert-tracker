@@ -236,8 +236,36 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
           <option value="sub">Sub-irrigated (reservoir fill)</option>
         </select>
         <div id="log-quantity-fields">
-          <label>Gallons</label><input type="number" id="log-gallons" placeholder="e.g. 2" step="0.5" min="0" inputmode="decimal"/>
-          <label>Duration (minutes)</label><input type="number" id="log-duration" placeholder="e.g. 15" min="0" inputmode="numeric"/>
+          <!-- HOSE fields -->
+          <div id="log-hose-fields">
+            <div class="form-row">
+              <div><label>Flow rate (gal/min)</label><input type="number" id="log-hose-rate" placeholder="0.8" step="0.1" min="0.1" inputmode="decimal" oninput="calcLogGallons()"/></div>
+              <div><label>Duration (minutes)</label><input type="number" id="log-hose-duration" placeholder="20" min="0" inputmode="numeric" oninput="calcLogGallons()"/></div>
+            </div>
+          </div>
+          <!-- DRIP fields -->
+          <div id="log-drip-fields" style="display:none;">
+            <div class="form-row">
+              <div><label>No. of emitters</label><input type="number" id="log-drip-count" placeholder="2" min="1" inputmode="numeric" oninput="calcLogGallons()"/></div>
+              <div><label>Each emitter (GPH)</label><input type="number" id="log-drip-gph" placeholder="1.0" step="0.5" min="0.1" inputmode="decimal" oninput="calcLogGallons()"/></div>
+            </div>
+            <label>Duration (hours)</label><input type="number" id="log-drip-duration" placeholder="1.0" step="0.5" min="0" inputmode="decimal" oninput="calcLogGallons()"/>
+          </div>
+          <!-- SOAKER fields -->
+          <div id="log-soaker-fields" style="display:none;">
+            <div class="form-row">
+              <div><label>Flow rate (gal/min)</label><input type="number" id="log-soaker-rate" placeholder="0.5" step="0.1" min="0.1" inputmode="decimal" oninput="calcLogGallons()"/></div>
+              <div><label>Duration (minutes)</label><input type="number" id="log-soaker-duration" placeholder="30" min="0" inputmode="numeric" oninput="calcLogGallons()"/></div>
+            </div>
+          </div>
+          <!-- Auto-calculated gallons display -->
+          <div id="log-gallons-display" style="background:var(--blue-bg);border-radius:var(--radius-sm);padding:10px 12px;margin-top:4px;display:none;">
+            <div style="font-size:12px;color:var(--text2);">Calculated</div>
+            <div style="font-size:18px;font-weight:700;color:var(--blue-text);" id="log-gallons-value">0 gal</div>
+            <div style="font-size:11px;color:var(--text3);" id="log-gallons-detail"></div>
+          </div>
+          <input type="hidden" id="log-gallons"/>
+          <input type="hidden" id="log-duration"/>
         </div>
         <div id="log-sub-note" style="display:none;" class="hint">Sub-irrigated: only the date is recorded. The app tracks days since last reservoir fill — no ET₀ model prediction.</div>
       </div>
@@ -743,8 +771,35 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
         <option value="sub">Sub-irrigated (reservoir fill)</option>
       </select>
       <div id="modal-quantity-fields">
-        <label>Gallons</label><input type="number" id="modal-gallons" step="0.5" inputmode="decimal"/>
-        <label>Minutes</label><input type="number" id="modal-duration" inputmode="numeric"/>
+          <!-- HOSE fields -->
+          <div id="modal-hose-fields">
+            <div class="form-row">
+              <div><label>Flow rate (gal/min)</label><input type="number" id="modal-hose-rate" placeholder="0.8" step="0.1" min="0.1" inputmode="decimal" oninput="calcModalGallons()"/></div>
+              <div><label>Duration (min)</label><input type="number" id="modal-hose-duration" placeholder="20" min="0" inputmode="numeric" oninput="calcModalGallons()"/></div>
+            </div>
+          </div>
+          <!-- DRIP fields -->
+          <div id="modal-drip-fields" style="display:none;">
+            <div class="form-row">
+              <div><label>No. of emitters</label><input type="number" id="modal-drip-count" placeholder="2" min="1" inputmode="numeric" oninput="calcModalGallons()"/></div>
+              <div><label>Each emitter (GPH)</label><input type="number" id="modal-drip-gph" placeholder="1.0" step="0.5" min="0.1" inputmode="decimal" oninput="calcModalGallons()"/></div>
+            </div>
+            <label>Duration (hours)</label><input type="number" id="modal-drip-duration" placeholder="1.0" step="0.5" min="0" inputmode="decimal" oninput="calcModalGallons()"/>
+          </div>
+          <!-- SOAKER fields -->
+          <div id="modal-soaker-fields" style="display:none;">
+            <div class="form-row">
+              <div><label>Flow rate (gal/min)</label><input type="number" id="modal-soaker-rate" placeholder="0.5" step="0.1" min="0.1" inputmode="decimal" oninput="calcModalGallons()"/></div>
+              <div><label>Duration (min)</label><input type="number" id="modal-soaker-duration" placeholder="30" min="0" inputmode="numeric" oninput="calcModalGallons()"/></div>
+            </div>
+          </div>
+          <div id="modal-gallons-display" style="background:var(--blue-bg);border-radius:var(--radius-sm);padding:10px 12px;margin-top:4px;display:none;">
+            <div style="font-size:12px;color:var(--text2);">Calculated</div>
+            <div style="font-size:18px;font-weight:700;color:var(--blue-text);" id="modal-gallons-value">0 gal</div>
+            <div style="font-size:11px;color:var(--text3);" id="modal-gallons-detail"></div>
+          </div>
+          <input type="hidden" id="modal-gallons"/>
+          <input type="hidden" id="modal-duration"/>
       </div>
       <div id="modal-sub-note" style="display:none;" class="hint">Sub-irrigated: only the date is recorded for reservoir fill tracking.</div>
     </div>
@@ -903,9 +958,11 @@ function estimateSoilMoisture(plant,weather){
       modelBasis:`Sub-irrigated · last fill: ${lastDate} (${daysSince}d ago)`,
       subIrrigated:true,daysSinceWater:daysSince};
   }
-  // Wetted area comes from the log entry's watering method
+  // Wetted area: use stored wettedArea from log (accounts for emitter count)
+  // Falls back to method-default if old log entry has no wettedArea stored
   const logMethod=lastWLog.wateringMethod||'hose';
-  const wettedAreaIn2={hose:452,drip:254,soaker:1018}[logMethod]||452;
+  const defaultWettedArea={hose:452,drip:254,soaker:1018}[logMethod]||452;
+  const wettedAreaIn2=parseFloat(lastWLog.wettedArea)||defaultWettedArea;
   let effectiveGallons=gallons;
 
   // Residual moisture before watering (assume ~30% of available = dry-ish pre-water)
@@ -964,7 +1021,7 @@ function estimateSoilMoisture(plant,weather){
   const mulchNote=mulchOn?', mulched':'';
   const galNote=effectiveGallons>0?` \u00b7 ${effectiveGallons.toFixed(1)}gal`:' \u00b7 assumed full';
   const methodNote={hose:'hose',drip:'drip',soaker:'soaker'}[logMethod||'hose'];
-  const modelBasis=`ET\u2080 H-S \u00b7 ${soilLabel}${mulchNote} \u00b7 ${methodNote}${galNote} \u00b7 Kc ${kc.kc}`;
+  const wettedNote=lastWLog.wettedArea?` · ${lastWLog.wettedArea}in²`:"";  const modelBasis=`ET₀ H-S · ${soilLabel}${mulchNote} · ${methodNote}${wettedNote}${galNote} · Kc ${kc.kc}`
   return{moisturePct:currentMoisturePct,nextWaterDate:nextDate,daysUntil,modelBasis};
 }
 
@@ -1683,21 +1740,108 @@ function addPlant(){
 
 
 // ── LOG EVENT ──────────────────────────────────────────────
+// ── WATERING CALCULATION ENGINE ────────────────────────────────────────────
+// Persisted last-used values so fields pre-fill next time
+let savedWateringParams = JSON.parse(localStorage.getItem('dlt_water_params')||'{}');
+function saveWateringParams(updates){
+  Object.assign(savedWateringParams, updates);
+  localStorage.setItem('dlt_water_params', JSON.stringify(savedWateringParams));
+}
+
+function calcGallonsForMethod(prefix){
+  const method = document.getElementById(prefix+'-method')?.value||'hose';
+  let gallons=0, detail='', wettedArea=452, emitterCount=1;
+  if(method==='hose'){
+    const rate = parseFloat(document.getElementById(prefix+'-hose-rate')?.value)||0;
+    const dur  = parseFloat(document.getElementById(prefix+'-hose-duration')?.value)||0;
+    gallons = rate * dur;
+    detail  = `${rate} gal/min × ${dur} min`;
+    wettedArea = 452;
+    if(rate) saveWateringParams({hoseRate:rate});
+  } else if(method==='drip'){
+    const count = parseFloat(document.getElementById(prefix+'-drip-count')?.value)||0;
+    const gph   = parseFloat(document.getElementById(prefix+'-drip-gph')?.value)||0;
+    const hours = parseFloat(document.getElementById(prefix+'-drip-duration')?.value)||0;
+    gallons = count * gph * hours;
+    detail  = `${count} emitter${count!==1?'s':''} × ${gph} GPH × ${hours} hr`;
+    wettedArea = Math.round(count * 254);
+    emitterCount = count||1;
+    if(gph) saveWateringParams({dripGph:gph, dripCount:count});
+  } else if(method==='soaker'){
+    const rate = parseFloat(document.getElementById(prefix+'-soaker-rate')?.value)||0;
+    const dur  = parseFloat(document.getElementById(prefix+'-soaker-duration')?.value)||0;
+    gallons = rate * dur;
+    detail  = `${rate} gal/min × ${dur} min`;
+    wettedArea = 1018;
+    if(rate) saveWateringParams({soakerRate:rate});
+  }
+  // Update display
+  const disp = document.getElementById(prefix+'-gallons-display');
+  const val  = document.getElementById(prefix+'-gallons-value');
+  const det  = document.getElementById(prefix+'-gallons-detail');
+  const hid  = document.getElementById(prefix+'-gallons');
+  if(gallons>0){
+    if(disp) disp.style.display='block';
+    if(val)  val.textContent = gallons.toFixed(1)+' gal';
+    if(det)  det.textContent = detail + (wettedArea?' · wetted area '+wettedArea+' in²':'');
+    if(hid)  hid.value = gallons.toFixed(2);
+  } else {
+    if(disp) disp.style.display='none';
+    if(hid)  hid.value='';
+  }
+  return {gallons, wettedArea, emitterCount};
+}
+function calcLogGallons(){  calcGallonsForMethod('log');  }
+function calcModalGallons(){ calcGallonsForMethod('modal'); }
+
+function showMethodSubfields(prefix, method){
+  ['hose','drip','soaker'].forEach(m=>{
+    const el=document.getElementById(prefix+'-'+m+'-fields');
+    if(el) el.style.display=m===method?'block':'none';
+  });
+}
+function prefillWateringInputs(prefix, method){
+  const p = savedWateringParams;
+  if(method==='hose'){
+    const r=document.getElementById(prefix+'-hose-rate');
+    const d=document.getElementById(prefix+'-hose-duration');
+    if(r&&p.hoseRate) r.value=p.hoseRate;
+  } else if(method==='drip'){
+    const cnt=document.getElementById(prefix+'-drip-count');
+    const gph=document.getElementById(prefix+'-drip-gph');
+    if(cnt&&p.dripCount) cnt.value=p.dripCount;
+    if(gph&&p.dripGph)   gph.value=p.dripGph;
+  } else if(method==='soaker'){
+    const r=document.getElementById(prefix+'-soaker-rate');
+    if(r&&p.soakerRate) r.value=p.soakerRate;
+  }
+}
+
 function toggleLogMethodFields(){
-  const method=document.getElementById('log-method')?.value;
+  const method=document.getElementById('log-method')?.value||'hose';
   const isSub=method==='sub';
   const qf=document.getElementById('log-quantity-fields');
   const sn=document.getElementById('log-sub-note');
-  if(qf)qf.style.display=isSub?'none':'block';
-  if(sn)sn.style.display=isSub?'block':'none';
+  if(qf) qf.style.display=isSub?'none':'block';
+  if(sn) sn.style.display=isSub?'block':'none';
+  if(!isSub){
+    showMethodSubfields('log', method);
+    prefillWateringInputs('log', method);
+    calcLogGallons();
+  }
 }
 function toggleModalMethodFields(){
-  const method=document.getElementById('modal-method')?.value;
+  const method=document.getElementById('modal-method')?.value||'hose';
   const isSub=method==='sub';
   const qf=document.getElementById('modal-quantity-fields');
   const sn=document.getElementById('modal-sub-note');
-  if(qf)qf.style.display=isSub?'none':'block';
-  if(sn)sn.style.display=isSub?'block':'none';
+  if(qf) qf.style.display=isSub?'none':'block';
+  if(sn) sn.style.display=isSub?'block':'none';
+  if(!isSub){
+    showMethodSubfields('modal', method);
+    prefillWateringInputs('modal', method);
+    calcModalGallons();
+  }
 }
 function setLogType(type,btn){
   currentLogType=type;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
@@ -1711,27 +1855,37 @@ function saveLog(){
   const plantId=document.getElementById('log-plant').value;if(!plantId){toast('Please select a plant');return;}
   const lMethod=document.getElementById('log-method')?.value||'hose';
   const lIsSub=currentLogType==='water'&&lMethod==='sub';
+  const lCalc=lIsSub?{gallons:0,wettedArea:452}:calcGallonsForMethod('log');
   logs.push({id:'l_'+Date.now(),plantId,type:currentLogType,
     date:document.getElementById('log-date').value||new Date().toISOString().split('T')[0],
     notes:document.getElementById('log-notes').value,
-    gallons:lIsSub?'':document.getElementById('log-gallons').value,
-    duration:lIsSub?'':document.getElementById('log-duration').value,
+    gallons:lIsSub?'':lCalc.gallons.toFixed(2),
+    wettedArea:lIsSub?452:lCalc.wettedArea,
     wateringMethod:currentLogType==='water'?lMethod:null,
     fertType:document.getElementById('log-fert-type').value,
     fertAmount:document.getElementById('log-fert-amount').value,
     tempHigh:currentWeather?.todayHigh||null});
-  ['log-notes','log-gallons','log-duration','log-fert-type','log-fert-amount'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('log-notes').value='';
+  document.getElementById('log-fert-type').value='';
+  document.getElementById('log-fert-amount').value='';
   const lm=document.getElementById('log-method');if(lm)lm.value='hose';
+  // Reset input fields
+  ['log-hose-duration','log-drip-duration','log-soaker-duration'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const lgd=document.getElementById('log-gallons-display');if(lgd)lgd.style.display='none';
   toggleLogMethodFields();
   toast('Logged!');scheduleSave();showSection('dashboard');
 }
 function quickLog(plantId,type){
   modalPlantId=plantId;document.getElementById('modal-type').value=type;document.getElementById('modal-water').style.display=type==='water'?'block':'none';
   document.getElementById('modal-title').textContent=`Log ${type} — ${plants.find(p=>p.id===plantId)?.name}`;
-  ['modal-notes','modal-gallons','modal-duration'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal-notes').value='';
   const mm=document.getElementById('modal-method');if(mm)mm.value='hose';
   const mqf=document.getElementById('modal-quantity-fields');if(mqf)mqf.style.display='block';
   const msn=document.getElementById('modal-sub-note');if(msn)msn.style.display='none';
+  const mgd=document.getElementById('modal-gallons-display');if(mgd)mgd.style.display='none';
+  ['modal-hose-duration','modal-drip-duration','modal-soaker-duration'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  showMethodSubfields('modal','hose');
+  prefillWateringInputs('modal','hose');
   document.getElementById('log-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('log-modal').classList.remove('open');}
@@ -1739,11 +1893,12 @@ function saveModalLog(){
   const mType=document.getElementById('modal-type').value;
   const mMethod=mType==='water'?(document.getElementById('modal-method')?.value||'hose'):null;
   const mIsSub=mMethod==='sub';
+  const mCalc=mIsSub||mType!=='water'?{gallons:0,wettedArea:452}:calcGallonsForMethod('modal');
   logs.push({id:Date.now().toString(),plantId:modalPlantId,type:mType,
     date:new Date().toISOString().split('T')[0],
     notes:document.getElementById('modal-notes').value,
-    gallons:mIsSub?'':document.getElementById('modal-gallons').value,
-    duration:mIsSub?'':document.getElementById('modal-duration').value,
+    gallons:mIsSub?'':mCalc.gallons.toFixed(2),
+    wettedArea:mIsSub?452:mCalc.wettedArea,
     wateringMethod:mMethod,
     tempHigh:currentWeather?.todayHigh||null});
   closeModal();toast('Logged!');scheduleSave();
@@ -1929,7 +2084,12 @@ function showSection(id){
   if(id==='dashboard')renderDashboard();
   if(id==='gardens')renderGardensList();
   if(id==='history')renderHistory();
-  if(id==='log'){populateLogSelect();const lm=document.getElementById('log-method');if(lm)lm.value='hose';toggleLogMethodFields();}
+  if(id==='log'){
+    populateLogSelect();
+    const lm=document.getElementById('log-method');if(lm)lm.value='hose';
+    toggleLogMethodFields();
+    prefillWateringInputs('log','hose');
+  }
   if(id==='settings'){
     applySettingsUI();
     const ag=document.getElementById('ap-garden');
