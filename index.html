@@ -209,15 +209,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
     <div id="detail-content"></div>
   </div>
 
-  <!-- GARDENS -->
-  <div id="s-gardens" class="section">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div class="section-title" style="margin-bottom:0;">My gardens</div>
-      <button class="btn btn-primary" onclick="openGardenModal()" style="padding:6px 12px;font-size:12px;"><i class="ti ti-plus"></i> New</button>
-    </div>
-    <div id="gardens-list"></div>
-  </div>
-
   <!-- LOG EVENT -->
   <div id="s-log" class="section">
     <div class="section-title">Log an event</div>
@@ -306,8 +297,10 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
   <div id="s-settings" class="section">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div class="section-title" style="margin-bottom:0;" id="settings-garden-title">Garden Settings</div>
-      <span style="font-size:12px;color:var(--text2);" id="settings-garden-name"></span>
+      <button class="btn btn-primary" onclick="openGardenModal()" style="padding:5px 10px;font-size:12px;"><i class="ti ti-plus"></i> New garden</button>
     </div>
+    <!-- Garden cards -->
+    <div id="gardens-list" style="margin-bottom:4px;"></div>
 
     <div class="card">
       <div style="font-size:14px;font-weight:600;margin-bottom:12px;"><i class="ti ti-map-pin"></i> Location</div>
@@ -615,7 +608,6 @@ label{font-size:13px;color:var(--text2);display:block;margin-bottom:5px;}
 
   <nav class="nav">
     <button class="nav-btn active" onclick="showSection('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
-    <button class="nav-btn" onclick="showSection('gardens')"><i class="ti ti-garden-cart"></i>Gardens</button>
     <button class="nav-btn" onclick="showSection('log')"><i class="ti ti-droplet"></i>Log</button>
     <button class="nav-btn" onclick="showSection('history')"><i class="ti ti-history"></i>History</button>
     <button class="nav-btn" onclick="showSection('settings')"><i class="ti ti-settings"></i>Settings</button>
@@ -1241,7 +1233,9 @@ function saveGarden(){
   const name=document.getElementById('gm-name').value.trim();if(!name){toast('Garden name required');return;}
   const g={id:editingGardenId||('g_'+Date.now()),name,emoji:document.getElementById('gm-emoji').value||'🌿',desc:document.getElementById('gm-desc').value.trim(),city:gardenModalCityData||null,soil:document.getElementById('gm-soil').value||'clay',mulch:document.getElementById('gm-mulch').checked,mulchDepth:parseInt(document.getElementById('gm-mulch-depth').value)||2,createdAt:editingGardenId?gardens.find(g=>g.id===editingGardenId)?.createdAt:new Date().toISOString()};
   if(editingGardenId){const i=gardens.findIndex(g=>g.id===editingGardenId);gardens[i]=g;}else{gardens.push(g);if(!currentGardenId)currentGardenId=g.id;}
-  closeGardenModal();toast(editingGardenId?'Garden updated!':'Garden created!');scheduleSave();renderGardenSelector();renderGardensList();
+  closeGardenModal();toast(editingGardenId?'Garden updated!':'Garden created!');scheduleSave();renderGardenSelector();
+  // Re-render gardens list if settings is open
+  if(document.getElementById('s-settings')?.classList.contains('active'))renderGardensList();
 }
 async function deleteGardenById(id){
   if(gardens.length===1){toast('Cannot delete your only garden');return;}
@@ -1275,7 +1269,7 @@ function renderGardensList(){
         ${needW>0?`<span style="color:var(--coral)"><strong>${needW}</strong> need water</span>`:''}
       </div>
       <div class="action-row" style="margin-top:10px;">
-        <button class="btn btn-primary" onclick="switchGarden('${g.id}');showSection('dashboard')" style="font-size:12px;padding:5px 10px;"><i class="ti ti-layout-dashboard"></i> View</button>
+        <button class="btn btn-primary" onclick="switchGarden('${g.id}')" style="font-size:12px;padding:5px 10px;"><i class="ti ti-layout-dashboard"></i> View</button>
         <button class="btn" onclick="openGardenModal('${g.id}')" style="font-size:12px;padding:5px 10px;"><i class="ti ti-pencil"></i> Edit</button>
         <button class="btn btn-danger" onclick="deleteGardenById('${g.id}')" style="font-size:12px;padding:5px 10px;"><i class="ti ti-trash"></i></button>
       </div>
@@ -1547,7 +1541,10 @@ function renderDashboard(){
 
 // ── PLANT DETAIL ───────────────────────────────────────────
 function openPlantDetail(id){prevSection=document.querySelector('.section.active')?.id?.replace('s-','')||'dashboard';detailPlantId=id;renderPlantDetail(id);showSection('detail');}
-function goBack(){showSection(prevSection);}
+function goBack(){
+  const dest=prevSection==='gardens'?'settings':prevSection;
+  showSection(dest);
+}
 function renderPlantDetail(id){
   const p=plants.find(p=>p.id===id);if(!p)return;
   const pred=getPrediction(p),fs=getFertStatus(p);
@@ -1561,7 +1558,8 @@ function renderPlantDetail(id){
     if(!entries.length)return`<div style="color:var(--text2);font-size:13px;padding:8px 0;">No events logged yet</div>`;
     return entries.map(l=>{
       const mLbl=isWater?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):'';
-      const detail=isWater?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min',mLbl].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+      const galDisp2=l.gallons?(parseFloat(l.gallons)%1===0?parseFloat(l.gallons)+'gal':parseFloat(l.gallons).toFixed(1)+'gal'):'';
+      const detail=isWater?[galDisp2,mLbl].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
       return`<div class="log-item">
         <div style="display:flex;align-items:flex-start;gap:8px;flex:1;">
           <span class="dot ${isWater?'dot-water':'dot-fert'}"></span>
@@ -1925,7 +1923,8 @@ function renderHistoryList(){
   el.innerHTML='<div class="card">'+filtered.map(l=>{
     const plant=plants.find(p=>p.id===l.plantId),isW=l.type==='water';
     const mLabel=isW?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):'';
-    const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min',mLabel].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+    const galDisp=l.gallons?(parseFloat(l.gallons)%1===0?parseFloat(l.gallons)+'gal':parseFloat(l.gallons).toFixed(1)+'gal'):'';
+    const detail=isW?[galDisp,mLabel].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
     return`<div class="log-item">
       <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;">
         <span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:5px;"></span>
@@ -1953,7 +1952,9 @@ function renderHistoryTable(){
     <th ${ths}>Date</th><th ${ths}>Plant</th><th ${ths}>Type</th><th ${ths}>Detail</th><th ${ths}>Temp</th><th ${ths}>Notes</th><th ${ths}></th>
   </tr></thead><tbody>`+filtered.map(l=>{
     const plant=plants.find(p=>p.id===l.plantId),isW=l.type==='water';
-    const detail=isW?[l.gallons&&l.gallons+'gal',l.duration&&l.duration+'min'].filter(Boolean).join(' '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
+    const tMeth2=isW?({hose:'hose',drip:'drip',soaker:'soaker',sub:'sub-irr'}[l.wateringMethod||'hose']||'hose'):'';
+    const tGal2=l.gallons?(parseFloat(l.gallons)%1===0?parseFloat(l.gallons)+'gal':parseFloat(l.gallons).toFixed(1)+'gal'):'';
+    const detail=isW?[tGal2,tMeth2].filter(Boolean).join(' · '):[l.fertType,l.fertAmount].filter(Boolean).join(' ');
     return`<tr><td ${tds}>${l.date}</td><td ${tds}>${plant?.name||'Unknown'}</td>
       <td ${tds}><span style="display:flex;align-items:center;gap:5px;"><span class="dot ${isW?'dot-water':'dot-fert'}" style="margin-top:0;"></span>${isW?'Water':'Fert'}</span></td>
       <td ${tds}>${detail||'—'}</td><td ${tds}>${l.tempHigh?l.tempHigh+'°F':'—'}</td><td ${tds}>${l.notes||'—'}</td>
@@ -2079,10 +2080,9 @@ function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const el=document.getElementById('s-'+id);if(el)el.classList.add('active');
-  const navMap={dashboard:0,gardens:1,log:2,history:3,settings:4};
+  const navMap={dashboard:0,log:1,history:2,settings:3};
   if(navMap[id]!==undefined)document.querySelectorAll('.nav-btn')[navMap[id]]?.classList.add('active');
   if(id==='dashboard')renderDashboard();
-  if(id==='gardens')renderGardensList();
   if(id==='history')renderHistory();
   if(id==='log'){
     populateLogSelect();
@@ -2092,6 +2092,7 @@ function showSection(id){
   }
   if(id==='settings'){
     applySettingsUI();
+    renderGardensList();
     const ag=document.getElementById('ap-garden');
     if(ag)ag.innerHTML=gardens.map(g=>`<option value="${g.id}"${g.id===currentGardenId?' selected':''}>${g.emoji||'🌿'} ${g.name}</option>`).join('');
   }
